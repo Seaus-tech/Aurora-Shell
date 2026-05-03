@@ -590,20 +590,13 @@ authenticate_user
 Show-Aurora
 
 # --- VERSION CHECK ---
-{
-    REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
-    if [ -n "$REMOTE_VER" ] && [ "$REMOTE_VER" != "$AURORA_VER" ]; then
-        echo ""
-        echo -n "🔔 Aurora-Shell wants to update (v$AURORA_VER → v$REMOTE_VER) [y/N]: "
-        read _upd < /dev/tty
-        if [ "$_upd" = "y" ] || [ "$_upd" = "Y" ]; then
-            shell.aurora --update dev
-        else
-            sleep 1
-        fi
-    fi
-} &
-disown $!
+(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/' | read REMOTE_VER
+if [ -n "$REMOTE_VER" ] && [ "$REMOTE_VER" != "$AURORA_VER" ]; then
+    echo ""
+    echo -n "🔔 Aurora-Shell wants to update (v$AURORA_VER → v$REMOTE_VER) [y/N]: "
+    read _upd < /dev/tty
+    [ "$_upd" = "y" ] || [ "$_upd" = "Y" ] && shell.aurora --update dev
+fi) &!
 EOF
 }
 
