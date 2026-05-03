@@ -391,7 +391,7 @@ if [ ! -f "$CLI_PACKAGES_FILE" ]; then
     "Neovim.CLI": {"aliases":["nvim","neovim"],"command":"nvim","version":"0.12.1","source":"brew","install":"brew install neovim","description":"Neovim editor"},
     "Flutter.CLI": {"aliases":["flutter"],"command":"flutter","version":"3.41.7","source":"brew","install":"brew install flutter","description":"Flutter framework CLI"},
     "Fastlane.CLI": {"aliases":["fastlane"],"command":"fastlane","version":"2.233.0","source":"brew","install":"brew install fastlane","description":"Mobile deployment CLI"},
-    "Microsoft.Teams": {"aliases":["teams"],"command":"teams","version":"1.0.0","source":"aurora","install":"npm config set strict-ssl false; REPO=$(find ~ -name 'teams-cli' -type d -maxdepth 8 2>/dev/null | head -1) && [ -n \"$REPO\" ] && cd \"$REPO\" && chmod +x src/index.js && npm install && npm link","description":"Microsoft Teams CLI"},
+    "Microsoft.Teams": {"aliases":["teams"],"command":"teams","version":"1.0.0","source":"aurora","install":"npm config set strict-ssl false; REPO=$(find ~ -name 'teams-cli' -type d -maxdepth 8 2>/dev/null | head -1) && [ -n \"$REPO\" ] && cd \"$REPO\" && npm install && printf '#!/bin/zsh\\nnode %s/src/index.js \"$@\"' \"$REPO\" > ~/.aurora-shell_files/bin/teams && chmod +x ~/.aurora-shell_files/bin/teams","description":"Microsoft Teams CLI"},
     "AWS.Kiro": {"aliases":["kiro"],"command":"kiro","version":"latest","source":"kiro.dev","install":"curl -fsSL https://cli.kiro.dev/install | bash","description":"Kiro CLI - AI-assisted development in your terminal"}
   }
 }
