@@ -62,6 +62,10 @@ async function login() {
         throw new Error('Failed to get device code: ' + JSON.stringify(deviceData));
     }
 
+    console.log('DEBUG tenant:', TENANT);
+    console.log('DEBUG verification_uri:', deviceData.verification_uri);
+    console.log('DEBUG user_code:', deviceData.user_code);
+
     const loginUrl = deviceData.verification_uri || 'https://microsoft.com/devicelogin';
     console.log(chalk.cyan('\n🔐 Teams Login'));
     console.log(chalk.white(`Go to: ${chalk.bold(loginUrl)}`));
@@ -89,6 +93,7 @@ async function login() {
         if (tokenData.error && tokenData.error !== 'authorization_pending' && tokenData.error !== 'slow_down') {
             throw new Error(`${tokenData.error}: ${tokenData.error_description}`);
         }
+        console.log('POLL:', tokenData.error);
         process.stdout.write('.');
         // authorization_pending - keep polling
     }
