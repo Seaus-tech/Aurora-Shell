@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { program } = require('commander');
 const chalk = require('chalk');
-const { logout, whoami } = require('./auth');
+const { ensureToken, login, logout, whoami } = require('./auth');
 const { listChats, sendChat, readChat } = require('./chat');
 const { listTeams, listChannels, sendChannel, readChannel, createTeam } = require('./teams');
 const { listMeetings, createMeeting, setStatus, getStatus } = require('./meetings');
@@ -38,8 +38,8 @@ program
 
 // Auth
 program.command('login').description('Login to Microsoft Teams').action(handle(async () => {
-    const me = await whoami();
-    console.log(chalk.green(`✅ Logged in as ${me.displayName} (${me.mail || me.userPrincipalName})`));
+    const token = await login();
+    console.log(chalk.green(`✅ Logged in successfully!`));
 }));
 program.command('logout').description('Logout').action(handle(logout));
 program.command('whoami').description('Show current user').action(handle(async () => {
