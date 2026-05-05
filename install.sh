@@ -316,7 +316,7 @@ shell() {
                     echo "📦 Found in Homebrew: $pkg"
                     echo -n "Install via brew? (y/n): "
                     read confirm
-                    [ "$confirm" = "y" ] && brew install "$pkg" && echo "✅ Installed via Homebrew"
+                    [ "$confirm" = "y" ] && brew install "$pkg" && echo "\033[32m✅ Installed via Homebrew\033[0m" || echo "\033[31m❌ Installation failed\033[0m"
                 else
                     echo "❌ Package not found in Aurora or Homebrew"
                 fi
@@ -333,7 +333,7 @@ shell() {
                     cp -R "/Volumes/$vol"/*.app ~/Applications/ 2>/dev/null
                     hdiutil detach "/Volumes/$vol" -quiet
                     rm "$tmp"
-                    echo "✅ Installed to ~/Applications"
+                    echo "\033[32m✅ Installed to ~/Applications\033[0m"
                     ;;
                 binary)
                     curl -L "$url" -o "$INSTALLED_DIR/$pkg"
@@ -417,9 +417,12 @@ case "$1" in
         
         echo "📦 Installing $pkg CLI..."
         eval "$install_cmd"
+        local exit_code=$?
         
-        if command -v "$cmd_name" &>/dev/null; then
-            echo "✅ $pkg CLI installed: $cmd_name"
+        if [ $exit_code -eq 0 ] && command -v "$cmd_name" &>/dev/null; then
+            echo "\033[32m✅ $pkg CLI installed: $cmd_name\033[0m"
+        else
+            echo "\033[31m❌ Failed to install $pkg (exit code: $exit_code)\033[0m"
         fi
         ;;
     list)
