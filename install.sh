@@ -416,6 +416,7 @@ case "$1" in
         fi
         
         echo "📦 Installing $pkg CLI..."
+        echo "\033[1m$(whoami)@$(hostname -s) ~ % $install_cmd\033[0m"
         eval "$install_cmd"
         local exit_code=$?
         
