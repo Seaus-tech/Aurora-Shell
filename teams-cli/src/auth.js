@@ -66,6 +66,7 @@ async function login() {
     console.log('DEBUG verification_uri:', deviceData.verification_uri);
     console.log('DEBUG user_code:', deviceData.user_code);
 
+    const loginUrl = deviceData.verification_uri || 'https://login.microsoft.com/device';
     console.log(chalk.cyan('\n🔐 Teams Login'));
     console.log(chalk.white(`1. Open your browser and go to: ${chalk.bold.underline(loginUrl)}`));
     console.log(chalk.white(`2. Enter this code: ${chalk.bold.yellow.bgBlack(' ' + deviceData.user_code + ' ')}`));
