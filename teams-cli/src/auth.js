@@ -83,6 +83,7 @@ async function login() {
             grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
             device_code: deviceData.device_code
         });
+        console.log('POLL:', JSON.stringify(tokenData).substring(0, 300));
         if (tokenData.access_token) {
             saveToken(tokenData);
             return tokenData.access_token;
@@ -93,7 +94,6 @@ async function login() {
         if (tokenData.error && tokenData.error !== 'authorization_pending' && tokenData.error !== 'slow_down') {
             throw new Error(`${tokenData.error}: ${tokenData.error_description}`);
         }
-        console.log('POLL:', tokenData.error);
         process.stdout.write('.');
         // authorization_pending - keep polling
     }
