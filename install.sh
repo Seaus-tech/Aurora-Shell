@@ -417,7 +417,9 @@ case "$1" in
         
         echo "📦 Installing $pkg CLI..."
         echo "\033[1m$(whoami)@$(hostname -s) ~ % $install_cmd\033[0m"
-        eval "$install_cmd"
+        # Use progress wrapper for brew commands
+        local wrapped_cmd=$(echo "$install_cmd" | sed "s|brew install|python3 $HOME/.aurora-shell_files/brew-progress.py install|g")
+        eval "$wrapped_cmd"
         local exit_code=$?
         
         if [ $exit_code -eq 0 ] && command -v "$cmd_name" &>/dev/null; then
