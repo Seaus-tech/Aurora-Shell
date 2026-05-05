@@ -66,12 +66,11 @@ async function login() {
     console.log('DEBUG verification_uri:', deviceData.verification_uri);
     console.log('DEBUG user_code:', deviceData.user_code);
 
-    const loginUrl = deviceData.verification_uri || 'https://microsoft.com/devicelogin';
     console.log(chalk.cyan('\n🔐 Teams Login'));
-    console.log(chalk.white(`Go to: ${chalk.bold(loginUrl)}`));
-    console.log(chalk.white(`Enter code: ${chalk.bold.yellow.bgBlack(' ' + deviceData.user_code + ' ')}`));
-    console.log(chalk.gray('Waiting for authentication...\n'));
-    try { execSync(`open "${loginUrl}"`); } catch(e) {}
+    console.log(chalk.white(`1. Open your browser and go to: ${chalk.bold.underline(loginUrl)}`));
+    console.log(chalk.white(`2. Enter this code: ${chalk.bold.yellow.bgBlack(' ' + deviceData.user_code + ' ')}`));
+    console.log(chalk.white(`3. Sign in with your Microsoft account`));
+    console.log(chalk.gray('\nWaiting for authentication...\n'));
 
     // Step 2: Poll for token
     const interval = Math.max((deviceData.interval || 5), 3) * 1000;
