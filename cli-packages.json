@@ -29,6 +29,7 @@
     "Shopify.CLI": {"aliases":["shopify"],"command":"shopify","version":"latest","source":"brew","install":"brew tap shopify/shopify && brew install shopify-cli","description":"Shopify CLI"},
     "OpenAI.CLI": {"aliases":["openai"],"command":"openai","version":"latest","source":"pip","install":"pip3 install openai","description":"OpenAI API CLI"},
     "Anthropic.CLI": {"aliases":["anthropic","claude"],"command":"anthropic","version":"latest","source":"pip","install":"pip3 install anthropic","description":"Anthropic Claude CLI"},
+    "Seaus.Calc": {"aliases":["calc-app","calc"],"command":"calc-app","version":"latest","source":"pipx","install":"pipx install seaus-calc","description":"Seaus Calculator - natural-language, fraction-aware calculator"},
     "Railway.CLI": {"aliases":["railway"],"command":"railway","version":"latest","source":"npm","install":"npm install -g @railway/cli","description":"Railway deployment CLI"},
     "Fly.CLI": {"aliases":["flyctl","fly"],"command":"flyctl","version":"0.4.38","source":"brew","install":"brew install flyctl","description":"Fly.io deployment CLI"},
     "VS.Code": {"aliases":["code","vscode"],"command":"code","version":"latest","source":"brew","install":"brew install --cask visual-studio-code","description":"Visual Studio Code"},
