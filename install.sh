@@ -633,11 +633,13 @@ done)
 if [ -n "$FOUND_REPO" ]; then
     echo "🔄 Found existing Aurora-shell repo at: $FOUND_REPO"
     cd "$FOUND_REPO"
-    git pull --rebase --autostash || true
+    git pull || true
+    cp "$FOUND_REPO/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
 else
     echo "⬇ No matching repo found — cloning fresh copy..."
     cd "$DATA_DIR"
-    git clone "$GIT_CLONE" aurora-shell || true
+    git clone "$GIT_CLONE" || true
+    cp "$DATA_DIR/aurora-shell/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
 fi
 
 echo -e "\n\033[1;32m✅ v$VER Deployed.\033[0m"
