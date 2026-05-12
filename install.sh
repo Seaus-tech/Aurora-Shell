@@ -417,9 +417,15 @@ case "$1" in
         
         echo "📦 Installing $pkg CLI..."
         echo "\033[1m$(whoami)@$(hostname -s) ~ % $install_cmd\033[0m"
-        # Use progress wrapper for brew commands
+        # Braille spinner
+        node "$HOME/.aurora-shell_files/spinner.js" &
+        local spinner_pid=$!
         local wrapped_cmd=$(echo "$install_cmd" | sed "s|brew install|python3 $HOME/.aurora-shell_files/brew-progress.py install|g")
         eval "$wrapped_cmd"
+        local exit_code=$?
+        kill $spinner_pid 2>/dev/null
+        wait $spinner_pid 2>/dev/null
+        printf "\r  \r"
         local exit_code=$?
         
         if [ $exit_code -eq 0 ] && command -v "$cmd_name" &>/dev/null; then
@@ -635,11 +641,13 @@ if [ -n "$FOUND_REPO" ]; then
     cd "$FOUND_REPO"
     git pull || true
     cp "$FOUND_REPO/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
+    cp "$FOUND_REPO/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
 else
     echo "⬇ No matching repo found — cloning fresh copy..."
     cd "$DATA_DIR"
     git clone "$GIT_CLONE" || true
     cp "$DATA_DIR/aurora-shell/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
+    cp "$DATA_DIR/aurora-shell/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
 fi
 
 echo -e "\n\033[1;32m✅ v$VER Deployed.\033[0m"

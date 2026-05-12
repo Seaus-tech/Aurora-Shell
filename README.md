@@ -134,3 +134,5 @@ For lock:
      ╚════════════════════════════════════════╝
 [AUTH] Key: 
 ```
+
+# sign up for the aurora-shell dev program to get updates on new releases, features, and exclusive content!
