@@ -33,6 +33,8 @@ sync_env() {
         curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C "$HOME/.brew"
         export PATH="$HOME/.brew/bin:$PATH"
     fi
+
+    echo -ne "\033[1;33m📥 downloading extensions... \033[0m"
     brew install figlet lolcat pygments 2>/dev/null
     echo -e "\033[1;32mREADY\033[0m"
 }
@@ -201,15 +203,26 @@ authenticate_user() {
             echo "DENIED"
         fi
     done
-echo "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
-│                                                                                                  │
-│                                                                                                  │
-│                                                                                                  │
-│                      Logged in as "$AURORA_HDR_VAL"                                              │
-│                                                                                                  │
-│                                                                                                  │
-│                                                                                                  │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+    local box_width=100
+    local label="Logged in as $AURORA_HDR_VAL"
+    local inner_width=$(( box_width - 2 ))
+    local label_len=${#label}
+    local total_pad=$(( inner_width - label_len ))
+    local pad_left=$(( total_pad / 2 ))
+    local pad_right=$(( total_pad - pad_left ))
+    local top="╭$(printf '─%.0s' $(seq 1 $inner_width))╮"
+    local empty="│$(printf ' %.0s' $(seq 1 $inner_width))│"
+    local mid="│$(printf ' %.0s' $(seq 1 $pad_left))${label}$(printf ' %.0s' $(seq 1 $pad_right))│"
+    local bot="╰$(printf '─%.0s' $(seq 1 $inner_width))╯"
+    echo "$top"
+    echo "$empty"
+    echo "$empty"
+    echo "$empty"
+    echo "$mid"
+    echo "$empty"
+    echo "$empty"
+    echo "$empty"
+    echo "$bot"
 
 }
 
