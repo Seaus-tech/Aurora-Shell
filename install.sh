@@ -120,12 +120,6 @@ EOF
 
     # --- ACCOUNT SIGN-IN ---
     echo ""
-    # Store accounts token locally (never committed)
-    if [ ! -f "$DATA_DIR/.accounts_token" ]; then
-        printf "🔑 Aurora Accounts Token (press Enter to skip): "
-        read -rs _tok < /dev/tty; echo ""
-        [ -n "$_tok" ] && echo "$_tok" > "$DATA_DIR/.accounts_token" && chmod 600 "$DATA_DIR/.accounts_token"
-    fi
     echo "🌐 Aurora Account (optional — syncs your profile across machines)"
     printf "   Sign in? (y/n/create): "
     read acct_choice < /dev/tty
@@ -134,15 +128,15 @@ EOF
             printf "   👤 Username: "; read -r _uname < /dev/tty
             printf "   🔐 Password: "; read -rs _pw < /dev/tty; echo ""
             _hash=$(echo -n "$_pw" | shasum -a 256 | awk '{print $1}')
-            _accounts=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/accounts.json" 2>/dev/null || echo '{"accounts":{}}')
-            _stored=$(echo "$_accounts" | jq -r ".accounts[\"$_uname\"].password_hash // empty" 2>/dev/null)
-            if [ -z "$_stored" ]; then
-                echo "   ❌ Account not found"
-            elif [ "$_hash" != "$_stored" ]; then
-                echo "   ❌ Wrong password"
+            _resp=$(curl -sf -X POST -H "Content-Type: application/json" \
+                -d "{\"username\":\"$_uname\",\"password_hash\":\"$_hash\"}" \
+                "https://aurora-accounts.yash-behera.workers.dev/accounts/login" 2>/dev/null)
+            _err=$(echo "$_resp" | jq -r '.error // empty' 2>/dev/null)
+            if [ -n "$_err" ]; then
+                echo "   ❌ $_err"
             else
-                echo "$_accounts" | jq ".accounts[\"$_uname\"]" > "$DATA_DIR/active_account.json"
-                _uid=$(jq -r '.username' "$DATA_DIR/active_account.json")
+                echo "$_resp" > "$DATA_DIR/active_account.json"
+                _uid=$(echo "$_resp" | jq -r '.username')
                 sed -i '' "s/^AURORA_ID=.*/AURORA_ID=\"$_uid\"/" "$CONFIG_FILE" 2>/dev/null
                 echo "   ✅ Signed in as $_uid"
             fi
@@ -155,20 +149,13 @@ EOF
                 echo "   ❌ Passwords don't match — skipping"
             else
                 _hash=$(echo -n "$_pw" | shasum -a 256 | awk '{print $1}')
-                _existing=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/accounts.json" 2>/dev/null | jq -r ".accounts[\"$_uname\"] // empty" 2>/dev/null)
-                if [ -n "$_existing" ]; then
-                    echo "   ❌ Username taken"
-                else
-                    _payload=$(jq -n --arg u "$_uname" --arg h "$_hash" \
-                        '{username:$u,password_hash:$h,installed:"",plugins:[],linked:{},header:"Aurora-Shell",header_mode:"BLOCK"}')
-                    _encoded=$(echo "$_payload" | base64 | tr -d '\n')
-                    curl -sf -X POST \
-                        -H "Authorization: token $(cat "$HOME/.aurora-shell_files/.accounts_token" 2>/dev/null)" \
-                        -H "Accept: application/vnd.github.v3+json" \
-                        "https://api.github.com/repos/Seaus-tech/Aurora-Shell/actions/workflows/account-sync.yml/dispatches" \
-                        -d "{\"ref\":\"main\",\"inputs\":{\"action\":\"create\",\"username\":\"$_uname\",\"payload\":\"$_encoded\"}}" && \
-                    echo "   ✅ Account created! Login with: aurora --account --login"
-                fi
+                _payload=$(jq -n --arg u "$_uname" --arg h "$_hash" \
+                    '{username:$u,password_hash:$h,installed:"",plugins:[],linked:{},header:"Aurora-Shell",header_mode:"BLOCK"}')
+                _resp=$(curl -sf -X POST -H "Content-Type: application/json" \
+                    -d "$_payload" \
+                    "https://aurora-accounts.yash-behera.workers.dev/accounts" 2>/dev/null)
+                _err=$(echo "$_resp" | jq -r '.error // empty' 2>/dev/null)
+                [ -n "$_err" ] && echo "   ❌ $_err" || echo "   ✅ Account created! Login with: aurora --account --login"
             fi
             ;;
     esac
@@ -682,15 +669,15 @@ authenticate_user
 Show-Aurora
 
 # --- ACCOUNTS SYSTEM ---
-AURORA_ACCOUNTS_TOKEN="$(cat "$HOME/.aurora-shell_files/.accounts_token" 2>/dev/null)"
-AURORA_ACCOUNTS_URL="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/accounts.json"
+AURORA_WORKER_URL="https://aurora-accounts.yash-behera.workers.dev"
 AURORA_ACCOUNT_FILE="$HOME/.aurora-shell_files/active_account.json"
 AURORA_SESSION_INSTALLED="$HOME/.aurora-shell_files/session_installed.txt"
 
 _aurora_hash() { echo -n "$1" | shasum -a 256 | awk '{print $1}'; }
 
-_aurora_fetch_accounts() {
-    curl -sf "$AURORA_ACCOUNTS_URL" 2>/dev/null || echo '{"accounts":{}}'
+_aurora_fetch_account() {
+    local username="$1"
+    curl -sf "$AURORA_WORKER_URL/accounts/$username" 2>/dev/null
 }
 
 _aurora_scan_installed() {
@@ -895,8 +882,11 @@ aurora_account() {
             [ "$pw" != "$pw2" ] && echo "❌ Passwords don't match" && return 1
 
             # Check username not taken
-            local existing=$(_aurora_fetch_accounts | jq -r ".accounts[\"$uname\"] // empty")
-            [ -n "$existing" ] && echo "❌ Username '$uname' already taken" && return 1
+            local existing=$(curl -sf -X POST -H "Content-Type: application/json" \
+                -d "{\"username\":\"$uname\",\"password_hash\":\"x\"}" \
+                "$AURORA_WORKER_URL/accounts/login" 2>/dev/null | jq -r '.error // empty')
+            # If error is NOT "Not found", username exists
+            [ "$existing" != "Not found" ] && [ -n "$(curl -sf "$AURORA_WORKER_URL/accounts/$uname" 2>/dev/null)" ] && echo "❌ Username '$uname' already taken" && return 1
 
             local hash=$(_aurora_hash "$pw")
             local installed=$(_aurora_scan_installed)
@@ -912,13 +902,11 @@ aurora_account() {
                 --argjson p "$plugins" \
                 '{username:$u, password_hash:$h, installed:$i, plugins:$p, linked:{}, header:"Aurora-Shell", header_mode:"BLOCK"}')
 
-            local encoded=$(echo "$payload" | base64 | tr -d '\n')
             echo "📤 Creating account..."
-            local resp=$(curl -sf -X POST \
-                -H "Authorization: token $AURORA_ACCOUNTS_TOKEN" \
-                -H "Accept: application/vnd.github.v3+json" \
-                "https://api.github.com/repos/Seaus-tech/Aurora-Shell/actions/workflows/account-sync.yml/dispatches" \
-                -d "{\"ref\":\"main\",\"inputs\":{\"action\":\"create\",\"username\":\"$uname\",\"payload\":\"$encoded\"}}")
+            local resp=$(curl -sf -X POST -H "Content-Type: application/json" \
+                -d "$payload" "$AURORA_WORKER_URL/accounts")
+            local err=$(echo "$resp" | jq -r '.error // empty')
+            [ -n "$err" ] && echo "❌ $err" && return 1
             echo "✅ Account created. You can now login with: aurora --account --login"
             ;;
 
@@ -926,12 +914,12 @@ aurora_account() {
             printf "👤 Username: "; read -r uname
             printf "🔐 Password: "; read -rs pw; echo ""
             local hash=$(_aurora_hash "$pw")
-            local accounts=$(_aurora_fetch_accounts)
-            local stored_hash=$(echo "$accounts" | jq -r ".accounts[\"$uname\"].password_hash // empty")
-            [ -z "$stored_hash" ] && echo "❌ Account not found" && return 1
-            [ "$hash" != "$stored_hash" ] && echo "❌ Wrong password" && return 1
-            local profile=$(echo "$accounts" | jq ".accounts[\"$uname\"]")
-            _aurora_apply_profile "$profile" "$2"
+            local resp=$(curl -sf -X POST -H "Content-Type: application/json" \
+                -d "{\"username\":\"$uname\",\"password_hash\":\"$hash\"}" \
+                "$AURORA_WORKER_URL/accounts/login")
+            local err=$(echo "$resp" | jq -r '.error // empty')
+            [ -n "$err" ] && echo "❌ $err" && return 1
+            _aurora_apply_profile "$resp" "$2"
             ;;
 
         --logout)
@@ -944,32 +932,33 @@ aurora_account() {
             local uname=$(echo "$profile" | jq -r '.username')
             printf "🔐 Password: "; read -rs pw; echo ""
             local hash=$(_aurora_hash "$pw")
-            local stored_hash=$(echo "$profile" | jq -r '.password_hash')
-            [ "$hash" != "$stored_hash" ] && echo "❌ Wrong password" && return 1
 
             echo "Link service: 1) AWS  2) GitHub  3) OpenAI  4) Anthropic  5) Ollama"
             printf "Choice: "; read -r svc
+            local update="{}"
             case "$svc" in
                 1) printf "AWS Key ID: "; read -r k; printf "AWS Secret: "; read -rs s; echo ""
-                   profile=$(echo "$profile" | jq --arg k "$k" --arg s "$s" '.linked.aws_key=$k | .linked.aws_secret=$s') ;;
+                   update=$(jq -n --arg k "$k" --arg s "$s" --arg h "$hash" '{password_hash:$h,linked:{aws_key:$k,aws_secret:$s}}') ;;
                 2) printf "GitHub Token: "; read -rs t; echo ""
-                   profile=$(echo "$profile" | jq --arg t "$t" '.linked.gh_token=$t') ;;
+                   update=$(jq -n --arg t "$t" --arg h "$hash" '{password_hash:$h,linked:{gh_token:$t}}') ;;
                 3) printf "OpenAI API Key: "; read -rs t; echo ""
-                   profile=$(echo "$profile" | jq --arg t "$t" '.linked.openai_key=$t') ;;
+                   update=$(jq -n --arg t "$t" --arg h "$hash" '{password_hash:$h,linked:{openai_key:$t}}') ;;
                 4) printf "Anthropic API Key: "; read -rs t; echo ""
-                   profile=$(echo "$profile" | jq --arg t "$t" '.linked.anthropic_key=$t') ;;
+                   update=$(jq -n --arg t "$t" --arg h "$hash" '{password_hash:$h,linked:{anthropic_key:$t}}') ;;
                 5) printf "Ollama Host (default localhost:11434): "; read -r h
-                   profile=$(echo "$profile" | jq --arg h "${h:-localhost:11434}" '.linked.ollama_host=$h') ;;
+                   update=$(jq -n --arg h "${h:-localhost:11434}" --arg pw "$hash" '{password_hash:$pw,linked:{ollama_host:$h}}') ;;
                 *) echo "❌ Invalid choice" && return 1 ;;
             esac
 
-            local encoded=$(echo "$profile" | base64 | tr -d '\n')
-            curl -sf -X POST \
-                -H "Authorization: token $AURORA_ACCOUNTS_TOKEN" \
-                -H "Accept: application/vnd.github.v3+json" \
-                "https://api.github.com/repos/Seaus-tech/Aurora-Shell/actions/workflows/account-sync.yml/dispatches" \
-                -d "{\"ref\":\"main\",\"inputs\":{\"action\":\"update\",\"username\":\"$uname\",\"payload\":\"$encoded\"}}" && \
-            echo "$profile" > "$AURORA_ACCOUNT_FILE" && \
+            local resp=$(curl -sf -X PATCH -H "Content-Type: application/json" \
+                -d "$update" "$AURORA_WORKER_URL/accounts/$uname")
+            local err=$(echo "$resp" | jq -r '.error // empty')
+            [ -n "$err" ] && echo "❌ $err" && return 1
+            # Refresh local profile
+            local new_profile=$(curl -sf -X POST -H "Content-Type: application/json" \
+                -d "{\"username\":\"$uname\",\"password_hash\":\"$hash\"}" \
+                "$AURORA_WORKER_URL/accounts/login")
+            echo "$new_profile" > "$AURORA_ACCOUNT_FILE"
             echo "✅ Service linked and synced"
             ;;
 
