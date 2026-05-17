@@ -117,6 +117,61 @@ AURORA_HDR_VAL="$HDR_VAL"
 AURORA_USER_BDAY="${BDAY:-$AURORA_USER_BDAY}"
 AURORA_ID="${P_ID:-$AURORA_ID}"
 EOF
+
+    # --- ACCOUNT SIGN-IN ---
+    echo ""
+    # Store accounts token locally (never committed)
+    if [ ! -f "$DATA_DIR/.accounts_token" ]; then
+        printf "🔑 Aurora Accounts Token (press Enter to skip): "
+        read -rs _tok < /dev/tty; echo ""
+        [ -n "$_tok" ] && echo "$_tok" > "$DATA_DIR/.accounts_token" && chmod 600 "$DATA_DIR/.accounts_token"
+    fi
+    echo "🌐 Aurora Account (optional — syncs your profile across machines)"
+    printf "   Sign in? (y/n/create): "
+    read acct_choice < /dev/tty
+    case "$acct_choice" in
+        y|yes)
+            printf "   👤 Username: "; read -r _uname < /dev/tty
+            printf "   🔐 Password: "; read -rs _pw < /dev/tty; echo ""
+            _hash=$(echo -n "$_pw" | shasum -a 256 | awk '{print $1}')
+            _accounts=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/accounts.json" 2>/dev/null || echo '{"accounts":{}}')
+            _stored=$(echo "$_accounts" | jq -r ".accounts[\"$_uname\"].password_hash // empty" 2>/dev/null)
+            if [ -z "$_stored" ]; then
+                echo "   ❌ Account not found"
+            elif [ "$_hash" != "$_stored" ]; then
+                echo "   ❌ Wrong password"
+            else
+                echo "$_accounts" | jq ".accounts[\"$_uname\"]" > "$DATA_DIR/active_account.json"
+                _uid=$(jq -r '.username' "$DATA_DIR/active_account.json")
+                sed -i '' "s/^AURORA_ID=.*/AURORA_ID=\"$_uid\"/" "$CONFIG_FILE" 2>/dev/null
+                echo "   ✅ Signed in as $_uid"
+            fi
+            ;;
+        create)
+            printf "   👤 New username: "; read -r _uname < /dev/tty
+            printf "   🔐 Password: "; read -rs _pw < /dev/tty; echo ""
+            printf "   🔐 Confirm:  "; read -rs _pw2 < /dev/tty; echo ""
+            if [ "$_pw" != "$_pw2" ]; then
+                echo "   ❌ Passwords don't match — skipping"
+            else
+                _hash=$(echo -n "$_pw" | shasum -a 256 | awk '{print $1}')
+                _existing=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/accounts.json" 2>/dev/null | jq -r ".accounts[\"$_uname\"] // empty" 2>/dev/null)
+                if [ -n "$_existing" ]; then
+                    echo "   ❌ Username taken"
+                else
+                    _payload=$(jq -n --arg u "$_uname" --arg h "$_hash" \
+                        '{username:$u,password_hash:$h,installed:"",plugins:[],linked:{},header:"Aurora-Shell",header_mode:"BLOCK"}')
+                    _encoded=$(echo "$_payload" | base64 | tr -d '\n')
+                    curl -sf -X POST \
+                        -H "Authorization: token $(cat "$HOME/.aurora-shell_files/.accounts_token" 2>/dev/null)" \
+                        -H "Accept: application/vnd.github.v3+json" \
+                        "https://api.github.com/repos/Seaus-tech/Aurora-Shell/actions/workflows/account-sync.yml/dispatches" \
+                        -d "{\"ref\":\"main\",\"inputs\":{\"action\":\"create\",\"username\":\"$_uname\",\"payload\":\"$_encoded\"}}" && \
+                    echo "   ✅ Account created! Login with: aurora --account --login"
+                fi
+            fi
+            ;;
+    esac
 }
 
 # --- THEME ENGINE ---
@@ -290,7 +345,8 @@ shell.aurora() {
         --config) open -a Xcode "$HOME/.aurora-shell_files/aurora-shell_settings" || ${EDITOR:-vi} "$HOME/.aurora-shell_files/aurora-shell_settings" ;;
         --lock) authenticate_user "MANUAL" && Show-Aurora ;;
         --uninstall) rm -rf "$HOME/.aurora-shell_files" && sed -i '' '/aurora-shell_theme/d' ~/.zshrc ;;
-        *) echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall" ;;
+        --account) aurora_account "$2" ;;
+        *) echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account" ;;
     esac
 }
 alias aurora="shell.aurora"
@@ -624,6 +680,319 @@ rainbow_prompt() {
 
 authenticate_user
 Show-Aurora
+
+# --- ACCOUNTS SYSTEM ---
+AURORA_ACCOUNTS_TOKEN="$(cat "$HOME/.aurora-shell_files/.accounts_token" 2>/dev/null)"
+AURORA_ACCOUNTS_URL="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/accounts.json"
+AURORA_ACCOUNT_FILE="$HOME/.aurora-shell_files/active_account.json"
+AURORA_SESSION_INSTALLED="$HOME/.aurora-shell_files/session_installed.txt"
+
+_aurora_hash() { echo -n "$1" | shasum -a 256 | awk '{print $1}'; }
+
+_aurora_fetch_accounts() {
+    curl -sf "$AURORA_ACCOUNTS_URL" 2>/dev/null || echo '{"accounts":{}}'
+}
+
+_aurora_scan_installed() {
+    local pkgs=""
+    for cmd in git gh node python3 java go rustc docker aws az gcloud kubectl helm terraform ansible; do
+        command -v "$cmd" &>/dev/null && pkgs="$pkgs $cmd"
+    done
+    # oh-my-zsh plugins
+    [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ] && pkgs="$pkgs zsh-autosuggestions"
+    [ -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ] && pkgs="$pkgs zsh-syntax-highlighting"
+    echo "$pkgs" | xargs
+}
+
+_aurora_take_snapshot() {
+    local snap="$HOME/.aurora-shell_files/session_snapshot"
+    rm -rf "$snap" && mkdir -p "$snap"
+    # Shell configs
+    for f in ~/.zshrc ~/.zshenv ~/.zprofile ~/.bashrc ~/.bash_profile ~/.bash_login; do
+        [ -f "$f" ] && cp "$f" "$snap/$(basename $f).bak"
+    done
+    # Python config
+    [ -f "$HOME/.python-version" ] && cp "$HOME/.python-version" "$snap/python-version.bak"
+    [ -f "$HOME/.config/pip/pip.conf" ] && cp "$HOME/.config/pip/pip.conf" "$snap/pip.conf.bak"
+    [ -f "$HOME/.pyenv/version" ] && cp "$HOME/.pyenv/version" "$snap/pyenv-version.bak"
+    # Package snapshots
+    brew list --formula 2>/dev/null | sort > "$snap/brew-formulae.txt"
+    brew list --cask 2>/dev/null | sort > "$snap/brew-casks.txt"
+    npm list -g --depth=0 2>/dev/null | tail -n +2 | awk '{print $2}' | sort > "$snap/npm-global.txt"
+    pip3 list 2>/dev/null | tail -n +3 | awk '{print $1}' | sort > "$snap/pip.txt"
+    pipx list 2>/dev/null | grep "package " | awk '{print $2}' | sort > "$snap/pipx.txt"
+    gem list 2>/dev/null | sort > "$snap/gem.txt"
+    cargo install --list 2>/dev/null | grep -v '^\s' | awk '{print $1}' | sort > "$snap/cargo.txt"
+    ls "$HOME/.aurora-shell_files/bin/" 2>/dev/null | sort > "$snap/aurora-bin.txt"
+    # oh-my-zsh plugins
+    ls "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/" 2>/dev/null | sort > "$snap/omz-plugins.txt"
+}
+
+_aurora_apply_profile() {
+    local profile="$1"
+    local fast="${2:-}"
+    local uid=$(echo "$profile" | jq -r '.username // empty')
+    local hdr=$(echo "$profile" | jq -r '.header // "Aurora-Shell"')
+    local hdr_mode=$(echo "$profile" | jq -r '.header_mode // "BLOCK"')
+
+    # Take full snapshot before changing anything
+    _aurora_take_snapshot
+
+    # Apply account settings
+    sed -i '' "s/^AURORA_ID=.*/AURORA_ID=\"$uid\"/" "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
+    sed -i '' "s/^AURORA_HDR_VAL=.*/AURORA_HDR_VAL=\"$hdr\"/" "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
+    sed -i '' "s/^AURORA_HDR_MODE=.*/AURORA_HDR_MODE=\"$hdr_mode\"/" "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
+
+    if [ "$fast" != "--fast" ]; then
+        # Install oh-my-zsh if not present
+        if [ ! -d "$HOME/.oh-my-zsh" ]; then
+            echo "📦 Installing oh-my-zsh for $uid..."
+            RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" > /dev/null 2>&1
+        fi
+
+        # Install plugins the account uses
+        local plugins=$(echo "$profile" | jq -r '.plugins // [] | .[]' 2>/dev/null)
+        for plugin in $plugins; do
+            local pdir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$plugin"
+            if [ ! -d "$pdir" ]; then
+                case "$plugin" in
+                    zsh-autosuggestions)
+                        git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$pdir" > /dev/null 2>&1 ;;
+                    zsh-syntax-highlighting)
+                        git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "$pdir" > /dev/null 2>&1 ;;
+                esac
+            fi
+        done
+
+        # Inject plugins into .zshrc
+        if [ -f "$HOME/.zshrc" ] && [ -n "$plugins" ]; then
+            sed -i '' "s/^plugins=(.*/plugins=($(echo "$plugins" | tr '\n' ' '))/" "$HOME/.zshrc" 2>/dev/null
+        fi
+    fi
+
+    # Export linked service keys
+    local aws_key=$(echo "$profile" | jq -r '.linked.aws_key // empty')
+    local aws_secret=$(echo "$profile" | jq -r '.linked.aws_secret // empty')
+    local openai_key=$(echo "$profile" | jq -r '.linked.openai_key // empty')
+    local anthropic_key=$(echo "$profile" | jq -r '.linked.anthropic_key // empty')
+    local gh_token=$(echo "$profile" | jq -r '.linked.gh_token // empty')
+    local ollama_host=$(echo "$profile" | jq -r '.linked.ollama_host // empty')
+    [ -n "$aws_key" ] && export AWS_ACCESS_KEY_ID="$aws_key" && export AWS_SECRET_ACCESS_KEY="$aws_secret"
+    [ -n "$openai_key" ] && export OPENAI_API_KEY="$openai_key"
+    [ -n "$anthropic_key" ] && export ANTHROPIC_API_KEY="$anthropic_key"
+    [ -n "$gh_token" ] && export GITHUB_TOKEN="$gh_token"
+    [ -n "$ollama_host" ] && export OLLAMA_HOST="$ollama_host"
+
+    echo "$profile" > "$AURORA_ACCOUNT_FILE"
+    echo "✅ Logged in as $uid${fast:+ (fast mode — installations skipped)}"
+}
+
+_aurora_logout_cleanup() {
+    local snap="$HOME/.aurora-shell_files/session_snapshot"
+    local fast="${1:-}"
+    [ ! -d "$snap" ] && return
+    echo "🧹 Restoring system state..."
+
+    if [ "$fast" != "--fast" ]; then
+        # Diff and uninstall brew formulae added this session
+        if [ -f "$snap/brew-formulae.txt" ]; then
+            brew list --formula 2>/dev/null | sort | comm -13 "$snap/brew-formulae.txt" - | while read -r pkg; do
+                echo "  🗑 brew uninstall $pkg"
+                brew uninstall --ignore-dependencies "$pkg" 2>/dev/null
+            done
+        fi
+        # Diff and uninstall brew casks added this session
+        if [ -f "$snap/brew-casks.txt" ]; then
+            brew list --cask 2>/dev/null | sort | comm -13 "$snap/brew-casks.txt" - | while read -r pkg; do
+                echo "  🗑 brew uninstall --cask $pkg"
+                brew uninstall --cask "$pkg" 2>/dev/null
+            done
+        fi
+        # npm global
+        if [ -f "$snap/npm-global.txt" ]; then
+            npm list -g --depth=0 2>/dev/null | tail -n +2 | awk '{print $2}' | sort | \
+            comm -13 "$snap/npm-global.txt" - | while read -r pkg; do
+                echo "  🗑 npm uninstall -g $pkg"
+                npm uninstall -g "$pkg" 2>/dev/null
+            done
+        fi
+        # pip
+        if [ -f "$snap/pip.txt" ]; then
+            pip3 list 2>/dev/null | tail -n +3 | awk '{print $1}' | sort | \
+            comm -13 "$snap/pip.txt" - | while read -r pkg; do
+                echo "  🗑 pip uninstall $pkg"
+                pip3 uninstall -y "$pkg" 2>/dev/null
+            done
+        fi
+        # pipx
+        if [ -f "$snap/pipx.txt" ]; then
+            pipx list 2>/dev/null | grep "package " | awk '{print $2}' | sort | \
+            comm -13 "$snap/pipx.txt" - | while read -r pkg; do
+                echo "  🗑 pipx uninstall $pkg"
+                pipx uninstall "$pkg" 2>/dev/null
+            done
+        fi
+        # gem
+        if [ -f "$snap/gem.txt" ]; then
+            gem list 2>/dev/null | sort | comm -13 "$snap/gem.txt" - | awk '{print $1}' | while read -r pkg; do
+                echo "  🗑 gem uninstall $pkg"
+                gem uninstall -x "$pkg" 2>/dev/null
+            done
+        fi
+        # cargo
+        if [ -f "$snap/cargo.txt" ]; then
+            cargo install --list 2>/dev/null | grep -v '^\s' | awk '{print $1}' | sort | \
+            comm -13 "$snap/cargo.txt" - | while read -r pkg; do
+                echo "  🗑 cargo uninstall $pkg"
+                cargo uninstall "$pkg" 2>/dev/null
+            done
+        fi
+        # aurora bin
+        if [ -f "$snap/aurora-bin.txt" ]; then
+            ls "$HOME/.aurora-shell_files/bin/" 2>/dev/null | sort | \
+            comm -13 "$snap/aurora-bin.txt" - | while read -r bin; do
+                echo "  🗑 removing aurora bin: $bin"
+                rm -f "$HOME/.aurora-shell_files/bin/$bin"
+            done
+        fi
+        # omz plugins added this session
+        if [ -f "$snap/omz-plugins.txt" ]; then
+            ls "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/" 2>/dev/null | sort | \
+            comm -13 "$snap/omz-plugins.txt" - | while read -r plugin; do
+                echo "  🗑 removing omz plugin: $plugin"
+                rm -rf "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$plugin"
+            done
+        fi
+        # Remove oh-my-zsh if it wasn't there before
+        [ ! -f "$snap/omz-plugins.txt" ] && [ -d "$HOME/.oh-my-zsh" ] && rm -rf "$HOME/.oh-my-zsh"
+    fi
+
+    # Restore shell configs
+    for f in zshrc zshenv zprofile bashrc bash_profile bash_login; do
+        if [ -f "$snap/.$f.bak" ]; then
+            cp "$snap/.$f.bak" "$HOME/.$f"
+        else
+            rm -f "$HOME/.$f"
+        fi
+    done
+    # Restore python configs
+    [ -f "$snap/python-version.bak" ] && cp "$snap/python-version.bak" "$HOME/.python-version"
+    [ -f "$snap/pip.conf.bak" ] && mkdir -p "$HOME/.config/pip" && cp "$snap/pip.conf.bak" "$HOME/.config/pip/pip.conf"
+    [ -f "$snap/pyenv-version.bak" ] && cp "$snap/pyenv-version.bak" "$HOME/.pyenv/version"
+
+    # Clear session state
+    rm -rf "$snap" "$AURORA_ACCOUNT_FILE" "$AURORA_SESSION_INSTALLED"
+    unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY OPENAI_API_KEY ANTHROPIC_API_KEY GITHUB_TOKEN OLLAMA_HOST
+    echo "👋 Logged out. System restored."
+}
+
+aurora_account() {
+    case "$1" in
+        --create)
+            printf "👤 Username: "; read -r uname
+            printf "🔐 Password: "; read -rs pw; echo ""
+            printf "🔐 Confirm:  "; read -rs pw2; echo ""
+            [ "$pw" != "$pw2" ] && echo "❌ Passwords don't match" && return 1
+
+            # Check username not taken
+            local existing=$(_aurora_fetch_accounts | jq -r ".accounts[\"$uname\"] // empty")
+            [ -n "$existing" ] && echo "❌ Username '$uname' already taken" && return 1
+
+            local hash=$(_aurora_hash "$pw")
+            local installed=$(_aurora_scan_installed)
+            local plugins=""
+            echo "$installed" | grep -q "zsh-autosuggestions" && plugins="$plugins\"zsh-autosuggestions\","
+            echo "$installed" | grep -q "zsh-syntax-highlighting" && plugins="$plugins\"zsh-syntax-highlighting\","
+            plugins="[${plugins%,}]"
+
+            local payload=$(jq -n \
+                --arg u "$uname" \
+                --arg h "$hash" \
+                --arg i "$installed" \
+                --argjson p "$plugins" \
+                '{username:$u, password_hash:$h, installed:$i, plugins:$p, linked:{}, header:"Aurora-Shell", header_mode:"BLOCK"}')
+
+            local encoded=$(echo "$payload" | base64 | tr -d '\n')
+            echo "📤 Creating account..."
+            local resp=$(curl -sf -X POST \
+                -H "Authorization: token $AURORA_ACCOUNTS_TOKEN" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/repos/Seaus-tech/Aurora-Shell/actions/workflows/account-sync.yml/dispatches" \
+                -d "{\"ref\":\"main\",\"inputs\":{\"action\":\"create\",\"username\":\"$uname\",\"payload\":\"$encoded\"}}")
+            echo "✅ Account created. You can now login with: aurora --account --login"
+            ;;
+
+        --login)
+            printf "👤 Username: "; read -r uname
+            printf "🔐 Password: "; read -rs pw; echo ""
+            local hash=$(_aurora_hash "$pw")
+            local accounts=$(_aurora_fetch_accounts)
+            local stored_hash=$(echo "$accounts" | jq -r ".accounts[\"$uname\"].password_hash // empty")
+            [ -z "$stored_hash" ] && echo "❌ Account not found" && return 1
+            [ "$hash" != "$stored_hash" ] && echo "❌ Wrong password" && return 1
+            local profile=$(echo "$accounts" | jq ".accounts[\"$uname\"]")
+            _aurora_apply_profile "$profile" "$2"
+            ;;
+
+        --logout)
+            _aurora_logout_cleanup "$2"
+            ;;
+
+        --link)
+            [ ! -f "$AURORA_ACCOUNT_FILE" ] && echo "❌ Not logged in" && return 1
+            local profile=$(cat "$AURORA_ACCOUNT_FILE")
+            local uname=$(echo "$profile" | jq -r '.username')
+            printf "🔐 Password: "; read -rs pw; echo ""
+            local hash=$(_aurora_hash "$pw")
+            local stored_hash=$(echo "$profile" | jq -r '.password_hash')
+            [ "$hash" != "$stored_hash" ] && echo "❌ Wrong password" && return 1
+
+            echo "Link service: 1) AWS  2) GitHub  3) OpenAI  4) Anthropic  5) Ollama"
+            printf "Choice: "; read -r svc
+            case "$svc" in
+                1) printf "AWS Key ID: "; read -r k; printf "AWS Secret: "; read -rs s; echo ""
+                   profile=$(echo "$profile" | jq --arg k "$k" --arg s "$s" '.linked.aws_key=$k | .linked.aws_secret=$s') ;;
+                2) printf "GitHub Token: "; read -rs t; echo ""
+                   profile=$(echo "$profile" | jq --arg t "$t" '.linked.gh_token=$t') ;;
+                3) printf "OpenAI API Key: "; read -rs t; echo ""
+                   profile=$(echo "$profile" | jq --arg t "$t" '.linked.openai_key=$t') ;;
+                4) printf "Anthropic API Key: "; read -rs t; echo ""
+                   profile=$(echo "$profile" | jq --arg t "$t" '.linked.anthropic_key=$t') ;;
+                5) printf "Ollama Host (default localhost:11434): "; read -r h
+                   profile=$(echo "$profile" | jq --arg h "${h:-localhost:11434}" '.linked.ollama_host=$h') ;;
+                *) echo "❌ Invalid choice" && return 1 ;;
+            esac
+
+            local encoded=$(echo "$profile" | base64 | tr -d '\n')
+            curl -sf -X POST \
+                -H "Authorization: token $AURORA_ACCOUNTS_TOKEN" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/repos/Seaus-tech/Aurora-Shell/actions/workflows/account-sync.yml/dispatches" \
+                -d "{\"ref\":\"main\",\"inputs\":{\"action\":\"update\",\"username\":\"$uname\",\"payload\":\"$encoded\"}}" && \
+            echo "$profile" > "$AURORA_ACCOUNT_FILE" && \
+            echo "✅ Service linked and synced"
+            ;;
+
+        --whoami)
+            [ ! -f "$AURORA_ACCOUNT_FILE" ] && echo "Not logged in" && return
+            jq -r '"👤 \(.username) | plugins: \(.plugins | join(", ")) | linked: \(.linked | keys | join(", "))"' "$AURORA_ACCOUNT_FILE"
+            ;;
+
+        *)
+            echo "Usage: aurora --account <option>"
+            echo "  --create   Create a new Aurora account"
+            echo "  --login           Sign in to your account"
+            echo "  --login --fast    Sign in, apply config only (skip installations)"
+            echo "  --logout         Sign out and restore system to pre-login state"
+            echo "  --logout --fast  Sign out quickly (restore configs only, skip uninstalls)"
+            echo "  --link     Link a service (AWS, GitHub, OpenAI, Anthropic, Ollama)"
+            echo "  --whoami   Show current logged-in account"
+            ;;
+    esac
+}
+
+# Register logout cleanup on shell exit
+trap '_aurora_logout_cleanup' EXIT
 
 # --- VERSION CHECK ---
 REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
