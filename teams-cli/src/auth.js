@@ -1,59 +1,109 @@
-const { PublicClientApplication, InteractionRequiredAuthError } = require('@azure/msal-node');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const https = require('https');
+const { execSync } = require('child_process');
 
-const CLIENT_ID = '1950a258-227b-4e31-a9cf-717495945fc2'; // Microsoft public client ID
-const SCOPES = ['Chat.ReadWrite', 'ChannelMessage.Send', 'Team.ReadBasic.All', 'Presence.ReadWrite', 'Calendars.ReadWrite', 'offline_access', 'User.Read'];
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+const CLIENT_ID = '5a43bd46-d02c-4c3b-990b-4e515af86828'; // Aurora Teams CLI
+const TENANT = 'common';
+const SCOPES = 'https://graph.microsoft.com/.default offline_access';
 const TOKEN_FILE = path.join(require('os').homedir(), '.aurora-shell_files', 'teams-token.json');
 
-const msalConfig = {
-    auth: {
-        clientId: CLIENT_ID,
-        authority: 'https://login.microsoftonline.com/common'
-    },
-    cache: {
-        cachePlugin: {
-            beforeCacheAccess: async (ctx) => {
-                if (fs.existsSync(TOKEN_FILE)) {
-                    ctx.tokenCache.deserialize(fs.readFileSync(TOKEN_FILE, 'utf8'));
-                }
-            },
-            afterCacheAccess: async (ctx) => {
-                if (ctx.cacheHasChanged) {
-                    fs.mkdirSync(path.dirname(TOKEN_FILE), { recursive: true });
-                    fs.writeFileSync(TOKEN_FILE, ctx.tokenCache.serialize());
-                }
+async function post(url, body) {
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(body).toString()
+    });
+    return res.json();
+}
+
+async function getToken() {
+    // Try cached token
+    if (fs.existsSync(TOKEN_FILE)) {
+        const cached = JSON.parse(fs.readFileSync(TOKEN_FILE, 'utf8'));
+        if (cached.expires_at > Date.now()) return cached.access_token;
+        // Refresh
+        if (cached.refresh_token) {
+            const data = await post(`https://login.microsoftonline.com/${TENANT}/oauth2/v2.0/token`, {
+                client_id: CLIENT_ID,
+                grant_type: 'refresh_token',
+                refresh_token: cached.refresh_token,
+                scope: SCOPES
+            });
+            if (data.access_token) {
+                saveToken(data);
+                return data.access_token;
             }
         }
     }
-};
+    return null;
+}
 
-const pca = new PublicClientApplication(msalConfig);
+function saveToken(data) {
+    fs.mkdirSync(path.dirname(TOKEN_FILE), { recursive: true });
+    fs.writeFileSync(TOKEN_FILE, JSON.stringify({
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        expires_at: Date.now() + (data.expires_in * 1000)
+    }));
+}
 
-async function getToken() {
-    // Try silent first
-    const accounts = await pca.getAllAccounts();
-    if (accounts.length > 0) {
-        try {
-            const result = await pca.acquireTokenSilent({ scopes: SCOPES, account: accounts[0] });
-            return result.accessToken;
-        } catch (e) {
-            if (!(e instanceof InteractionRequiredAuthError)) throw e;
-        }
+async function login() {
+    // Step 1: Get device code
+    const deviceData = await post(`https://login.microsoftonline.com/${TENANT}/oauth2/v2.0/devicecode`, {
+        client_id: CLIENT_ID,
+        scope: SCOPES
+    });
+
+    if (!deviceData.user_code) {
+        throw new Error('Failed to get device code: ' + JSON.stringify(deviceData));
     }
 
-    // Device code flow
-    const result = await pca.acquireTokenByDeviceCode({
-        scopes: SCOPES,
-        deviceCodeCallback: (response) => {
-            console.log(chalk.cyan('\n🔐 Teams Login'));
-            console.log(chalk.white(`Go to: ${chalk.bold(response.verificationUri)}`));
-            console.log(chalk.white(`Enter code: ${chalk.bold.yellow(response.userCode)}`));
-            console.log(chalk.gray('Waiting for authentication...\n'));
+    console.log('DEBUG tenant:', TENANT);
+    console.log('DEBUG verification_uri:', deviceData.verification_uri);
+    console.log('DEBUG user_code:', deviceData.user_code);
+
+    const loginUrl = deviceData.verification_uri || 'https://login.microsoft.com/device';
+    console.log(chalk.cyan('\n🔐 Teams Login'));
+    console.log(chalk.white(`1. Open your browser and go to: ${chalk.bold.underline(loginUrl)}`));
+    console.log(chalk.white(`2. Enter this code: ${chalk.bold.yellow.bgBlack(' ' + deviceData.user_code + ' ')}`));
+    console.log(chalk.white(`3. Sign in with your Microsoft account`));
+    console.log(chalk.gray('\nWaiting for authentication...\n'));
+
+    // Step 2: Poll for token
+    const interval = Math.max((deviceData.interval || 5), 3) * 1000;
+    const expires = Date.now() + (deviceData.expires_in || 900) * 1000;
+    while (Date.now() < expires) {
+        await new Promise(r => setTimeout(r, interval));
+        const tokenData = await post(`https://login.microsoftonline.com/${TENANT}/oauth2/v2.0/token`, {
+            client_id: CLIENT_ID,
+            grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
+            device_code: deviceData.device_code
+        });
+        console.log('POLL:', JSON.stringify(tokenData).substring(0, 300));
+        if (tokenData.access_token) {
+            saveToken(tokenData);
+            return tokenData.access_token;
         }
-    });
-    return result.accessToken;
+        if (tokenData.error === 'authorization_declined' || tokenData.error === 'expired_token') {
+            throw new Error(tokenData.error);
+        }
+        if (tokenData.error && tokenData.error !== 'authorization_pending' && tokenData.error !== 'slow_down') {
+            throw new Error(`${tokenData.error}: ${tokenData.error_description}`);
+        }
+        process.stdout.write('.');
+        // authorization_pending - keep polling
+    }
+    throw new Error('Login timed out');
+}
+
+async function ensureToken() {
+    const token = await getToken();
+    if (token) return token;
+    return login();
 }
 
 async function logout() {
@@ -66,11 +116,11 @@ async function logout() {
 }
 
 async function whoami() {
-    const token = await getToken();
+    const token = await ensureToken();
     const res = await fetch('https://graph.microsoft.com/v1.0/me', {
         headers: { Authorization: `Bearer ${token}` }
     });
     return res.json();
 }
 
-module.exports = { getToken, logout, whoami };
+module.exports = { ensureToken, login, logout, whoami };

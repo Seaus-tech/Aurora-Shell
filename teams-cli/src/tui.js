@@ -1,5 +1,5 @@
 const blessed = require('blessed');
-const { getToken } = require('./auth');
+const { ensureToken: getToken } = require('./auth');
 
 async function graph(path, method = 'GET', body = null) {
     const token = await getToken();

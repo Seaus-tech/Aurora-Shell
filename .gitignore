@@ -1,3 +1,6 @@
 /dmgs
 .DS_Store
-Aurora-shell/Aurora-Shell.xcodeproj/project.xcworkspace/xcuserdata/YashB.xcuserdatad/UserInterfaceState.xcuserstate
+*.xcuserstate
+node_modules/
+package-lock.json
+.accounts_token

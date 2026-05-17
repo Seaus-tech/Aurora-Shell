@@ -21,7 +21,7 @@ Cross-Platform: Tailored experiences for both Mac and Windows environments.
    ```
 
 **Option 2: Download Theme Installer (.dmg)**
-1. Download the latest [AuroraShell.dmg](https://github.com/YashB-byte/aurora-shell-2/releases/latest)
+1. Download the latest [AuroraShell.dmg](https://github.com/Seaus-tech/Aurora-Shell-2/releases/latest)
 2. Open the .dmg file
 3. Open Terminal and run:
    ```bash
@@ -32,7 +32,7 @@ Cross-Platform: Tailored experiences for both Mac and Windows environments.
 
 **Option 2: Command Line Install**
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/YashB-Byte/Aurora-Shell/main/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.sh)
 ```
 
 🪟 For Windows (PowerShell 7+)
@@ -52,11 +52,11 @@ winget install Microsoft.PowerShell.Preview
 
 **Option 1: command line install**
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/YashB-Byte/Aurora-Shell/main/install.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.ps1'))
 ```
 
 **Option 2: download installer (.exe)**
-1. download [Aurora-Windows-Installer](https://github.com/YashB-byte/aurora-shell-2/releases/download/v2.0.0/aurora-app.exe)
+1. download [Aurora-Windows-Installer](https://github.com/Seaus-tech/Aurora-Shell-2/releases/download/v2.0.0/aurora-app.exe)
 
 📦 **Dependencies**
 
@@ -76,12 +76,12 @@ Windows: $PROFILE (usually located in Documents\PowerShell\Microsoft.PowerShell_
 
 To remove Aurora Shell on MacOS:
 ```bash
-curl -s https://raw.githubusercontent.com/YashB-byte/aurora-shell-2/main/uninstall.sh | bash
+curl -s https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell-2/main/uninstall.sh | bash
 ```
  
 or for windows:
 ```powershell
-Invoke-RestMethod -Uri "https://raw.githubusercontent.com/YashB-byte/aurora-shell-2/main/uninstall.ps1" | PowerShell -ExecutionPolicy Bypass -Command -
+Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell-2/main/uninstall.ps1" | PowerShell -ExecutionPolicy Bypass -Command -
 ```
 
 Example banners:
@@ -133,4 +133,10 @@ For lock:
      ║     AURORA-SHELL SECURITY TERMINAL     ║
      ╚════════════════════════════════════════╝
 [AUTH] Key: 
+```
+
+# sign up for the aurora-shell dev program to get updates on new releases, features, and exclusive content!
+
+```bash
+open "https://forms.cloud.microsoft/r/GYXq1H83eU"
 ```

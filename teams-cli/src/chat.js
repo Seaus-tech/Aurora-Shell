@@ -1,4 +1,4 @@
-const { getToken } = require('./auth');
+const { ensureToken: getToken } = require('./auth');
 const chalk = require('chalk');
 
 async function graph(path, method = 'GET', body = null) {

@@ -1,0 +1,55 @@
+name: Account Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'create | update'
+        required: true
+      username:
+        description: 'Username'
+        required: true
+      payload:
+        description: 'JSON account payload (base64 encoded)'
+        required: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        branch: [main, dev]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          token: ${{ secrets.AURORA_ACCOUNTS_TOKEN }}
+
+      - name: Apply account change
+        run: |
+          PAYLOAD=$(echo "${{ github.event.inputs.payload }}" | base64 -d)
+          USERNAME="${{ github.event.inputs.username }}"
+          ACTION="${{ github.event.inputs.action }}"
+
+          [ -f accounts.json ] || echo '{"accounts":{}}' > accounts.json
+
+          if [ "$ACTION" = "create" ]; then
+            EXISTS=$(jq -r ".accounts[\"$USERNAME\"] // empty" accounts.json)
+            if [ -n "$EXISTS" ]; then
+              echo "::error::Username '$USERNAME' already exists"
+              exit 1
+            fi
+          fi
+
+          jq --arg u "$USERNAME" --argjson p "$PAYLOAD" \
+            '.accounts[$u] = $p' accounts.json > tmp.json && mv tmp.json accounts.json
+
+      - name: Commit
+        run: |
+          git config user.name "aurora-accounts-bot"
+          git config user.email "bot@aurora-shell"
+          git add accounts.json
+          git diff --cached --quiet || git commit -m "accounts: ${{ github.event.inputs.action }} ${{ github.event.inputs.username }}"
+          git push

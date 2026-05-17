@@ -1,11 +1,33 @@
 #!/usr/bin/env node
 const { program } = require('commander');
 const chalk = require('chalk');
-const { logout, whoami } = require('./auth');
+const { ensureToken, login, logout, whoami } = require('./auth');
 const { listChats, sendChat, readChat } = require('./chat');
 const { listTeams, listChannels, sendChannel, readChannel, createTeam } = require('./teams');
 const { listMeetings, createMeeting, setStatus, getStatus } = require('./meetings');
 const { openChat } = require('./tui');
+
+const b = (s) => chalk.hex('#6264a7')(s);
+const lb = (s) => chalk.hex('#9ea2e8')(s);
+
+const LOGO = `
+  ${lb('⠀⠀⠀⠀⢀⣴⣾⣿⣿⣷⣦⡀⠀⠀⠀⠀')}
+  ${lb('⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀⠀')}
+  ${lb('⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀')}
+  ${lb('⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠀⠀')}  ${b('⠀⢀⣴⣾⣷⣦⡀')}
+  ${b('⠀⣀⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣀⠀')}  ${b('⠀⣾⣿⣿⣿⣿⣿⣷')}
+  ${b('⣾⣿⣿⣿')}${chalk.white('⣿⣿⣿⣿⣿⣿⣿⣿')}${b('⣿⣿⣷')} ${b('⣿⣿⣿⣿⣿⣿⣿⣿')}
+  ${b('⣿⣿⣿⣿')}${chalk.white('⣿⣿')}${chalk.bold.white(' T ')}${chalk.white('⣿⣿⣿⣿⣿')}${b('⣿⣿⣿')} ${b('⣿⣿⣿⣿⣿⣿⣿⣿')}
+  ${b('⣿⣿⣿⣿')}${chalk.white('⣿⣿⣿⣿⣿⣿⣿⣿')}${b('⣿⣿⣷')} ${b('⣿⣿⣿⣿⣿⣿⣿⣿')}
+  ${b('⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇')}  ${b('⠸⣿⣿⣿⣿⣿⣿⠇')}
+  ${b('⠀⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠋⠀')}  ${b('⠀⠙⠻⣿⣿⠟⠋')}
+
+  ${chalk.bold.hex('#6264a7')('Microsoft Teams CLI')} ${chalk.gray('v1.0.0 — Aurora Shell')}
+`;
+
+if (process.stdout.isTTY && !process.argv.includes('--no-logo')) {
+    console.log(LOGO);
+}
 
 const handle = (fn) => (...args) => fn(...args).catch(e => console.error(chalk.red('❌ ' + e.message)));
 
@@ -16,8 +38,8 @@ program
 
 // Auth
 program.command('login').description('Login to Microsoft Teams').action(handle(async () => {
-    const me = await whoami();
-    console.log(chalk.green(`✅ Logged in as ${me.displayName} (${me.mail || me.userPrincipalName})`));
+    const token = await login();
+    console.log(chalk.green(`✅ Logged in successfully!`));
 }));
 program.command('logout').description('Logout').action(handle(logout));
 program.command('whoami').description('Show current user').action(handle(async () => {

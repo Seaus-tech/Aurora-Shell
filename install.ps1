@@ -58,7 +58,7 @@ if (!(Test-Path $PACKAGES_FILE)) {
 {
   "packages": {
     "aurora-app": {
-      "url": "https://github.com/YashB-byte/Aurora-Shell/releases/latest/download/Aurora-Shell.dmg",
+      "url": "https://github.com/Seaus-tech/Aurora-Shell/releases/latest/download/Aurora-Shell.dmg",
       "type": "dmg",
       "description": "Aurora Shell Terminal App"
     },
@@ -191,7 +191,7 @@ function aurora {
         "--display" { Show-Aurora }
         "--sys" { Get-ComputerInfo | Select-Object CsName, WindowsVersion, OsArchitecture }
         "--update" { 
-            Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/YashB-byte/aurora-shell/$branch/install.ps1" -UseBasicParsing).Content
+            Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/install.ps1" -UseBasicParsing).Content
         }
         "--config" { notepad $HOME\.aurora-shell\aurora-shell_settings.ps1 }
         "--uninstall" { 
@@ -333,7 +333,7 @@ switch ($action) {
                 } -Force
                 $packages | ConvertTo-Json -Depth 10 | Out-File -FilePath $packagesFile -Encoding utf8
                 Write-Host "✅ Added $pkg locally" -ForegroundColor Green
-                $issueUrl = "https://github.com/YashB-byte/Aurora-Shell/issues/new?title=Package%20Request:%20$pkg&body=**Package%20Name:**%20$pkg%0A**URL:**%20$url%0A**Type:**%20$type%0A**Description:**%20$desc"
+                $issueUrl = "https://github.com/Seaus-tech/Aurora-Shell/issues/new?title=Package%20Request:%20$pkg&body=**Package%20Name:**%20$pkg%0A**URL:**%20$url%0A**Type:**%20$type%0A**Description:**%20$desc"
                 Start-Process $issueUrl
             }
         }
@@ -346,7 +346,7 @@ switch ($action) {
                 $packages.packages.PSObject.Properties.Remove($pkg)
                 $packages | ConvertTo-Json -Depth 10 | Out-File -FilePath $packagesFile -Encoding utf8
                 Write-Host "✅ Removed $pkg from local registry" -ForegroundColor Green
-                $issueUrl = "https://github.com/YashB-byte/Aurora-Shell/issues/new?title=Package%20Removal:%20$pkg"
+                $issueUrl = "https://github.com/Seaus-tech/Aurora-Shell/issues/new?title=Package%20Removal:%20$pkg"
                 Start-Process $issueUrl
             }
         }
@@ -373,7 +373,7 @@ if ($profileContent -notlike "*$INSTALL_PATH*") {
 }
 
 # --- SYNC AURORA-SHELL REPO ---
-$GIT_CLONE = "https://github.com/YashB-byte/aurora-shell.git"
+$GIT_CLONE = "https://github.com/Seaus-tech/Aurora-Shell.git"
 Write-Host "`n🌀 Checking Aurora-shell..." -ForegroundColor Cyan
 
 $FOUND_REPO = Get-ChildItem -Path $HOME -Recurse -Depth 10 -Filter ".git" -Directory -ErrorAction SilentlyContinue | ForEach-Object {
