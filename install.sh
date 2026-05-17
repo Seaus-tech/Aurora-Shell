@@ -155,7 +155,7 @@ EOF
                     -d "$_payload" \
                     "https://aurora-accounts.yash-behera.workers.dev/accounts" 2>/dev/null)
                 _err=$(echo "$_resp" | jq -r '.error // empty' 2>/dev/null)
-                [ -n "$_err" ] && echo "   ❌ $_err" || echo "   ✅ Account created! Login with: aurora --account --login"
+                [ -n "$_err" ] && echo "   ❌ $_err" || echo "   ✅ Account created! Login with: shell.aurora --account --login"
             fi
             ;;
     esac
@@ -336,7 +336,7 @@ shell.aurora() {
         *) echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account" ;;
     esac
 }
-alias aurora="shell.aurora"
+
 
 # --- SHELL PACKAGE MANAGER ---
 PACKAGES_FILE="$HOME/.aurora-shell_files/packages.json"
@@ -919,6 +919,8 @@ aurora_account() {
                 "$AURORA_WORKER_URL/accounts/login")
             local err=$(echo "$resp" | jq -r '.error // empty')
             [ -n "$err" ] && echo "❌ $err" && return 1
+            # Store hash locally for owner API calls (already hashed, safe on disk)
+            resp=$(echo "$resp" | jq --arg h "$hash" '. + {password_hash: $h}')
             _aurora_apply_profile "$resp" "$2"
             ;;
 
@@ -964,7 +966,20 @@ aurora_account() {
 
         --whoami)
             [ ! -f "$AURORA_ACCOUNT_FILE" ] && echo "Not logged in" && return
-            jq -r '"👤 \(.username) | plugins: \(.plugins | join(", ")) | linked: \(.linked | keys | join(", "))"' "$AURORA_ACCOUNT_FILE"
+            local owner_badge=$(jq -r 'if .is_owner then " 👑 OWNER" else "" end' "$AURORA_ACCOUNT_FILE")
+            jq -r '"👤 \(.username)\(.is_owner // false | if . then " 👑 OWNER" else "" end) | plugins: \(.plugins | join(", ")) | linked: \(.linked | keys | join(", "))"' "$AURORA_ACCOUNT_FILE"
+            ;;
+
+        --users)
+            [ ! -f "$AURORA_ACCOUNT_FILE" ] && echo "❌ Not logged in" && return 1
+            local uname=$(jq -r '.username' "$AURORA_ACCOUNT_FILE")
+            local hash=$(jq -r '.password_hash' "$AURORA_ACCOUNT_FILE" 2>/dev/null)
+            [ -z "$hash" ] && printf "🔐 Password: " && read -rs hash && hash=$(_aurora_hash "$hash") && echo ""
+            local resp=$(curl -sf -H "X-Username: $uname" -H "X-Password-Hash: $hash" \
+                "$AURORA_WORKER_URL/accounts")
+            local err=$(echo "$resp" | jq -r '.error // empty')
+            [ -n "$err" ] && echo "❌ $err (owner only)" && return 1
+            echo "$resp" | jq -r '.[] | "👤 \(.username)\(if .is_owner then " 👑" else "" end) | plugins: \(.plugins | join(", "))"'
             ;;
 
         *)
@@ -976,6 +991,7 @@ aurora_account() {
             echo "  --logout --fast  Sign out quickly (restore configs only, skip uninstalls)"
             echo "  --link     Link a service (AWS, GitHub, OpenAI, Anthropic, Ollama)"
             echo "  --whoami   Show current logged-in account"
+            echo "  --users    List all accounts (owner only)"
             ;;
     esac
 }
