@@ -350,9 +350,9 @@ if [ ! -f "$PACKAGES_FILE" ]; then
   "packages": {
     "Aurora.App": {
       "aliases": ["aurora-app"],
-      "url": "https://github.com/Seaus-tech/Aurora-Shell/releases/latest/download/Aurora-Shell.dmg",
+      "url": "https://github.com/Seaus-tech/Aurora-Shell/releases/latest/download/aurora-shell.mac.dmg",
       "type": "dmg",
-      "description": "Aurora Shell Terminal App"
+      "description": "Aurora Shell Terminal App for mac"
     },
     "Aurora.CLI": {
       "aliases": ["CLI"],
