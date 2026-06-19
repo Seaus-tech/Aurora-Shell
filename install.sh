@@ -11,10 +11,11 @@ REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
 VER="5.6.2"
 
-echo -e "removing old version" | lolcat
+echo -e "running as "$USER": rm -rf "$OLD_SHELL" | lolcat
 rm -rf "$OLD_SHELL"
+sed -i '' '/aurora-shell_files/d' ~/.zshrc
 
-echo -e "Making "$DATA_DIR" " | lolcat
+echo -e "running as "$USER": mkdir "$DATA_DIR" | lolcat
 mkdir -p "$DATA_DIR"
 [ -f "$THEME_FILE" ] && rm "$THEME_FILE"
 
@@ -331,7 +332,7 @@ shell.aurora() {
             ;;
         --config) open -a Xcode "$HOME/.aurora-shell_files/aurora-shell_settings" || ${EDITOR:-vi} "$HOME/.aurora-shell_files/aurora-shell_settings" ;;
         --lock) authenticate_user "MANUAL" && Show-Aurora ;;
-        --uninstall) rm -rf "$HOME/.aurora-shell_files" && sed -i '' '/aurora-shell_theme/d' ~/.zshrc ;;
+        --uninstall) rm -rf "$HOME/.aurora-shell_files" && rm -rf $HOME/Applications/Aurora-Shell.app && sed -i '' '/aurora-shell_files/d' ~/.zshrc ;;
         --account) aurora_account "$2" ;;
         *) echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account" ;;
     esac
@@ -1000,13 +1001,13 @@ aurora_account() {
 trap '_aurora_logout_cleanup' EXIT
 
 # --- VERSION CHECK ---
-REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
+echo "REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
 if [ -n "$REMOTE_VER" ] && [ "$REMOTE_VER" != "$AURORA_VER" ]; then
     echo ""
     echo -n "🔔 Aurora-Shell wants to update (v$AURORA_VER → v$REMOTE_VER) [y/N]: "
     read _upd
     [ "$_upd" = "y" ] || [ "$_upd" = "Y" ] && shell.aurora --update dev
-fi
+fi" >> ~/.zshrc
 EOF
 }
 
