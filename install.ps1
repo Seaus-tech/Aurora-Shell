@@ -8,12 +8,14 @@ $THEME_FILE  = "$DATA_DIR\aurora-shell_theme.ps1"
 $CONFIG_FILE = "$DATA_DIR\aurora-shell_settings.ps1"
 $GIT_CLONE   = "https://github.com/Seaus-tech/Aurora-Shell.git"
 
-Write-Host "running as ${env:USERNAME}: rm -rf $DATA_DIR" -ForegroundColor Yellow
+Write-Host "running as ${env:USERNAME}: if (Test-Path $DATA_DIR) { Remove-Item -Recurse -Force $DATA_DIR }
+if (Test-Path $PROFILE) {
+    (Get-Content $PROFILE) | Where-Object { $_ -notmatch 'aurora-shell_files' } | Set-Content $PROFILE" -ForegroundColor Yellow
 if (Test-Path $DATA_DIR) { Remove-Item -Recurse -Force $DATA_DIR }
 if (Test-Path $PROFILE) {
     (Get-Content $PROFILE) | Where-Object { $_ -notmatch 'aurora-shell_files' } | Set-Content $PROFILE
 }
-Write-Host "running as ${env:USERNAME}: mkdir $DATA_DIR" -ForegroundColor Yellow
+Write-Host "running as ${env:USERNAME}: New-Item -ItemType Directory -Path $DATA_DIR -Force | Out-Null" -ForegroundColor Yellow
 New-Item -ItemType Directory -Path $DATA_DIR -Force | Out-Null
 Write-Host "--- Aurora-Shell v$VER installer---" -ForegroundColor Cyan
 
