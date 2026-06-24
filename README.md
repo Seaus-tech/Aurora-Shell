@@ -45,6 +45,11 @@ winget install Microsoft.PowerShell.Preview
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.ps1'))
 ```
 
+if using on macos or linux pwsh use this command:
+```
+irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
+```
+
 **Option 2: download installer (.exe)**
 1. download [Aurora-Windows-Installer](https://github.com/Seaus-tech/Aurora-Shell-2/releases/download/v2.0.0/aurora-app.exe)
 
