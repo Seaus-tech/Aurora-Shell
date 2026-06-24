@@ -41,7 +41,7 @@ winget install Microsoft.PowerShell.Preview
 ```
 
 
-if using on macos or linux pwsh use this command:
+\*\*Option 1\*\*:
 ```powershell
 irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
 ```
