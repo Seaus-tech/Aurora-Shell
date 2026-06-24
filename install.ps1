@@ -1,4 +1,4 @@
-#v5.6.2
+# v5.6.2
 # Aurora-Shell v5.6.2 installer — PowerShell port
 # FIX: Sentinel Auth Visuals + Separator + CPU/Disk Telemetry
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -169,9 +169,9 @@ function Generate-Theme {
     & $a '    . "$HOME\.aurora-shell_files\aurora-shell_settings.ps1"'
     & $a '    $cols = $Host.UI.RawUI.WindowSize.Width'
     & $a '    if ($global:AURORA_HDR_MODE -eq "BLOCK") {'
-    & $a '        $content = " █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗  █████╗`n██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗██╔══██╗`n███████║██║   ██║██████╔╝██║   ██║██████╔╝███████║`n██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗██╔══██║`n██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║██║  ██║`n╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝`n      ███████╗██╗  ██╗███████╗██╗     ██╗`n      ██╔════╝██║  ██║██╔════╝██║     ██║`n      ███████╗███████║█████╗  ██║     ██║`n      ╚════██║██╔══██║██╔══╝  ██║     ██║`n      ███████║██║  ██║███████╗███████╗███████╗`n      ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"'
+    & $a '        $content = " █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗  █████╗`n██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗██╔══██╗`n███████║██║   ██║██████╔╝██║   ██║██████╔╝███████║`n██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗██╔══██║`n██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║██║  ██║`n╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝`n      ███████╗██╗  ██╗███████╗██╗     ██╗`n      ██╔════╝██║  ██║██╔════╝██║     ██║`n      ███████╗███████║█████╗  ██║     ██║`n      ╚════██║██╔══██║██╔══╝  ██║     ██║`n      ███████║██║  ██║███████╗███████╗███████╗`n      ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ | lolcat"'
     & $a '    } else {'
-    & $a '        $content = & figlet -f slant $global:AURORA_HDR_VAL 2>$null'
+    & $a '        $content = & figlet -f slant $global:AURORA_HDR_VAL | lolcat 2>$null'
     & $a '        if (-not $content) { $content = $global:AURORA_HDR_VAL }'
     & $a '    }'
     & $a '    $maxW = ($content -split "`n" | ForEach-Object { $_.Length } | Measure-Object -Maximum).Maximum'
