@@ -298,7 +298,7 @@ function Generate-Theme {
     & $a '    switch ($flag) {'
     & $a '        "--display"   { Show-Aurora }'
     & $a '        "--sys"       { (Get-CimInstance Win32_Processor).Name; Get-ComputerInfo | Select-Object OsName }'
-    & $a '        "--update"    { $b=if($arg2){$arg2}else{"main"}; irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$b/install.ps1" | iex }'
+    & $a '        "--update"    { $b=if($arg2){$arg2}else{"main"}; $t=[IO.Path]::GetTempFileName()+".ps1"; irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$b/install.ps1" -OutFile $t; & $t; Remove-Item $t }'
     & $a '        "--config"    { notepad "$HOME\.aurora-shell_files\aurora-shell_settings.ps1" }'
     & $a '        "--lock"      { Invoke-Auth; Show-Aurora }'
     & $a '        "--uninstall" { Remove-Item "$HOME\.aurora-shell_files" -Recurse -Force -ErrorAction SilentlyContinue; if(Test-Path $PROFILE){(Get-Content $PROFILE)|Where-Object{$_ -notmatch "aurora-shell_files"}|Set-Content $PROFILE} }'

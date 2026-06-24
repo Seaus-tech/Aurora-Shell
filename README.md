@@ -40,13 +40,9 @@ Or for PowerShell Preview:
 winget install Microsoft.PowerShell.Preview
 ```
 
-**Option 1: command line install**
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.ps1'))
-```
 
 if using on macos or linux pwsh use this command:
-```
+```powershell
 irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
 ```
 
