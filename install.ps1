@@ -1,3 +1,4 @@
+#v5.6.2
 # Aurora-Shell v5.6.2 installer — PowerShell port
 # FIX: Sentinel Auth Visuals + Separator + CPU/Disk Telemetry
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -28,11 +29,17 @@ function Read-PlainPassword([string]$prompt) {
 # ── sync env ─────────────────────────────────────────────────────────────────
 function Sync-Env {
     Write-Host "Syncing Environment..." -ForegroundColor Yellow -NoNewline
-    if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-        Write-Host "`nwinget not found — install App Installer from the Microsoft Store." -ForegroundColor Red; return
+    # figlet via npm (cross-platform)
+    if (-not (Get-Command figlet -ErrorAction SilentlyContinue)) {
+        if (Get-Command npm -ErrorAction SilentlyContinue) { npm install -g figlet-cli --silent 2>$null }
+        else { Write-Host "`n  figlet skipped (npm not found)" -ForegroundColor DarkGray }
     }
-    Write-Host " downloading extensions..." -ForegroundColor Yellow -NoNewline
-    winget install --id Figlet.Figlet -e --silent 2>$null
+    # lolcat via gem (Ruby) or npm fallback
+    if (-not (Get-Command lolcat -ErrorAction SilentlyContinue)) {
+        if (Get-Command gem -ErrorAction SilentlyContinue) { gem install lolcat 2>$null }
+        elseif (Get-Command npm -ErrorAction SilentlyContinue) { npm install -g lolcat --silent 2>$null }
+        else { Write-Host "`n  lolcat skipped (gem/npm not found)" -ForegroundColor DarkGray }
+    }
     Write-Host " READY" -ForegroundColor Green
 }
 
@@ -165,6 +172,7 @@ function Generate-Theme {
     & $a '        $content = " █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗  █████╗`n██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗██╔══██╗`n███████║██║   ██║██████╔╝██║   ██║██████╔╝███████║`n██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗██╔══██║`n██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║██║  ██║`n╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝`n      ███████╗██╗  ██╗███████╗██╗     ██╗`n      ██╔════╝██║  ██║██╔════╝██║     ██║`n      ███████╗███████║█████╗  ██║     ██║`n      ╚════██║██╔══██║██╔══╝  ██║     ██║`n      ███████║██║  ██║███████╗███████╗███████╗`n      ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"'
     & $a '    } else {'
     & $a '        $content = & figlet -f slant $global:AURORA_HDR_VAL 2>$null'
+    & $a '        if (-not $content) { $content = $global:AURORA_HDR_VAL }'
     & $a '    }'
     & $a '    $maxW = ($content -split "`n" | ForEach-Object { $_.Length } | Measure-Object -Maximum).Maximum'
     & $a '    $pad  = [math]::Max(0, [math]::Floor(($cols - $maxW) / 2))'
@@ -307,7 +315,7 @@ function Generate-Theme {
     & $a '    }'
     & $a '}'
     & $a ''
-    & $a '$REMOTE_VER = try { $raw = irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh"; if($raw -match "VER=`"([^`"]+)`""){$Matches[1]}else{$null} } catch { $null }'
+    & $a '$REMOTE_VER = try { $raw = irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1"; if($raw -match "VER=`"([^`"]+)`""){$Matches[1]}else{$null} } catch { $null }'
     & $a 'if ($REMOTE_VER -and $REMOTE_VER -ne $global:AURORA_VER) {'
     & $a '    $upd = Read-Host "Aurora-Shell update available ($global:AURORA_VER -> $REMOTE_VER) install? [y/N]"'
     & $a '    if ($upd -in "y","Y") { shell.aurora --update dev }'
