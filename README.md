@@ -17,7 +17,7 @@ Cross-Platform: Tailored experiences for both Mac and Windows environments.
 1. Download the latest Aurora-Shell.dmg
 2. Mount the DMG and install:
    ```bash
-   mkdir \~/Applications && unzip \~/downloads/Aurora-Shell.zip -d ~/Applications && xattr -d com.apple.quarantine ~/Applications/Aurora-Shell.app && open ~/Applications/Aurora-Shell.app
+   mkdir ~/Applications && unzip ~/downloads/Aurora-Shell.zip -d ~/Applications && xattr -d com.apple.quarantine ~/Applications/Aurora-Shell.app && open ~/Applications/Aurora-Shell.app
    ```
 
 **Option 2: Command Line Install**
