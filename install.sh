@@ -11,12 +11,12 @@ REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
 VER="5.6.2"
 
-echo "running as "$USER": rm -rf "$OLD_SHELL" | lolcat
+echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
 
 rm -rf "$OLD_SHELL"
 sed -i '' '/aurora-shell_files/d' ~/.zshrc
 
-echo "running as "$USER": mkdir "$DATA_DIR" | lolcat
+echo "running as $USER: mkdir $DATA_DIR" | lolcat
 
 mkdir -p "$DATA_DIR"
 [ -f "$THEME_FILE" ] && rm "$THEME_FILE"
