@@ -218,6 +218,14 @@ install_xcode_if_needed
 authenticate_user() {
     local target_pw="${1:-$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)}"
     [[ -z "$target_pw" ]] && return
+    # PIN timeout: auto-lock if last auth was > 10 min ago
+    local lock_file="$HOME/.aurora-shell_files/.last_auth"
+    if [[ -f "$lock_file" ]]; then
+        local last=$(cat "$lock_file" 2>/dev/null)
+        local now=$(date +%s)
+        local elapsed=$(( now - last ))
+        [[ $elapsed -lt 600 ]] && return
+    fi
     clear
     echo "           .---.
           /     \\
@@ -227,25 +235,23 @@ authenticate_user() {
      ╔════════════════════════════════════════╗
      ║     AURORA-SHELL SECURITY TERMINAL     ║
      ╚════════════════════════════════════════╝" | safe_lolcat
+    local attempts=0
     while true; do
         echo -ne "[AUTH] Key: " | safe_lolcat
-        if ! read -s in_pw; then
-            echo ""
-            echo "DENIED"
-            continue
-        fi
+        if ! read -s in_pw; then echo ""; echo "DENIED"; continue; fi
         echo ""
-
         if [[ "$in_pw" == "$target_pw" ]]; then
-            if [[ ! -o interactive ]]; then
-                trap INT
-                trap TSTP
-                trap QUIT
-            fi
+            date +%s > "$lock_file"
+            # Log login
+            echo "$(date '+%Y-%m-%d %H:%M:%S') — login OK" >> "$HOME/.aurora-shell_files/login_history.log"
+            if [[ ! -o interactive ]]; then trap INT; trap TSTP; trap QUIT; fi
             clear
             break
         else
-            echo "DENIED"
+            (( attempts++ ))
+            echo "DENIED ($attempts failed attempt$([ $attempts -gt 1 ] && echo 's'))"
+            echo "$(date '+%Y-%m-%d %H:%M:%S') — FAILED attempt $attempts" >> "$HOME/.aurora-shell_files/login_history.log"
+            [[ $attempts -ge 5 ]] && echo "🔒 Too many failed attempts. Exiting." | safe_lolcat && exit 1
         fi
     done
     local box_width=100
@@ -328,7 +334,57 @@ shell.aurora() {
         --lock) authenticate_user "MANUAL" && Show-Aurora ;;
         --uninstall) rm -rf "$HOME/.aurora-shell_files" && rm -rf $HOME/Applications/Aurora-Shell.app && sed -i '' '/aurora-shell_files/d' ~/.zshrc ;;
         --account) aurora_account "$2" ;;
-        *) echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account" ;;
+        --motd)
+            local motd=$(curl -sf --max-time 5 "https://zenquotes.io/api/today" 2>/dev/null | jq -r '.[0] | "\(.q) — \(.a)"' 2>/dev/null)
+            [ -n "$motd" ] && echo "$motd" | safe_lolcat || echo "No MOTD available."
+            ;;
+        --doctor)
+            echo "🩺 Aurora-Shell Doctor" | safe_lolcat
+            local ok=true
+            # PATH
+            echo "$PATH" | grep -q "$HOME/.aurora-shell_files/bin" || { echo "⚠ ~/.aurora-shell_files/bin not in PATH"; ok=false; }
+            # theme sourced
+            grep -q "aurora-shell_theme" "$HOME/.zshrc" 2>/dev/null || { echo "⚠ Theme not sourced in ~/.zshrc"; ok=false; }
+            # key tools
+            for cmd in jq curl git fzf figlet lolcat; do
+                command -v "$cmd" &>/dev/null && echo "✅ $cmd" || { echo "❌ $cmd missing — install with: brew install $cmd"; ok=false; }
+            done
+            # settings file
+            [ -f "$HOME/.aurora-shell_files/aurora-shell_settings" ] || { echo "❌ settings file missing — run installer"; ok=false; }
+            $ok && echo "✅ All checks passed" | safe_lolcat
+            ;;
+        --sync)
+            [ ! -f "$HOME/.aurora-shell_files/active_account.json" ] && echo "❌ Not logged in" && return 1
+            local uname=$(jq -r '.username' "$HOME/.aurora-shell_files/active_account.json")
+            local hash=$(jq -r '.password_hash' "$HOME/.aurora-shell_files/active_account.json")
+            local aliases=$(alias 2>/dev/null | head -50 | base64 2>/dev/null || echo "")
+            local payload=$(jq -n --arg a "$aliases" --arg h "$hash" '{password_hash:$h,aliases:$a}')
+            curl -sf -X PATCH -H "Content-Type: application/json" -d "$payload" \
+                "https://aurora-accounts.yash-behera.workers.dev/accounts/$uname" >/dev/null 2>&1 \
+                && echo "✅ Synced to Aurora account" || echo "❌ Sync failed"
+            ;;
+        --history)
+            if command -v fzf &>/dev/null; then
+                local cmd=$(fc -l 1 | fzf --tac --no-sort --prompt="🔍 history> " | sed 's/^ *[0-9]* *//')
+                [ -n "$cmd" ] && print -z "$cmd"
+            else
+                echo "❌ fzf not installed — run: brew install fzf"
+            fi
+            ;;
+        --run)
+            if [ -f "package.json" ]; then npm start
+            elif [ -f "Cargo.toml" ]; then cargo run
+            elif [ -f "go.mod" ]; then go run .
+            elif [ -f "manage.py" ]; then python3 manage.py runserver
+            elif [ -f "requirements.txt" ] && ls *.py &>/dev/null; then python3 $(ls *.py | head -1)
+            elif [ -f "Makefile" ]; then make
+            elif [ -f "pom.xml" ]; then mvn spring-boot:run
+            elif [ -f "build.gradle" ]; then ./gradlew bootRun
+            else echo "❌ No recognisable project type in $(pwd)"; fi
+            ;;
+        *)
+            echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account, --motd, --doctor, --sync, --history, --run"
+            ;;
     esac
 }
 
@@ -635,8 +691,19 @@ CLIEOF
             rm -rf ~/Applications/"$2.app" /Applications/"$2.app"
             echo "✅ Uninstalled $2"
             ;;
+        update)
+            echo "🔄 Updating brew packages..." | safe_lolcat
+            brew upgrade 2>/dev/null
+            echo "🔄 Updating npm globals..." | safe_lolcat
+            npm update -g 2>/dev/null
+            echo "✅ All packages updated" | safe_lolcat
+            ;;
+        outdated)
+            echo "📋 Brew outdated:" && brew outdated 2>/dev/null
+            echo "📋 npm outdated:" && npm outdated -g 2>/dev/null
+            ;;
         *)
-            echo "Usage: shell install|search|list|add|remove|uninstall"
+            echo "Usage: shell install|search|list|add|remove|uninstall|update|outdated"
             echo ""
             echo "Commands:"
             echo "  install <pkg>   - Install a package"
@@ -645,6 +712,8 @@ CLIEOF
             echo "  list            - List installed packages"
             echo "  add <name> <url> [type] [desc] - Submit package for approval"
             echo "  remove <pkg> [reason] - Request package removal (local + online)"
+            echo "  update          - Update all installed brew/npm packages"
+            echo "  outdated        - Show packages with available updates"
             ;;
     esac
 }
@@ -662,6 +731,24 @@ rainbow_prompt() {
 
 authenticate_user
 Show-Aurora
+
+# --- MOTD ---
+_motd=$(curl -sf --max-time 2 "https://zenquotes.io/api/today" 2>/dev/null | jq -r '.[0] | "\(.q) — \(.a)"' 2>/dev/null)
+[ -n "$_motd" ] && echo "$_motd" | safe_lolcat
+
+# --- AUTO-SETUP ZSH PLUGINS ---
+_setup_zsh_plugins() {
+    local zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+    if [ -d "$HOME/.oh-my-zsh" ]; then
+        [ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ] && \
+            git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions" &>/dev/null
+        [ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ] && \
+            git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_custom/plugins/zsh-syntax-highlighting" &>/dev/null
+        grep -q "zsh-autosuggestions" "$HOME/.zshrc" 2>/dev/null || \
+            sed -i '' 's/^plugins=(\(.*\))/plugins=(\1 zsh-autosuggestions zsh-syntax-highlighting)/' "$HOME/.zshrc" 2>/dev/null
+    fi
+}
+_setup_zsh_plugins
 
 # --- ACCOUNTS SYSTEM ---
 AURORA_WORKER_URL="https://aurora-accounts.yash-behera.workers.dev"
@@ -977,16 +1064,34 @@ aurora_account() {
             echo "$resp" | jq -r '.[] | "👤 \(.username)\(if .is_owner then " 👑" else "" end) | plugins: \(.plugins | join(", "))"'
             ;;
 
+        --audit)
+            local log="$HOME/.aurora-shell_files/login_history.log"
+            [ -f "$log" ] && cat "$log" | tail -20 | safe_lolcat || echo "No login history found."
+            ;;
+        --switch)
+            [ -z "$2" ] && echo "Usage: aurora_account --switch <username>" && return 1
+            _aurora_logout_cleanup --fast 2>/dev/null
+            printf "🔐 Password for $2: "; read -rs pw; echo ""
+            local hash=$(_aurora_hash "$pw")
+            local resp=$(curl -sf -X POST -H "Content-Type: application/json" \
+                -d "{\"username\":\"$2\",\"password_hash\":\"$hash\"}" \
+                "$AURORA_WORKER_URL/accounts/login")
+            local err=$(echo "$resp" | jq -r '.error // empty')
+            [ -n "$err" ] && echo "❌ $err" && return 1
+            resp=$(echo "$resp" | jq --arg h "$hash" '. + {password_hash: $h}')
+            _aurora_apply_profile "$resp" --fast
+            ;;
         *)
-            echo "Usage: aurora --account <option>"
             echo "  --create   Create a new Aurora account"
             echo "  --login           Sign in to your account"
             echo "  --login --fast    Sign in, apply config only (skip installations)"
             echo "  --logout         Sign out and restore system to pre-login state"
             echo "  --logout --fast  Sign out quickly (restore configs only, skip uninstalls)"
-            echo "  --link     Link a service (AWS, GitHub, OpenAI, Anthropic, Ollama)"
-            echo "  --whoami   Show current logged-in account"
-            echo "  --users    List all accounts (owner only)"
+            echo "  --link            Link a service (AWS, GitHub, OpenAI, Anthropic, Ollama)"
+            echo "  --whoami          Show current logged-in account"
+            echo "  --users           List all accounts (owner only)"
+            echo "  --audit           Show login history"
+            echo "  --switch <user>   Switch to another account (fast)"
             ;;
     esac
 }
