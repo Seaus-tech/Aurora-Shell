@@ -1100,13 +1100,13 @@ aurora_account() {
 trap '_aurora_logout_cleanup' EXIT
 
 # --- VERSION CHECK ---
-echo "REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
+REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
 if [ -n "$REMOTE_VER" ] && [ "$REMOTE_VER" != "$AURORA_VER" ]; then
     echo ""
     echo -n "🔔 Aurora-Shell wants to update (v$AURORA_VER → v$REMOTE_VER) [y/N]: "
     read _upd
     [ "$_upd" = "y" ] || [ "$_upd" = "Y" ] && shell.aurora --update dev
-fi" >> ~/.zshrc
+fi
 EOF
 }
 
