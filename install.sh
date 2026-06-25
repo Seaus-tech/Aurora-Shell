@@ -38,7 +38,7 @@ sync_env() {
     fi
 
     echo -ne "\033[1;33m📥 downloading extensions... \033[0m"
-    brew install figlet lolcat pygments 2>/dev/null
+    brew install figlet lolcat pygments terminal-notifier 2>/dev/null
     echo -e "\033[1;32mREADY\033[0m"
 }
 
@@ -100,13 +100,17 @@ run_wizard() {
         security add-generic-password -a "$USER" -s "aurora-shell-pin" -w "$NEW_PW" -U 2>/dev/null
         echo "🔒 PIN stored securely in Keychain"
     fi
-    echo "🎨 1) Mega-Block 2) Custom Slant"
+    echo "🎨 Header style:"
+    echo "   1) Mega-Block  2) Slant  3) Banner  4) Big  5) Digital  6) Custom text"
     read -p "Selection: " choice < /dev/tty
-    if [ "$choice" == "2" ]; then 
-        HDR_MODE="CUSTOM"; read -p "✍️ Header Name: " HDR_VAL < /dev/tty
-    else 
-        HDR_MODE="BLOCK"; HDR_VAL="Aurora-Shell"
-    fi
+    case "$choice" in
+        2) HDR_MODE="CUSTOM"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="slant" ;;
+        3) HDR_MODE="CUSTOM"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="banner" ;;
+        4) HDR_MODE="CUSTOM"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="big" ;;
+        5) HDR_MODE="CUSTOM"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="digital" ;;
+        6) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="slant" ;;
+        *) HDR_MODE="BLOCK"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="" ;;
+    esac
 
     printf "🎂 Birthday (MMDD): "
     read BDAY
@@ -117,6 +121,7 @@ run_wizard() {
 AURORA_VER="$VER"
 AURORA_HDR_MODE="$HDR_MODE"
 AURORA_HDR_VAL="$HDR_VAL"
+AURORA_FIGLET_FONT="${FIGLET_FONT:-slant}"
 AURORA_USER_BDAY="${BDAY:-$AURORA_USER_BDAY}"
 AURORA_ID="${P_ID:-$AURORA_ID}"
 EOF
@@ -176,7 +181,15 @@ safe_lolcat() {
     if command -v lolcat &> /dev/null; then command lolcat; else cat; fi
 }
 
-# -- XCODE INSTALLER (macOS) --
+# -- HELPER: NOTIFY --
+notify() {
+    local title="${1:-Aurora-Shell}"
+    local msg="${2:-}"
+    local sound="${3:-}"
+    if command -v terminal-notifier &>/dev/null; then
+        terminal-notifier -title "$title" -message "$msg" ${sound:+-sound "$sound"} -appIcon "$HOME/.aurora-shell_files/aurora-shell_icon.png" 2>/dev/null &
+    fi
+}
 install_xcode_if_needed() {
     # Only attempt on macOS
     if [[ "$(uname)" != "Darwin" ]]; then
@@ -216,15 +229,22 @@ install_xcode_if_needed() {
 install_xcode_if_needed
 
 authenticate_user() {
-    local target_pw="${1:-$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)}"
+    local is_manual=0
+    local target_pw
+    if [[ "$1" == "MANUAL" ]]; then
+        is_manual=1
+        target_pw=$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)
+    else
+        target_pw="${1:-$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)}"
+    fi
     [[ -z "$target_pw" ]] && return
-    # PIN timeout: auto-lock if last auth was > 10 min ago
     local lock_file="$HOME/.aurora-shell_files/.last_auth"
-    if [[ -f "$lock_file" ]]; then
-        local last=$(cat "$lock_file" 2>/dev/null)
-        local now=$(date +%s)
-        local elapsed=$(( now - last ))
-        [[ $elapsed -lt 600 ]] && return
+    if [[ $is_manual -eq 0 ]]; then
+        if [[ -f "$lock_file" ]]; then
+            local last=$(cat "$lock_file" 2>/dev/null)
+            local now=$(date +%s)
+            [[ $(( now - last )) -lt 600 ]] && return
+        fi
     fi
     clear
     echo "           .---.
@@ -234,7 +254,7 @@ authenticate_user() {
            '---'
      ╔════════════════════════════════════════╗
      ║     AURORA-SHELL SECURITY TERMINAL     ║
-     ╚════════════════════════════════════════╝" | safe_lolcat
+     ╚════════════════════════════════════════╝" | lolcat -a -d 1
     local attempts=0
     while true; do
         echo -ne "[AUTH] Key: " | safe_lolcat
@@ -242,8 +262,8 @@ authenticate_user() {
         echo ""
         if [[ "$in_pw" == "$target_pw" ]]; then
             date +%s > "$lock_file"
-            # Log login
             echo "$(date '+%Y-%m-%d %H:%M:%S') — login OK" >> "$HOME/.aurora-shell_files/login_history.log"
+            notify "Aurora-Shell" "✅ Logged in as $AURORA_ID" "default"
             if [[ ! -o interactive ]]; then trap INT; trap TSTP; trap QUIT; fi
             clear
             break
@@ -251,7 +271,8 @@ authenticate_user() {
             (( attempts++ ))
             echo "DENIED ($attempts failed attempt$([ $attempts -gt 1 ] && echo 's'))"
             echo "$(date '+%Y-%m-%d %H:%M:%S') — FAILED attempt $attempts" >> "$HOME/.aurora-shell_files/login_history.log"
-            [[ $attempts -ge 5 ]] && echo "🔒 Too many failed attempts. Exiting." | safe_lolcat && exit 1
+            notify "Aurora-Shell 🔒" "Failed PIN attempt #$attempts" "Basso"
+            [[ $attempts -ge 5 ]] && echo "🔒 Too many failed attempts. Exiting." | safe_lolcat && notify "Aurora-Shell 🔒" "Locked out after 5 failed attempts" "Sosumi" && exit 1
         fi
     done
     local box_width=100
@@ -291,7 +312,7 @@ Show-Aurora() {
       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 "
     else
-        content=$(figlet -f slant "$AURORA_HDR_VAL")
+        content=$(figlet -f "${AURORA_FIGLET_FONT:-slant}" "$AURORA_HDR_VAL")
     fi
 
     # Centering Header
@@ -304,7 +325,7 @@ Show-Aurora() {
 
     while IFS= read -r line; do
         printf "%${pad}s%s\n" "" "$line"
-    done <<< "$content" | safe_lolcat
+    done <<< "$content" | lolcat -a -d 1
 
     # --- TELEMETRY ---
     local cpu_load=$(top -l 1 | grep "CPU usage" | awk '{print $3}' | sed 's/%//')
@@ -319,7 +340,7 @@ Show-Aurora() {
     # --- THE SEPARATOR DASH LINE ---
     local line_str=""
     for ((i=1; i<=$cols; i++)); do line_str+="-"; done
-    echo "$line_str" | safe_lolcat
+    echo "$line_str" | lolcat -a -d 1
 }
 
 shell.aurora() {
@@ -328,10 +349,55 @@ shell.aurora() {
         --sys) sw_vers && sysctl -n machdep.cpu.brand_string ;;
         --update)
             local branch="${2:-main}"
+            # fetch remote version
+            local remote_ver=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
+            if [[ -z "$remote_ver" ]]; then
+                echo "❌ Could not reach update server." | safe_lolcat; return 1
+            fi
+            # TUI update screen
+            clear
+            local cols=$(tput cols)
+            local line_str=$(printf '─%.0s' $(seq 1 $cols))
+            echo "$line_str" | safe_lolcat
+            printf "\n"
+            printf "%*s\n" $(( (cols + 24) / 2 )) "🔄 AURORA-SHELL UPDATE CHECK" | safe_lolcat
+            printf "\n"
+            printf "  %-20s %s\n" "Installed version:" "v$AURORA_VER"
+            printf "  %-20s %s\n" "Available version:" "v$remote_ver"
+            printf "\n"
+            if [[ "$remote_ver" == "$AURORA_VER" ]]; then
+                printf "  ✅ Already up to date.\n" | safe_lolcat
+                printf "\n"; echo "$line_str" | safe_lolcat; return 0
+            fi
+            printf "  ⬆  Update available: v$AURORA_VER → v$remote_ver\n" | lolcat -a -d 1
+            printf "\n"; echo "$line_str" | safe_lolcat; printf "\n"
+            # account password gate
+            if [[ -f "$HOME/.aurora-shell_files/active_account.json" ]]; then
+                local acct_user=$(jq -r '.username' "$HOME/.aurora-shell_files/active_account.json")
+                printf "  🔐 Account password for %s: " "$acct_user"
+                read -rs _upd_pw; echo ""
+                local _upd_hash=$(echo -n "$_upd_pw" | shasum -a 256 | awk '{print $1}')
+                local _upd_check=$(curl -sf -X POST -H "Content-Type: application/json" \
+                    -d "{\"username\":\"$acct_user\",\"password_hash\":\"$_upd_hash\"}" \
+                    "https://aurora-accounts.yash-behera.workers.dev/accounts/login" 2>/dev/null | jq -r '.username // empty')
+                if [[ -z "$_upd_check" ]]; then
+                    echo "  ❌ Incorrect password — update cancelled." | safe_lolcat
+                notify "Aurora-Shell 🔒" "Update cancelled — wrong password" "Basso"
+                return 1
+                fi
+            else
+                printf "  ⚠  No account logged in. Continue anyway? (y/N): "
+                read _yn; [[ "$_yn" != "y" && "$_yn" != "Y" ]] && echo "  Cancelled." && return 0
+            fi
+            printf "\n  ⬇  Installing update...\n" | safe_lolcat
+            notify "Aurora-Shell" "⬇ Installing update v$remote_ver..." "Ping"
             bash <(curl -s "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/install.sh")
             ;;
         --config) open -a Xcode "$HOME/.aurora-shell_files/aurora-shell_settings" || ${EDITOR:-vi} "$HOME/.aurora-shell_files/aurora-shell_settings" ;;
-        --lock) authenticate_user "MANUAL" && Show-Aurora ;;
+        --lock)
+            local _pin=$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)
+            authenticate_user "MANUAL" && Show-Aurora
+            ;;
         --uninstall) rm -rf "$HOME/.aurora-shell_files" && rm -rf $HOME/Applications/Aurora-Shell.app && sed -i '' '/aurora-shell_files/d' ~/.zshrc ;;
         --account) aurora_account "$2" ;;
         --motd)
@@ -351,7 +417,8 @@ shell.aurora() {
             done
             # settings file
             [ -f "$HOME/.aurora-shell_files/aurora-shell_settings" ] || { echo "❌ settings file missing — run installer"; ok=false; }
-            $ok && echo "✅ All checks passed" | safe_lolcat
+            $ok && echo "✅ All checks passed" | safe_lolcat && notify "Aurora-Shell" "✅ Doctor: all checks passed"
+            $ok || notify "Aurora-Shell ⚠️" "Doctor found issues — check your terminal" "Basso"
             ;;
         --sync)
             [ ! -f "$HOME/.aurora-shell_files/active_account.json" ] && echo "❌ Not logged in" && return 1
@@ -1103,9 +1170,8 @@ trap '_aurora_logout_cleanup' EXIT
 REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
 if [ -n "$REMOTE_VER" ] && [ "$REMOTE_VER" != "$AURORA_VER" ]; then
     echo ""
-    echo -n "🔔 Aurora-Shell wants to update (v$AURORA_VER → v$REMOTE_VER) [y/N]: "
-    read _upd
-    [ "$_upd" = "y" ] || [ "$_upd" = "Y" ] && shell.aurora --update dev
+    echo "🔔 Aurora-Shell update available (v$AURORA_VER → v$REMOTE_VER) — run: shell.aurora --update" | safe_lolcat
+    notify "Aurora-Shell" "Update available: v$AURORA_VER → v$REMOTE_VER" "Ping"
 fi
 EOF
 }
