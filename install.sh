@@ -249,7 +249,7 @@ authenticate_user() {
         fi
     done
     local box_width=100
-    local label="Logged in as $AURORA_HDR_VAL"
+    local label="Logged in as $AURORA_ID"
     local inner_width=$(( box_width - 2 ))
     local label_len=${#label}
     local total_pad=$(( inner_width - label_len ))
@@ -259,15 +259,7 @@ authenticate_user() {
     local empty="│$(printf ' %.0s' $(seq 1 $inner_width))│"
     local mid="│$(printf ' %.0s' $(seq 1 $pad_left))${label}$(printf ' %.0s' $(seq 1 $pad_right))│"
     local bot="╰$(printf '─%.0s' $(seq 1 $inner_width))╯"
-    echo "$top"
-    echo "$empty"
-    echo "$empty"
-    echo "$empty"
-    echo "$mid"
-    echo "$empty"
-    echo "$empty"
-    echo "$empty"
-    echo "$bot"
+    printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" "$top" "$empty" "$empty" "$empty" "$mid" "$empty" "$empty" "$empty" "$bot" | safe_lolcat
 
 }
 
