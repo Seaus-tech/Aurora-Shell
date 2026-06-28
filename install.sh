@@ -1,6 +1,6 @@
 #!/bin/bash
-SHELL_VER="--- Aurora-Shell v5.6.2 installer---"
-# FIX: Sentinel Auth Visuals + Separator + CPU/Disk Telemetry
+SHELL_VER="--- Aurora-Shell v5.7.0 installer---"
+# MAJOR UPDATE: MORE FLAGS ON SHELL.AURORA. MORE HEADER CUSTOMIZATIONS. small improvements
 
 # --- PATH CONFIGURATION ---
 OLD_SHELL="$HOME/.aurora-shell_files"
@@ -9,7 +9,7 @@ THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-VER="5.6.2"
+VER="5.7.0"
 
 echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
 
@@ -187,7 +187,8 @@ notify() {
     local msg="${2:-}"
     local sound="${3:-}"
     if command -v terminal-notifier &>/dev/null; then
-        terminal-notifier -title "$title" -message "$msg" ${sound:+-sound "$sound"} -appIcon "$HOME/.aurora-shell_files/aurora-shell_icon.png" 2>/dev/null &
+        { terminal-notifier -title "$title" -message "$msg" ${sound:+-sound "$sound"} 2>/dev/null; } &>/dev/null &
+        disown
     fi
 }
 install_xcode_if_needed() {
@@ -263,7 +264,7 @@ authenticate_user() {
         if [[ "$in_pw" == "$target_pw" ]]; then
             date +%s > "$lock_file"
             echo "$(date '+%Y-%m-%d %H:%M:%S') — login OK" >> "$HOME/.aurora-shell_files/login_history.log"
-            notify "Aurora-Shell" "✅ Logged in as $AURORA_ID" "default"
+            notify "Aurora-Shell" "✅ Logged in as ${AURORA_ID:-$USER}" "default"
             if [[ ! -o interactive ]]; then trap INT; trap TSTP; trap QUIT; fi
             clear
             break
@@ -275,8 +276,9 @@ authenticate_user() {
             [[ $attempts -ge 5 ]] && echo "🔒 Too many failed attempts. Exiting." | safe_lolcat && notify "Aurora-Shell 🔒" "Locked out after 5 failed attempts" "Sosumi" && exit 1
         fi
     done
+    source "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
     local box_width=100
-    local label="Logged in as $AURORA_ID"
+    local label="Logged in as ${AURORA_ID:-$USER}"
     local inner_width=$(( box_width - 2 ))
     local label_len=${#label}
     local total_pad=$(( inner_width - label_len ))
@@ -312,7 +314,7 @@ Show-Aurora() {
       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 "
     else
-        content=$(figlet -f "${AURORA_FIGLET_FONT:-slant}" "$AURORA_HDR_VAL")
+        content=$(figlet -f "${AURORA_FIGLET_FONT:-slant}" "$AURORA_HDR_VAL" 2>/dev/null | sed '/^[[:space:]]*$/d')
     fi
 
     # Centering Header
