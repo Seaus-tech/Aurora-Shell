@@ -234,9 +234,9 @@ authenticate_user() {
     local target_pw
     if [[ "$1" == "MANUAL" ]]; then
         is_manual=1
-        target_pw=$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)
+        target_pw=$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null | tr -d '\n\r')
     else
-        target_pw="${1:-$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)}"
+        target_pw="${1:-$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null | tr -d '\n\r')}"
     fi
     [[ -z "$target_pw" ]] && return
     local lock_file="$HOME/.aurora-shell_files/.last_auth"
@@ -260,6 +260,7 @@ authenticate_user() {
     while true; do
         echo -ne "[AUTH] Key: " | safe_lolcat
         if ! read -s in_pw; then echo ""; echo "DENIED"; continue; fi
+        in_pw=$(echo "$in_pw" | tr -d '\n\r')
         echo ""
         if [[ "$in_pw" == "$target_pw" ]]; then
             date +%s > "$lock_file"
@@ -273,7 +274,7 @@ authenticate_user() {
             echo "DENIED ($attempts failed attempt$([ $attempts -gt 1 ] && echo 's'))"
             echo "$(date '+%Y-%m-%d %H:%M:%S') — FAILED attempt $attempts" >> "$HOME/.aurora-shell_files/login_history.log"
             notify "Aurora-Shell 🔒" "Failed PIN attempt #$attempts" "Basso"
-            [[ $attempts -ge 5 ]] && echo "🔒 Too many failed attempts. Exiting." | safe_lolcat && notify "Aurora-Shell 🔒" "Locked out after 5 failed attempts" "Sosumi" && exit 1
+            [[ $attempts -ge 5 ]] && echo "🔒 Too many failed attempts. Locking session." | safe_lolcat && notify "Aurora-Shell 🔒" "Locked out after 5 failed attempts" "Sosumi" && return 1
         fi
     done
     source "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
@@ -830,7 +831,7 @@ rainbow_prompt() {
   echo -n "$out"
 }
 
-authenticate_user
+authenticate_user || { echo "🔒 Session locked." | safe_lolcat; exit; }
 Show-Aurora
 
 # --- MOTD ---
