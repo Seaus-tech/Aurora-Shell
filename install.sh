@@ -1,5 +1,5 @@
 #!/bin/bash
-SHELL_VER="--- Aurora-Shell v5.7.1 installer---"
+SHELL_VER="--- Aurora-Shell v5.7.2 installer---"
 # MAJOR UPDATE: MORE FLAGS ON SHELL.AURORA. MORE HEADER CUSTOMIZATIONS. small improvements
 
 # --- PATH CONFIGURATION ---
@@ -9,7 +9,7 @@ THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-VER="5.7.1"
+VER="5.7.2"
 
 echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
 
@@ -405,7 +405,7 @@ shell.aurora() {
             fi
             printf "\n  ⬇  Installing update...\n" | safe_lolcat
             notify "Aurora-Shell" "⬇ Installing update v$remote_ver..." "Ping"
-            bash <(curl -s "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/install.sh")
+            bash <(curl -s "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/update.sh") "$branch"
             ;;
         --config) open -a Xcode "$HOME/.aurora-shell_files/aurora-shell_settings" || ${EDITOR:-vi} "$HOME/.aurora-shell_files/aurora-shell_settings" ;;
         --lock)
