@@ -2,7 +2,7 @@
 // wx — Aurora-Shell universal file converter / importer / exporter
 // Usage:
 //   wx --vert input.ext output.ext         convert file format
-//   wx --vert -r file.ext os:(MacOS|Linux|Windows)  re-platform binary/lib
+//   wx --vert --replatform file.ext os:(MacOS|Linux|Windows)  re-platform binary/lib
 //   wx --port -m file [dest]               import file
 //   wx -x file [dest]                      export file
 
@@ -297,7 +297,7 @@ ${c.bold}${c.cyan}wx${c.reset} — Aurora-Shell universal file tool
 
 ${c.bold}Usage:${c.reset}
   wx --vert <input> <output>                  Convert file format
-  wx --vert -r <file> os:<OS>                 Re-platform binary for target OS
+  wx --vert --replatform <file> os:<OS>                 Re-platform binary for target OS
   wx --port -m <file> [dest]                  Import a file
   wx -x <file> [dest]                         Export a file
 
@@ -306,14 +306,14 @@ ${c.bold}Supported formats:${c.reset}
   Image:  png, jpg, webp, gif, bmp, tiff  (requires: npm install -g sharp)
   Binary: dylib, so, dll, exe, lib        (re-platform only)
 
-${c.bold}OS targets for --vert -r:${c.reset}
+${c.bold}OS targets for --vert --replatform:${c.reset}
   MacOS, Linux, Windows
 
 ${c.bold}Examples:${c.reset}
   wx --vert data.json data.csv
   wx --vert data.yaml data.toml
   wx --vert image.png image.webp
-  wx --vert -r apt-get.dylib os:MacOS
+  wx --vert --replatform apt-get.dylib os:MacOS
   wx --port -m ~/Downloads/config.json ./config
   wx -x build/output.zip ~/Desktop
 `);
@@ -326,11 +326,11 @@ if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
     showHelp(); process.exit(0);
 }
 
-// wx --vert -r <file> os:<OS>
-if (args[0] === '--vert' && args[1] === '-r') {
+// wx --vert --replatform <file> os:<OS>
+if (args[0] === '--vert' && args[1] === '--replatform') {
     const file    = args[2];
     const osArg   = args[3];
-    if (!file || !osArg) fail('Usage: wx --vert -r <file> os:<OS>');
+    if (!file || !osArg) fail('Usage: wx --vert --replatform <file> os:<OS>');
     if (!osArg.startsWith('os:')) fail('OS must be specified as os:MacOS, os:Linux, or os:Windows');
     const target = osArg.replace('os:', '');
     if (!fs.existsSync(file)) fail(`File not found: ${file}`);

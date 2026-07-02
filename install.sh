@@ -551,10 +551,11 @@ shell() {
                     ;;
                 wx-installer)
                     echo "📦 Installing wx..."
-                    curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/wx.js" -o "$DATA_DIR/wx.js" 2>/dev/null || cp "$DATA_DIR/aurora-shell/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
-                    printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$INSTALLED_DIR/wx"
-                    chmod +x "$INSTALLED_DIR/wx"
-                    echo "✅ wx installed — run: wx --help"
+                    local _wxd="$HOME/.aurora-shell_files/wx.js"
+                    curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/wx.js" -o "$_wxd" 2>/dev/null ||                     curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/wx.js" -o "$_wxd" 2>/dev/null || true
+                    printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$HOME/.aurora-shell_files/bin/wx"
+                    chmod +x "$HOME/.aurora-shell_files/bin/wx"
+                    [ -f "$_wxd" ] && echo "✅ wx installed — run: wx --help" || echo "❌ Failed to download wx.js"
                     ;;
                 cli-installer)
                     echo "📦 Installing Aurora-Shell CLI..."
@@ -1213,7 +1214,6 @@ EOF
 
 # --- EXECUTE ---
 sync_env
-dev_tools_bootstrap
 run_wizard
 generate_theme
 
