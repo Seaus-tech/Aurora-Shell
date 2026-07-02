@@ -5,6 +5,7 @@ DATA_DIR="$HOME/.aurora-shell_files"
 THEME_FILE="$DATA_DIR/aurora-shell_theme"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
+mkdir -p "$DATA_DIR/bin" "$DATA_DIR/casks"
 
 safe_lolcat() { command -v lolcat &>/dev/null && command lolcat || cat; }
 notify() {
@@ -38,8 +39,9 @@ echo "⬇  Downloading latest scripts..." | safe_lolcat
 
 BRANCH="${1:-dev}"
 
-# update wx.js
+# update wx.js and ensure wrapper exists
 curl -sf "$REPO_BASE/$BRANCH/wx.js" -o "$DATA_DIR/wx.js" 2>/dev/null && echo "  ✅ wx.js" || echo "  ⚠  wx.js unchanged"
+[ -f "$DATA_DIR/wx.js" ] && printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$DATA_DIR/bin/wx" && chmod +x "$DATA_DIR/bin/wx"
 
 # update brew-progress.py and spinner.js
 curl -sf "$REPO_BASE/$BRANCH/brew-progress.py" -o "$DATA_DIR/brew-progress.py" 2>/dev/null && echo "  ✅ brew-progress.py" || true

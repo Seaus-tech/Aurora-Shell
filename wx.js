@@ -224,6 +224,9 @@ function replatform(inFile, targetOS) {
     if (!OS_SIGS[targetOS]) fail(`Unknown OS target: ${targetOS}. Use MacOS, Linux, or Windows.`);
 
     info(`Re-platforming ${inFile} for ${targetOS}`);
+    // copy execute permissions from original, always ensure +x
+    let mode = 0o755;
+    try { mode = fs.statSync(inFile).mode | 0o111; } catch {}
     const buf  = fs.readFileSync(inFile);
     const sig  = OS_SIGS[targetOS];
     const cur  = currentOS();
@@ -234,6 +237,7 @@ function replatform(inFile, targetOS) {
     // write re-platformed copy with target extension
     const outLib = path.join(dir, stem + sig.ext);
     fs.writeFileSync(outLib, buf);
+    fs.chmodSync(outLib, mode);
     info(`Wrote binary copy: ${outLib}`);
 
     // write wrapper stub

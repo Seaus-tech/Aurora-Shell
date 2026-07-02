@@ -473,7 +473,9 @@ shell.aurora() {
 # --- SHELL PACKAGE MANAGER ---
 PACKAGES_FILE="$HOME/.aurora-shell_files/packages.json"
 INSTALLED_DIR="$HOME/.aurora-shell_files/bin"
+CASKS_DIR="$HOME/.aurora-shell_files/casks"
 mkdir -p "$INSTALLED_DIR"
+mkdir -p "$CASKS_DIR"
 export PATH="$INSTALLED_DIR:$PATH"
 
 if [ ! -f "$PACKAGES_FILE" ]; then
@@ -534,10 +536,10 @@ shell() {
                     curl -L "$url" -o "$tmp"
                     hdiutil attach "$tmp" -quiet
                     local vol=$(ls /Volumes | grep -v Macintosh | head -1)
-                    cp -R "/Volumes/$vol"/*.app ~/Applications/ 2>/dev/null
+                    cp -R "/Volumes/$vol"/*.app "$CASKS_DIR/" 2>/dev/null
                     hdiutil detach "/Volumes/$vol" -quiet
                     rm "$tmp"
-                    echo "\033[32m✅ Installed to ~/Applications\033[0m"
+                    echo "\033[32m✅ Installed to $CASKS_DIR\033[0m"
                     ;;
                 binary)
                     curl -L "$url" -o "$INSTALLED_DIR/$pkg"
@@ -647,17 +649,23 @@ case "$1" in
         ;;
     list)
         echo "📋 Available CLI packages:"
-        jq -r '.packages | to_entries[] | "  \(.key) (\(.value.command)) - \(.value.description)"' "$CLI_PACKAGES_FILE" 2>/dev/null
+        echo ""
+        printf "%-20s %-25s %s\n" "Name" "ID" "Description"
+        printf "%-20s %-25s %s\n" "--------------------" "-------------------------" "--------------------"
+        jq -r '.packages | to_entries[] | [(.value.description | split(" - ")[0] | .[0:20]), .key, .value.description] | @tsv' "$CLI_PACKAGES_FILE" 2>/dev/null | \
+        while IFS=$'\t' read -r name id desc; do
+            printf "%-20s %-25s %s\n" "${name:0:20}" "${id:0:25}" "${desc:0:40}"
+        done
         ;;
     search)
         query=$(echo "$2" | tr '[:upper:]' '[:lower:]')
         echo "🔍 Searching CLI packages for: $2"
         echo ""
-        printf "%-25s %-25s %-10s %s\n" "Name" "ID" "Version" "Source"
-        printf "%-25s %-25s %-10s %s\n" "-------------------------" "-------------------------" "----------" "------"
-        jq -r ".packages | to_entries[] | select((.key | ascii_downcase | contains(\"$query\")) or (.value.aliases? // [] | map(. | contains(\"$query\")) | any)) | [(.value.description | split(\" - \")[0]), .key, .value.version // \"latest\", .value.source // \"aurora\"] | @tsv" "$CLI_PACKAGES_FILE" 2>/dev/null | \
-        while IFS=$'\t' read -r name id ver src; do
-            printf "%-25s %-25s %-10s %s\n" "$name" "$id" "$ver" "$src"
+        printf "%-20s %-25s %-10s %-10s %s\n" "Name" "ID" "Version" "Source" "Description"
+        printf "%-20s %-25s %-10s %-10s %s\n" "--------------------" "-------------------------" "----------" "----------" "--------------------"
+        jq -r ".packages | to_entries[] | select((.key | ascii_downcase | contains(\"$query\")) or (.value.aliases? // [] | map(. | contains(\"$query\")) | any)) | [(.value.description | split(\" - \")[0] | .[0:20]), .key, .value.version // \"latest\", .value.source // \"aurora\", .value.description] | @tsv" "$CLI_PACKAGES_FILE" 2>/dev/null | \
+        while IFS=$'\t' read -r name id ver src desc; do
+            printf "%-20s %-25s %-10s %-10s %s\n" "${name:0:20}" "${id:0:25}" "${ver:0:10}" "${src:0:10}" "${desc:0:40}"
         done
         ;;
     uninstall)
@@ -693,11 +701,11 @@ CLIEOF
             ;;
         search)
             echo ""
-            printf "%-25s %-25s %-10s %s\n" "Name" "ID" "Version" "Source"
-            printf "%-25s %-25s %-10s %s\n" "-------------------------" "-------------------------" "----------" "------"
-            jq -r ".packages | to_entries[] | [(.value.description | split(\" - \")[0]), .key, .value.version // \"latest\", .value.source // \"aurora\"] | @tsv" "$PACKAGES_FILE" 2>/dev/null | \
-            while IFS=$'\t' read -r name id ver src; do
-                printf "%-25s %-25s %-10s %s\n" "$name" "$id" "$ver" "$src"
+            printf "%-20s %-20s %-10s %-12s %s\n" "Name" "ID" "Version" "Source" "Description"
+            printf "%-20s %-20s %-10s %-12s %s\n" "--------------------" "--------------------" "----------" "------------" "--------------------"
+            jq -r ".packages | to_entries[] | [(.value.description | split(\" - \")[0] | .[0:20]), .key, .value.version // \"latest\", .value.source // \"aurora\", .value.description] | @tsv" "$PACKAGES_FILE" 2>/dev/null | \
+            while IFS=$'\t' read -r name id ver src desc; do
+                printf "%-20s %-20s %-10s %-12s %s\n" "${name:0:20}" "${id:0:20}" "${ver:0:10}" "${src:0:12}" "${desc:0:40}"
             done
             if [ -n "$2" ]; then
                 echo ""
@@ -1233,6 +1241,8 @@ if [ -n "$FOUND_REPO" ]; then
     cp "$FOUND_REPO/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
     cp "$FOUND_REPO/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
     cp "$FOUND_REPO/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
+    # ensure wx wrapper exists in bin
+    [ -f "$DATA_DIR/wx.js" ] && printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$DATA_DIR/bin/wx" && chmod +x "$DATA_DIR/bin/wx"
 else
     echo "⬇ No matching repo found — cloning fresh copy..."
     cd "$DATA_DIR"
@@ -1240,6 +1250,7 @@ else
     cp "$DATA_DIR/aurora-shell/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
     cp "$DATA_DIR/aurora-shell/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
     cp "$DATA_DIR/aurora-shell/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
+    [ -f "$DATA_DIR/wx.js" ] && printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$DATA_DIR/bin/wx" && chmod +x "$DATA_DIR/bin/wx"
 fi
 
 echo -e "\n\033[1;32m✅ v$VER Deployed.\033[0m"
