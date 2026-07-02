@@ -1,20 +1,22 @@
 #!/bin/bash
 # Aurora-Shell updater — replaces theme/scripts only, preserves all user data
-VER="5.7.2"
+BRANCH="${1:-dev}"
+REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
+
+# fetch real version from install.sh
+VER=$(curl -sf "$REPO_BASE/$BRANCH/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
+[ -z "$VER" ] && VER="unknown"
+
 DATA_DIR="$HOME/.aurora-shell_files"
 THEME_FILE="$DATA_DIR/aurora-shell_theme"
-GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 mkdir -p "$DATA_DIR/bin" "$DATA_DIR/casks"
-
-safe_lolcat() { command -v lolcat &>/dev/null && command lolcat || cat; }
 notify() {
     local title="${1:-Aurora-Shell}" msg="${2:-}" sound="${3:-}"
     command -v terminal-notifier &>/dev/null || return
     (terminal-notifier -title "$title" -message "$msg" ${sound:+-sound "$sound"} &>/dev/null) &>/dev/null
 }
 
-echo "⬆  Aurora-Shell Updater v$VER" | safe_lolcat
+safe_lolcat() { command -v lolcat &>/dev/null && command lolcat || cat; }
 echo ""
 
 # --- PRESERVE USER DATA ---
@@ -82,4 +84,4 @@ sed -i '' "s/^AURORA_VER=.*/AURORA_VER=\"$VER\"/" "$DATA_DIR/aurora-shell_settin
 echo ""
 echo "✅ Aurora-Shell updated to v$VER — all settings preserved." | safe_lolcat
 notify "Aurora-Shell" "Updated to v$VER" "Glass"
-echo "↺  Restart your terminal or run: source $THEME_FILE"
+echo "↺ Restart your terminal or run: source $THEME_FILE"
