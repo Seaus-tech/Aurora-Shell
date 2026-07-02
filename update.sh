@@ -86,4 +86,6 @@ sed -i '' "s/^AURORA_VER=.*/AURORA_VER=\"$VER\"/" "$DATA_DIR/aurora-shell_settin
 echo ""
 echo "✅ Aurora-Shell updated to v$VER — all settings preserved." | safe_lolcat
 notify "Aurora-Shell" "Updated to v$VER" "Glass"
-echo "↺ Restart your terminal or run: source $THEME_FILE"
+echo "↺ Restarting terminal to apply changes..." | safe_lolcat
+sleep 1
+exec "$SHELL" -l
