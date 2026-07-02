@@ -1,5 +1,5 @@
 #!/bin/bash
-SHELL_VER="--- Aurora-Shell v5.7.0 installer---"
+SHELL_VER="--- Aurora-Shell v5.7.1 installer---"
 # MAJOR UPDATE: MORE FLAGS ON SHELL.AURORA. MORE HEADER CUSTOMIZATIONS. small improvements
 
 # --- PATH CONFIGURATION ---
@@ -9,7 +9,7 @@ THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-VER="5.7.0"
+VER="5.7.1"
 
 echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
 
