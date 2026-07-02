@@ -101,14 +101,15 @@ run_wizard() {
         echo "🔒 PIN stored securely in Keychain"
     fi
     echo "🎨 Header style:"
-    echo "   1) Mega-Block  2) Slant  3) Banner  4) Big  5) Digital  6) Custom text"
+    echo "   1) Mega-Block  2) Slant  3) Doom  4) Banner  5) Big  6) Digital  7) Custom text"
     read -p "Selection: " choice < /dev/tty
     case "$choice" in
-        2) HDR_MODE="CUSTOM"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="slant" ;;
-        3) HDR_MODE="CUSTOM"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="banner" ;;
-        4) HDR_MODE="CUSTOM"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="big" ;;
-        5) HDR_MODE="CUSTOM"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="digital" ;;
-        6) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="slant" ;;
+        2) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="slant" ;;
+        3) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="doom" ;;
+        4) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="banner" ;;
+        5) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="big" ;;
+        6) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="digital" ;;
+        7) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="slant" ;;
         *) HDR_MODE="BLOCK"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="" ;;
     esac
 
@@ -314,7 +315,18 @@ Show-Aurora() {
       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 "
     else
-        content=$(figlet -f "${AURORA_FIGLET_FONT:-slant}" "$AURORA_HDR_VAL" 2>/dev/null | sed '/^[[:space:]]*$/d')
+        if [[ "${AURORA_FIGLET_FONT:-slant}" == "banner" ]]; then
+            # banner font is wide — render each word separately and stack
+            local word1=$(echo "$AURORA_HDR_VAL" | cut -d'-' -f1)
+            local word2=$(echo "$AURORA_HDR_VAL" | cut -d'-' -f2)
+            if [[ -n "$word2" ]]; then
+                content=$(figlet -f banner "$word1" 2>/dev/null)$'\n'$(figlet -f banner "$word2" 2>/dev/null)
+            else
+                content=$(figlet -f banner "$AURORA_HDR_VAL" 2>/dev/null)
+            fi
+        else
+            content=$(figlet -f "${AURORA_FIGLET_FONT:-slant}" "$AURORA_HDR_VAL" 2>/dev/null | sed '/^[[:space:]]*$/d')
+        fi
     fi
 
     # Centering Header
@@ -479,6 +491,12 @@ if [ ! -f "$PACKAGES_FILE" ]; then
       "url": "install-cli",
       "type": "cli-installer",
       "description": "Aurora-Shell CLI - Install CLI versions of apps"
+    },
+    "Aurora.wx": {
+      "aliases": ["wx"],
+      "url": "install-wx",
+      "type": "wx-installer",
+      "description": "wx — universal file converter, re-platformer, importer and exporter"
     }
   }
 }
@@ -528,6 +546,13 @@ shell() {
                     ;;
                 brew)
                     brew install "$pkg"
+                    ;;
+                wx-installer)
+                    echo "📦 Installing wx..."
+                    curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/wx.js" -o "$DATA_DIR/wx.js" 2>/dev/null || cp "$DATA_DIR/aurora-shell/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
+                    printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$INSTALLED_DIR/wx"
+                    chmod +x "$INSTALLED_DIR/wx"
+                    echo "✅ wx installed — run: wx --help"
                     ;;
                 cli-installer)
                     echo "📦 Installing Aurora-Shell CLI..."
@@ -1207,12 +1232,14 @@ if [ -n "$FOUND_REPO" ]; then
     git pull || true
     cp "$FOUND_REPO/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
     cp "$FOUND_REPO/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
+    cp "$FOUND_REPO/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
 else
     echo "⬇ No matching repo found — cloning fresh copy..."
     cd "$DATA_DIR"
     git clone "$GIT_CLONE" || true
     cp "$DATA_DIR/aurora-shell/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
     cp "$DATA_DIR/aurora-shell/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
+    cp "$DATA_DIR/aurora-shell/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
 fi
 
 echo -e "\n\033[1;32m✅ v$VER Deployed.\033[0m"
