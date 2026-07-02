@@ -17,6 +17,8 @@ notify() {
 }
 
 safe_lolcat() { command -v lolcat &>/dev/null && command lolcat || cat; }
+
+echo "⬆  Aurora-Shell Updater v$VER" | safe_lolcat
 echo ""
 
 # --- PRESERVE USER DATA ---
