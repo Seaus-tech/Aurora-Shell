@@ -21,6 +21,7 @@
       "layers" : [
         {
           "fill" : "automatic",
+          "hidden" : false,
           "image-name" : "Aurora-Shell.png",
           "name" : "Aurora-Shell"
         }
@@ -39,6 +40,9 @@
     "circles" : [
       "watchOS"
     ],
-    "squares" : "shared"
+    "squares" : [
+      "iOS",
+      "macOS"
+    ]
   }
 }

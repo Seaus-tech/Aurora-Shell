@@ -1,6 +1,5 @@
 #!/bin/bash
-SHELL_VER="--- Aurora-Shell v5.6.2 installer---"
-# FIX: Sentinel Auth Visuals + Separator + CPU/Disk Telemetry
+SHELL_VER="--- Aurora-Shell v5.7.7 installer---"
 
 # --- PATH CONFIGURATION ---
 OLD_SHELL="$HOME/.aurora-shell_files"
@@ -9,12 +8,15 @@ THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-VER="5.6.2"
+VER="5.7.7"
 
-echo -e "removing old version" | lolcat
+echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
+
 rm -rf "$OLD_SHELL"
+sed -i '' '/aurora-shell_files/d' ~/.zshrc
 
-echo -e "Making "$DATA_DIR" " | lolcat
+echo "running as $USER: mkdir $DATA_DIR" | lolcat
+
 mkdir -p "$DATA_DIR"
 [ -f "$THEME_FILE" ] && rm "$THEME_FILE"
 
@@ -35,13 +37,20 @@ sync_env() {
     fi
 
     echo -ne "\033[1;33m📥 downloading extensions... \033[0m"
-    brew install figlet lolcat pygments 2>/dev/null
+    brew install figlet lolcat pygments terminal-notifier 2>/dev/null
+    echo -e "\033[1;32mREADY\033[0m"
+}
+
+# --- INSTALL COMPONENTS ---
+install_com() {
+    echo -ne "\033[1;33m📥 downloading extensions... \033[0m"
+    brew install figlet lolcat pygments terminal-notifier 2>/dev/null
     echo -e "\033[1;32mREADY\033[0m"
 }
 
 # --- DEV TOOLS BOOTSTRAP (BASH 3.2 SAFE) ---
 dev_tools_bootstrap() {
-    echo -e "\n\033[1;36m--- DEV TOOLS SETUP (HYBRID MODE) ---\033[0m"
+    echo -e "\n\033[1;36m--- DEV TOOLS SETUP ---\033[0m"
 
     tools=(
         "Git:git"
@@ -97,13 +106,18 @@ run_wizard() {
         security add-generic-password -a "$USER" -s "aurora-shell-pin" -w "$NEW_PW" -U 2>/dev/null
         echo "🔒 PIN stored securely in Keychain"
     fi
-    echo "🎨 1) Mega-Block 2) Custom Slant"
+    echo "🎨 Header style:"
+    echo "   1) Mega-Block  2) Slant  3) Doom  4) Banner  5) Big  6) Digital  7) Custom text"
     read -p "Selection: " choice < /dev/tty
-    if [ "$choice" == "2" ]; then 
-        HDR_MODE="CUSTOM"; read -p "✍️ Header Name: " HDR_VAL < /dev/tty
-    else 
-        HDR_MODE="BLOCK"; HDR_VAL="Aurora-Shell"
-    fi
+    case "$choice" in
+        2) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="slant" ;;
+        3) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="doom" ;;
+        4) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="banner" ;;
+        5) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="big" ;;
+        6) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="digital" ;;
+        7) HDR_MODE="CUSTOM"; read -p "✍️  Header Name: " HDR_VAL < /dev/tty; FIGLET_FONT="slant" ;;
+        *) HDR_MODE="BLOCK"; HDR_VAL="Aurora-Shell"; FIGLET_FONT="" ;;
+    esac
 
     printf "🎂 Birthday (MMDD): "
     read BDAY
@@ -114,6 +128,7 @@ run_wizard() {
 AURORA_VER="$VER"
 AURORA_HDR_MODE="$HDR_MODE"
 AURORA_HDR_VAL="$HDR_VAL"
+AURORA_FIGLET_FONT="${FIGLET_FONT:-slant}"
 AURORA_USER_BDAY="${BDAY:-$AURORA_USER_BDAY}"
 AURORA_ID="${P_ID:-$AURORA_ID}"
 EOF
@@ -173,7 +188,16 @@ safe_lolcat() {
     if command -v lolcat &> /dev/null; then command lolcat; else cat; fi
 }
 
-# -- XCODE INSTALLER (macOS) --
+# -- HELPER: NOTIFY --
+notify() {
+    local title="${1:-Aurora-Shell}"
+    local msg="${2:-}"
+    local sound="${3:-}"
+    if command -v terminal-notifier &>/dev/null; then
+        { terminal-notifier -title "$title" -message "$msg" ${sound:+-sound "$sound"} 2>/dev/null; } &>/dev/null &
+        disown
+    fi
+}
 install_xcode_if_needed() {
     # Only attempt on macOS
     if [[ "$(uname)" != "Darwin" ]]; then
@@ -213,8 +237,23 @@ install_xcode_if_needed() {
 install_xcode_if_needed
 
 authenticate_user() {
-    local target_pw="${1:-$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)}"
+    local is_manual=0
+    local target_pw
+    if [[ "$1" == "MANUAL" ]]; then
+        is_manual=1
+        target_pw=$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null | tr -d '\n\r')
+    else
+        target_pw="${1:-$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null | tr -d '\n\r')}"
+    fi
     [[ -z "$target_pw" ]] && return
+    local lock_file="$HOME/.aurora-shell_files/.last_auth"
+    if [[ $is_manual -eq 0 ]]; then
+        if [[ -f "$lock_file" ]]; then
+            local last=$(cat "$lock_file" 2>/dev/null)
+            local now=$(date +%s)
+            [[ $(( now - last )) -lt 600 ]] && return
+        fi
+    fi
     clear
     echo "           .---.
           /     \\
@@ -223,30 +262,31 @@ authenticate_user() {
            '---'
      ╔════════════════════════════════════════╗
      ║     AURORA-SHELL SECURITY TERMINAL     ║
-     ╚════════════════════════════════════════╝" | safe_lolcat
+     ╚════════════════════════════════════════╝" | lolcat -a -d 1
+    local attempts=0
     while true; do
         echo -ne "[AUTH] Key: " | safe_lolcat
-        if ! read -s in_pw; then
-            echo ""
-            echo "DENIED"
-            continue
-        fi
+        if ! read -s in_pw; then echo ""; echo "DENIED"; continue; fi
+        in_pw=$(echo "$in_pw" | tr -d '\n\r')
         echo ""
-
         if [[ "$in_pw" == "$target_pw" ]]; then
-            if [[ ! -o interactive ]]; then
-                trap INT
-                trap TSTP
-                trap QUIT
-            fi
+            date +%s > "$lock_file"
+            echo "$(date '+%Y-%m-%d %H:%M:%S') — login OK" >> "$HOME/.aurora-shell_files/login_history.log"
+            notify "Aurora-Shell" "✅ Logged in as ${AURORA_ID:-$USER}" "default"
+            if [[ ! -o interactive ]]; then trap INT; trap TSTP; trap QUIT; fi
             clear
             break
         else
-            echo "DENIED"
+            (( attempts++ ))
+            echo "DENIED ($attempts failed attempt$([ $attempts -gt 1 ] && echo 's'))"
+            echo "$(date '+%Y-%m-%d %H:%M:%S') — FAILED attempt $attempts" >> "$HOME/.aurora-shell_files/login_history.log"
+            notify "Aurora-Shell 🔒" "Failed PIN attempt #$attempts" "Basso"
+            [[ $attempts -ge 5 ]] && echo "🔒 Too many failed attempts. Locking session." | safe_lolcat && notify "Aurora-Shell 🔒" "Locked out after 5 failed attempts" "Sosumi" && return 1
         fi
     done
+    source "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
     local box_width=100
-    local label="Logged in as $AURORA_HDR_VAL"
+    local label="Logged in as ${AURORA_ID:-$USER}"
     local inner_width=$(( box_width - 2 ))
     local label_len=${#label}
     local total_pad=$(( inner_width - label_len ))
@@ -256,15 +296,7 @@ authenticate_user() {
     local empty="│$(printf ' %.0s' $(seq 1 $inner_width))│"
     local mid="│$(printf ' %.0s' $(seq 1 $pad_left))${label}$(printf ' %.0s' $(seq 1 $pad_right))│"
     local bot="╰$(printf '─%.0s' $(seq 1 $inner_width))╯"
-    echo "$top"
-    echo "$empty"
-    echo "$empty"
-    echo "$empty"
-    echo "$mid"
-    echo "$empty"
-    echo "$empty"
-    echo "$empty"
-    echo "$bot"
+    printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" "$top" "$empty" "$empty" "$empty" "$mid" "$empty" "$empty" "$empty" "$bot" | safe_lolcat
 
 }
 
@@ -290,7 +322,18 @@ Show-Aurora() {
       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 "
     else
-        content=$(figlet -f slant "$AURORA_HDR_VAL")
+        if [[ "${AURORA_FIGLET_FONT:-slant}" == "banner" ]]; then
+            # banner font is wide — render each word separately and stack
+            local word1=$(echo "$AURORA_HDR_VAL" | cut -d'-' -f1)
+            local word2=$(echo "$AURORA_HDR_VAL" | cut -d'-' -f2)
+            if [[ -n "$word2" ]]; then
+                content=$(figlet -f banner "$word1" 2>/dev/null)$'\n'$(figlet -f banner "$word2" 2>/dev/null)
+            else
+                content=$(figlet -f banner "$AURORA_HDR_VAL" 2>/dev/null)
+            fi
+        else
+            content=$(figlet -f "${AURORA_FIGLET_FONT:-slant}" "$AURORA_HDR_VAL" 2>/dev/null | sed '/^[[:space:]]*$/d')
+        fi
     fi
 
     # Centering Header
@@ -303,7 +346,7 @@ Show-Aurora() {
 
     while IFS= read -r line; do
         printf "%${pad}s%s\n" "" "$line"
-    done <<< "$content" | safe_lolcat
+    done <<< "$content" | lolcat -a -d 1
 
     # --- TELEMETRY ---
     local cpu_load=$(top -l 1 | grep "CPU usage" | awk '{print $3}' | sed 's/%//')
@@ -318,7 +361,7 @@ Show-Aurora() {
     # --- THE SEPARATOR DASH LINE ---
     local line_str=""
     for ((i=1; i<=$cols; i++)); do line_str+="-"; done
-    echo "$line_str" | safe_lolcat
+    echo "$line_str" | lolcat -a -d 1
 }
 
 shell.aurora() {
@@ -327,13 +370,109 @@ shell.aurora() {
         --sys) sw_vers && sysctl -n machdep.cpu.brand_string ;;
         --update)
             local branch="${2:-main}"
-            bash <(curl -s "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/install.sh")
+            # fetch remote version
+            local remote_ver=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
+            if [[ -z "$remote_ver" ]]; then
+                echo "❌ Could not reach update server." | safe_lolcat; return 1
+            fi
+            # TUI update screen
+            clear
+            local cols=$(tput cols)
+            local line_str=$(printf '─%.0s' $(seq 1 $cols))
+            echo "$line_str" | safe_lolcat
+            printf "\n"
+            printf "%*s\n" $(( (cols + 24) / 2 )) "🔄 AURORA-SHELL UPDATE CHECK" | safe_lolcat
+            printf "\n"
+            printf "  %-20s %s\n" "Installed version:" "v$AURORA_VER"
+            printf "  %-20s %s\n" "Available version:" "v$remote_ver"
+            printf "\n"
+            if [[ "$remote_ver" == "$AURORA_VER" ]]; then
+                printf "  ✅ Already up to date.\n" | safe_lolcat
+                printf "\n"; echo "$line_str" | safe_lolcat; return 0
+            fi
+            printf "  ⬆  Update available: v$AURORA_VER → v$remote_ver\n" | lolcat -a -d 1
+            printf "\n"; echo "$line_str" | safe_lolcat; printf "\n"
+            # account password gate
+            if [[ -f "$HOME/.aurora-shell_files/active_account.json" ]]; then
+                local acct_user=$(jq -r '.username' "$HOME/.aurora-shell_files/active_account.json")
+                printf "  🔐 Account password for %s: " "$acct_user"
+                read -rs _upd_pw; echo ""
+                local _upd_hash=$(echo -n "$_upd_pw" | shasum -a 256 | awk '{print $1}')
+                local _upd_check=$(curl -sf -X POST -H "Content-Type: application/json" \
+                    -d "{\"username\":\"$acct_user\",\"password_hash\":\"$_upd_hash\"}" \
+                    "https://aurora-accounts.yash-behera.workers.dev/accounts/login" 2>/dev/null | jq -r '.username // empty')
+                if [[ -z "$_upd_check" ]]; then
+                    echo "  ❌ Incorrect password — update cancelled." | safe_lolcat
+                notify "Aurora-Shell 🔒" "Update cancelled — wrong password" "Basso"
+                return 1
+                fi
+            else
+                printf "  ⚠  No account logged in. Continue anyway? (y/N): "
+                read _yn; [[ "$_yn" != "y" && "$_yn" != "Y" ]] && echo "  Cancelled." && return 0
+            fi
+            printf "\n  ⬇  Installing update...\n" | safe_lolcat
+            notify "Aurora-Shell" "⬇ Installing update v$remote_ver..." "Ping"
+            bash <(curl -s "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/update.sh") "$branch"
             ;;
         --config) open -a Xcode "$HOME/.aurora-shell_files/aurora-shell_settings" || ${EDITOR:-vi} "$HOME/.aurora-shell_files/aurora-shell_settings" ;;
-        --lock) authenticate_user "MANUAL" && Show-Aurora ;;
-        --uninstall) rm -rf "$HOME/.aurora-shell_files" && sed -i '' '/aurora-shell_theme/d' ~/.zshrc ;;
+        --lock)
+            local _pin=$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)
+            authenticate_user "MANUAL" && Show-Aurora
+            ;;
+        --uninstall) rm -rf "$HOME/.aurora-shell_files" && rm -rf $HOME/Applications/Aurora-Shell.app && sed -i '' '/aurora-shell_files/d' ~/.zshrc ;;
         --account) aurora_account "$2" ;;
-        *) echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account" ;;
+        --motd)
+            local motd=$(curl -sf --max-time 5 "https://zenquotes.io/api/today" 2>/dev/null | jq -r '.[0] | "\(.q) — \(.a)"' 2>/dev/null)
+            [ -n "$motd" ] && echo "$motd" | safe_lolcat || echo "No MOTD available."
+            ;;
+        --doctor)
+            echo "🩺 Aurora-Shell Doctor" | safe_lolcat
+            local ok=true
+            # PATH
+            echo "$PATH" | grep -q "$HOME/.aurora-shell_files/bin" || { echo "⚠ ~/.aurora-shell_files/bin not in PATH"; ok=false; }
+            # theme sourced
+            grep -q "aurora-shell_theme" "$HOME/.zshrc" 2>/dev/null || { echo "⚠ Theme not sourced in ~/.zshrc"; ok=false; }
+            # key tools
+            for cmd in jq curl git fzf figlet lolcat; do
+                command -v "$cmd" &>/dev/null && echo "✅ $cmd" || { echo "❌ $cmd missing — install with: brew install $cmd"; ok=false; }
+            done
+            # settings file
+            [ -f "$HOME/.aurora-shell_files/aurora-shell_settings" ] || { echo "❌ settings file missing — run installer"; ok=false; }
+            $ok && echo "✅ All checks passed" | safe_lolcat && notify "Aurora-Shell" "✅ Doctor: all checks passed"
+            $ok || notify "Aurora-Shell ⚠️" "Doctor found issues — check your terminal" "Basso"
+            ;;
+        --sync)
+            [ ! -f "$HOME/.aurora-shell_files/active_account.json" ] && echo "❌ Not logged in" && return 1
+            local uname=$(jq -r '.username' "$HOME/.aurora-shell_files/active_account.json")
+            local hash=$(jq -r '.password_hash' "$HOME/.aurora-shell_files/active_account.json")
+            local aliases=$(alias 2>/dev/null | head -50 | base64 2>/dev/null || echo "")
+            local payload=$(jq -n --arg a "$aliases" --arg h "$hash" '{password_hash:$h,aliases:$a}')
+            curl -sf -X PATCH -H "Content-Type: application/json" -d "$payload" \
+                "https://aurora-accounts.yash-behera.workers.dev/accounts/$uname" >/dev/null 2>&1 \
+                && echo "✅ Synced to Aurora account" || echo "❌ Sync failed"
+            ;;
+        --history)
+            if command -v fzf &>/dev/null; then
+                local cmd=$(fc -l 1 | fzf --tac --no-sort --prompt="🔍 history> " | sed 's/^ *[0-9]* *//')
+                [ -n "$cmd" ] && print -z "$cmd"
+            else
+                echo "❌ fzf not installed — run: brew install fzf"
+            fi
+            ;;
+        --run)
+            if [ -f "package.json" ]; then npm start
+            elif [ -f "Cargo.toml" ]; then cargo run
+            elif [ -f "go.mod" ]; then go run .
+            elif [ -f "manage.py" ]; then python3 manage.py runserver
+            elif [ -f "requirements.txt" ] && ls *.py &>/dev/null; then python3 $(ls *.py | head -1)
+            elif [ -f "Makefile" ]; then make
+            elif [ -f "pom.xml" ]; then mvn spring-boot:run
+            elif [ -f "build.gradle" ]; then ./gradlew bootRun
+            else echo "❌ No recognisable project type in $(pwd)"; fi
+            ;;
+        *)
+            echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account, --motd, --doctor, --sync, --history, --run"
+            ;;
     esac
 }
 
@@ -341,7 +480,9 @@ shell.aurora() {
 # --- SHELL PACKAGE MANAGER ---
 PACKAGES_FILE="$HOME/.aurora-shell_files/packages.json"
 INSTALLED_DIR="$HOME/.aurora-shell_files/bin"
+CASKS_DIR="$HOME/.aurora-shell_files/casks"
 mkdir -p "$INSTALLED_DIR"
+mkdir -p "$CASKS_DIR"
 export PATH="$INSTALLED_DIR:$PATH"
 
 if [ ! -f "$PACKAGES_FILE" ]; then
@@ -350,15 +491,21 @@ if [ ! -f "$PACKAGES_FILE" ]; then
   "packages": {
     "Aurora.App": {
       "aliases": ["aurora-app"],
-      "url": "https://github.com/Seaus-tech/Aurora-Shell/releases/latest/download/Aurora-Shell.dmg",
+      "url": "https://github.com/Seaus-tech/Aurora-Shell/releases/latest/download/aurora-shell.mac.dmg",
       "type": "dmg",
-      "description": "Aurora Shell Terminal App"
+      "description": "Aurora Shell Terminal App for mac"
     },
     "Aurora.CLI": {
       "aliases": ["CLI"],
       "url": "install-cli",
       "type": "cli-installer",
       "description": "Aurora-Shell CLI - Install CLI versions of apps"
+    },
+    "Aurora.wx": {
+      "aliases": ["wx"],
+      "url": "install-wx",
+      "type": "wx-installer",
+      "description": "wx — universal file converter, re-platformer, importer and exporter"
     }
   }
 }
@@ -396,10 +543,10 @@ shell() {
                     curl -L "$url" -o "$tmp"
                     hdiutil attach "$tmp" -quiet
                     local vol=$(ls /Volumes | grep -v Macintosh | head -1)
-                    cp -R "/Volumes/$vol"/*.app ~/Applications/ 2>/dev/null
+                    cp -R "/Volumes/$vol"/*.app "$CASKS_DIR/" 2>/dev/null
                     hdiutil detach "/Volumes/$vol" -quiet
                     rm "$tmp"
-                    echo "\033[32m✅ Installed to ~/Applications\033[0m"
+                    echo "\033[32m✅ Installed to $CASKS_DIR\033[0m"
                     ;;
                 binary)
                     curl -L "$url" -o "$INSTALLED_DIR/$pkg"
@@ -408,6 +555,14 @@ shell() {
                     ;;
                 brew)
                     brew install "$pkg"
+                    ;;
+                wx-installer)
+                    echo "📦 Installing wx..."
+                    local _wxd="$HOME/.aurora-shell_files/wx.js"
+                    curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/wx.js" -o "$_wxd" 2>/dev/null ||                     curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/wx.js" -o "$_wxd" 2>/dev/null || true
+                    printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$HOME/.aurora-shell_files/bin/wx"
+                    chmod +x "$HOME/.aurora-shell_files/bin/wx"
+                    [ -f "$_wxd" ] && echo "✅ wx installed — run: wx --help" || echo "❌ Failed to download wx.js"
                     ;;
                 cli-installer)
                     echo "📦 Installing Aurora-Shell CLI..."
@@ -502,17 +657,23 @@ case "$1" in
         ;;
     list)
         echo "📋 Available CLI packages:"
-        jq -r '.packages | to_entries[] | "  \(.key) (\(.value.command)) - \(.value.description)"' "$CLI_PACKAGES_FILE" 2>/dev/null
+        echo ""
+        printf "%-20s %-25s %s\n" "Name" "ID" "Description"
+        printf "%-20s %-25s %s\n" "--------------------" "-------------------------" "--------------------"
+        jq -r '.packages | to_entries[] | [(.value.description | split(" - ")[0] | .[0:20]), .key, .value.description] | @tsv' "$CLI_PACKAGES_FILE" 2>/dev/null | \
+        while IFS=$'\t' read -r name id desc; do
+            printf "%-20s %-25s %s\n" "${name:0:20}" "${id:0:25}" "${desc:0:40}"
+        done
         ;;
     search)
         query=$(echo "$2" | tr '[:upper:]' '[:lower:]')
         echo "🔍 Searching CLI packages for: $2"
         echo ""
-        printf "%-25s %-25s %-10s %s\n" "Name" "ID" "Version" "Source"
-        printf "%-25s %-25s %-10s %s\n" "-------------------------" "-------------------------" "----------" "------"
-        jq -r ".packages | to_entries[] | select((.key | ascii_downcase | contains(\"$query\")) or (.value.aliases? // [] | map(. | contains(\"$query\")) | any)) | [(.value.description | split(\" - \")[0]), .key, .value.version // \"latest\", .value.source // \"aurora\"] | @tsv" "$CLI_PACKAGES_FILE" 2>/dev/null | \
-        while IFS=$'\t' read -r name id ver src; do
-            printf "%-25s %-25s %-10s %s\n" "$name" "$id" "$ver" "$src"
+        printf "%-20s %-25s %-10s %-10s %s\n" "Name" "ID" "Version" "Source" "Description"
+        printf "%-20s %-25s %-10s %-10s %s\n" "--------------------" "-------------------------" "----------" "----------" "--------------------"
+        jq -r ".packages | to_entries[] | select((.key | ascii_downcase | contains(\"$query\")) or (.value.aliases? // [] | map(. | contains(\"$query\")) | any)) | [(.value.description | split(\" - \")[0] | .[0:20]), .key, .value.version // \"latest\", .value.source // \"aurora\", .value.description] | @tsv" "$CLI_PACKAGES_FILE" 2>/dev/null | \
+        while IFS=$'\t' read -r name id ver src desc; do
+            printf "%-20s %-25s %-10s %-10s %s\n" "${name:0:20}" "${id:0:25}" "${ver:0:10}" "${src:0:10}" "${desc:0:40}"
         done
         ;;
     uninstall)
@@ -548,11 +709,11 @@ CLIEOF
             ;;
         search)
             echo ""
-            printf "%-25s %-25s %-10s %s\n" "Name" "ID" "Version" "Source"
-            printf "%-25s %-25s %-10s %s\n" "-------------------------" "-------------------------" "----------" "------"
-            jq -r ".packages | to_entries[] | [(.value.description | split(\" - \")[0]), .key, .value.version // \"latest\", .value.source // \"aurora\"] | @tsv" "$PACKAGES_FILE" 2>/dev/null | \
-            while IFS=$'\t' read -r name id ver src; do
-                printf "%-25s %-25s %-10s %s\n" "$name" "$id" "$ver" "$src"
+            printf "%-20s %-20s %-10s %-12s %s\n" "Name" "ID" "Version" "Source" "Description"
+            printf "%-20s %-20s %-10s %-12s %s\n" "--------------------" "--------------------" "----------" "------------" "--------------------"
+            jq -r ".packages | to_entries[] | [(.value.description | split(\" - \")[0] | .[0:20]), .key, .value.version // \"latest\", .value.source // \"aurora\", .value.description] | @tsv" "$PACKAGES_FILE" 2>/dev/null | \
+            while IFS=$'\t' read -r name id ver src desc; do
+                printf "%-20s %-20s %-10s %-12s %s\n" "${name:0:20}" "${id:0:20}" "${ver:0:10}" "${src:0:12}" "${desc:0:40}"
             done
             if [ -n "$2" ]; then
                 echo ""
@@ -640,8 +801,19 @@ CLIEOF
             rm -rf ~/Applications/"$2.app" /Applications/"$2.app"
             echo "✅ Uninstalled $2"
             ;;
+        update)
+            echo "🔄 Updating brew packages..." | safe_lolcat
+            brew upgrade 2>/dev/null
+            echo "🔄 Updating npm globals..." | safe_lolcat
+            npm update -g 2>/dev/null
+            echo "✅ All packages updated" | safe_lolcat
+            ;;
+        outdated)
+            echo "📋 Brew outdated:" && brew outdated 2>/dev/null
+            echo "📋 npm outdated:" && npm outdated -g 2>/dev/null
+            ;;
         *)
-            echo "Usage: shell install|search|list|add|remove|uninstall"
+            echo "Usage: shell install|search|list|add|remove|uninstall|update|outdated"
             echo ""
             echo "Commands:"
             echo "  install <pkg>   - Install a package"
@@ -650,6 +822,8 @@ CLIEOF
             echo "  list            - List installed packages"
             echo "  add <name> <url> [type] [desc] - Submit package for approval"
             echo "  remove <pkg> [reason] - Request package removal (local + online)"
+            echo "  update          - Update all installed brew/npm packages"
+            echo "  outdated        - Show packages with available updates"
             ;;
     esac
 }
@@ -665,8 +839,26 @@ rainbow_prompt() {
   echo -n "$out"
 }
 
-authenticate_user
+authenticate_user || { echo "🔒 Session locked." | safe_lolcat; exit; }
 Show-Aurora
+
+# --- MOTD ---
+_motd=$(curl -sf --max-time 2 "https://zenquotes.io/api/today" 2>/dev/null | jq -r '.[0] | "\(.q) — \(.a)"' 2>/dev/null)
+[ -n "$_motd" ] && echo "$_motd" | safe_lolcat
+
+# --- AUTO-SETUP ZSH PLUGINS ---
+_setup_zsh_plugins() {
+    local zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+    if [ -d "$HOME/.oh-my-zsh" ]; then
+        [ ! -d "$zsh_custom/plugins/zsh-autosuggestions" ] && \
+            git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$zsh_custom/plugins/zsh-autosuggestions" &>/dev/null
+        [ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ] && \
+            git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_custom/plugins/zsh-syntax-highlighting" &>/dev/null
+        grep -q "zsh-autosuggestions" "$HOME/.zshrc" 2>/dev/null || \
+            sed -i '' 's/^plugins=(\(.*\))/plugins=(\1 zsh-autosuggestions zsh-syntax-highlighting)/' "$HOME/.zshrc" 2>/dev/null
+    fi
+}
+_setup_zsh_plugins
 
 # --- ACCOUNTS SYSTEM ---
 AURORA_WORKER_URL="https://aurora-accounts.yash-behera.workers.dev"
@@ -982,16 +1174,34 @@ aurora_account() {
             echo "$resp" | jq -r '.[] | "👤 \(.username)\(if .is_owner then " 👑" else "" end) | plugins: \(.plugins | join(", "))"'
             ;;
 
+        --audit)
+            local log="$HOME/.aurora-shell_files/login_history.log"
+            [ -f "$log" ] && cat "$log" | tail -20 | safe_lolcat || echo "No login history found."
+            ;;
+        --switch)
+            [ -z "$2" ] && echo "Usage: aurora_account --switch <username>" && return 1
+            _aurora_logout_cleanup --fast 2>/dev/null
+            printf "🔐 Password for $2: "; read -rs pw; echo ""
+            local hash=$(_aurora_hash "$pw")
+            local resp=$(curl -sf -X POST -H "Content-Type: application/json" \
+                -d "{\"username\":\"$2\",\"password_hash\":\"$hash\"}" \
+                "$AURORA_WORKER_URL/accounts/login")
+            local err=$(echo "$resp" | jq -r '.error // empty')
+            [ -n "$err" ] && echo "❌ $err" && return 1
+            resp=$(echo "$resp" | jq --arg h "$hash" '. + {password_hash: $h}')
+            _aurora_apply_profile "$resp" --fast
+            ;;
         *)
-            echo "Usage: aurora --account <option>"
             echo "  --create   Create a new Aurora account"
             echo "  --login           Sign in to your account"
             echo "  --login --fast    Sign in, apply config only (skip installations)"
             echo "  --logout         Sign out and restore system to pre-login state"
             echo "  --logout --fast  Sign out quickly (restore configs only, skip uninstalls)"
-            echo "  --link     Link a service (AWS, GitHub, OpenAI, Anthropic, Ollama)"
-            echo "  --whoami   Show current logged-in account"
-            echo "  --users    List all accounts (owner only)"
+            echo "  --link            Link a service (AWS, GitHub, OpenAI, Anthropic, Ollama)"
+            echo "  --whoami          Show current logged-in account"
+            echo "  --users           List all accounts (owner only)"
+            echo "  --audit           Show login history"
+            echo "  --switch <user>   Switch to another account (fast)"
             ;;
     esac
 }
@@ -1003,16 +1213,15 @@ trap '_aurora_logout_cleanup' EXIT
 REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
 if [ -n "$REMOTE_VER" ] && [ "$REMOTE_VER" != "$AURORA_VER" ]; then
     echo ""
-    echo -n "🔔 Aurora-Shell wants to update (v$AURORA_VER → v$REMOTE_VER) [y/N]: "
-    read _upd
-    [ "$_upd" = "y" ] || [ "$_upd" = "Y" ] && shell.aurora --update dev
+    echo "🔔 Aurora-Shell update available (v$AURORA_VER → v$REMOTE_VER) — run: shell.aurora --update" | safe_lolcat
+    notify "Aurora-Shell" "Update available: v$AURORA_VER → v$REMOTE_VER" "Ping"
 fi
 EOF
 }
 
 # --- EXECUTE ---
 sync_env
-dev_tools_bootstrap
+install_com
 run_wizard
 generate_theme
 
@@ -1039,17 +1248,23 @@ if [ -n "$FOUND_REPO" ]; then
     git pull || true
     cp "$FOUND_REPO/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
     cp "$FOUND_REPO/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
+    cp "$FOUND_REPO/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
+    # ensure wx wrapper exists in bin
+    [ -f "$DATA_DIR/wx.js" ] && printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$DATA_DIR/bin/wx" && chmod +x "$DATA_DIR/bin/wx"
 else
     echo "⬇ No matching repo found — cloning fresh copy..."
     cd "$DATA_DIR"
     git clone "$GIT_CLONE" || true
     cp "$DATA_DIR/aurora-shell/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
     cp "$DATA_DIR/aurora-shell/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
+    cp "$DATA_DIR/aurora-shell/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
+    [ -f "$DATA_DIR/wx.js" ] && printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$DATA_DIR/bin/wx" && chmod +x "$DATA_DIR/bin/wx"
 fi
 
 echo -e "\n\033[1;32m✅ v$VER Deployed.\033[0m"
 
 echo "welcome to Aurora-Shell" | safe_lolcat
 
+cd "$HOME"
 sleep 1
 zsh

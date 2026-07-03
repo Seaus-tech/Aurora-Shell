@@ -17,18 +17,8 @@ Cross-Platform: Tailored experiences for both Mac and Windows environments.
 1. Download the latest Aurora-Shell.dmg
 2. Mount the DMG and install:
    ```bash
-   cp -R '/Volumes/Aurora-Shell for Mac/Aurora-Shell.app' ~/Applications && xattr -d com.apple.quarantine ~/Applications/Aurora-Shell.app && open ~/Applications/Aurora-Shell.app
+   mkdir ~/Applications && unzip ~/downloads/Aurora-Shell.zip -d ~/Applications && xattr -d com.apple.quarantine ~/Applications/Aurora-Shell.app && open ~/Applications/Aurora-Shell.app
    ```
-
-**Option 2: Download Theme Installer (.dmg)**
-1. Download the latest [AuroraShell.dmg](https://github.com/Seaus-tech/Aurora-Shell-2/releases/latest)
-2. Open the .dmg file
-3. Open Terminal and run:
-   ```bash
-   cp '/Volumes/Aurora-Shell for Mac/Aurora-Shell.app' ~/downloads && xattr -d com.apple.quarantine ~/Downloads/Aurora-Shell.app && open ~/downloads/Aurora-Shell.app
-   ```
-4. Follow the installer prompts
-5. Restart your terminal
 
 **Option 2: Command Line Install**
 ```bash
@@ -50,9 +40,10 @@ Or for PowerShell Preview:
 winget install Microsoft.PowerShell.Preview
 ```
 
-**Option 1: command line install**
+
+\*\*Option 1\*\*:
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.ps1'))
+irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
 ```
 
 **Option 2: download installer (.exe)**
@@ -68,7 +59,7 @@ brew install lolcat
 🛠️ Customization
 The main configuration logic is stored in:
 
-Mac: ~/.aurora_theme.sh (sourced in your .zshrc)
+Mac: ~/.aurora-shell\_tfiles (sourced in your .zshrc)
 
 Windows: $PROFILE (usually located in Documents\PowerShell\Microsoft.PowerShell_profile.ps1)
 
@@ -76,7 +67,7 @@ Windows: $PROFILE (usually located in Documents\PowerShell\Microsoft.PowerShell_
 
 To remove Aurora Shell on MacOS:
 ```bash
-curl -s https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell-2/main/uninstall.sh | bash
+cd $HOME && shell.aurora --uninstall && cd -
 ```
  
 or for windows:
