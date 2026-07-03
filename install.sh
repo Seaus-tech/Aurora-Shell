@@ -41,9 +41,16 @@ sync_env() {
     echo -e "\033[1;32mREADY\033[0m"
 }
 
+# --- INSTALL COMPONENTS ---
+install_com() {
+    echo -ne "\033[1;33m📥 downloading extensions... \033[0m"
+    brew install figlet lolcat pygments terminal-notifier 2>/dev/null
+    echo -e "\033[1;32mREADY\033[0m"
+}
+
 # --- DEV TOOLS BOOTSTRAP (BASH 3.2 SAFE) ---
 dev_tools_bootstrap() {
-    echo -e "\n\033[1;36m--- DEV TOOLS SETUP (HYBRID MODE) ---\033[0m"
+    echo -e "\n\033[1;36m--- DEV TOOLS SETUP ---\033[0m"
 
     tools=(
         "Git:git"
@@ -1214,6 +1221,7 @@ EOF
 
 # --- EXECUTE ---
 sync_env
+install_com
 run_wizard
 generate_theme
 
