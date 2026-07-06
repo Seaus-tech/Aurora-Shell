@@ -1,0 +1,189 @@
+name: Build Jackets
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'cli-packages.json'
+      - '.github/workflows/build-jackets.yml'
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Specific package to build (leave empty for all)'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-jackets:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            arch: arm64
+            platform: darwin
+          - os: macos-13
+            arch: x86_64
+            platform: darwin
+          - os: ubuntu-22.04
+            arch: x86_64
+            platform: linux
+
+    runs-on: ${{ matrix.os }}
+    name: Build jackets (${{ matrix.arch }}_${{ matrix.platform }})
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          ref: dev
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build jackets
+        id: build
+        run: |
+          set -e
+          ARCH="${{ matrix.arch }}"
+          PLATFORM="${{ matrix.platform }}"
+          JACKET_DIR=".pack/shell/jackets"
+          SPECIFIC="${{ github.event.inputs.package }}"
+          BUILT=0
+
+          mkdir -p "$JACKET_DIR"
+
+          packages=$(node -e "
+            const p = require('./cli-packages.json').packages;
+            const keys = Object.keys(p);
+            const target = '$SPECIFIC';
+            const list = target ? keys.filter(k => k === target || (p[k].aliases||[]).includes(target)) : keys;
+            console.log(list.join('\n'));
+          ")
+
+          while IFS= read -r pkg; do
+            [ -z "$pkg" ] && continue
+
+            source=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.source || '')")
+            install_cmd=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.install || '')")
+            bin_name=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.command || '')")
+            version=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.version || 'latest')")
+            description=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.description || '')")
+
+            # skip non-buildable sources
+            if [[ "$source" == "aurora" || "$source" == "kiro.dev" ]]; then
+              echo "⏭  Skipping $pkg (source: $source)"
+              continue
+            fi
+
+            jacket_name="${pkg//\//_}_${ARCH}_${PLATFORM}"
+            jacket_file="$JACKET_DIR/${jacket_name}.tar.gz"
+            jacket_meta="$JACKET_DIR/${jacket_name}.json"
+
+            # skip if already built at same version
+            if [ -f "$jacket_meta" ] && [ "$version" != "latest" ]; then
+              existing=$(node -e "try{console.log(require('./$jacket_meta').version)}catch{console.log('')}" 2>/dev/null)
+              [ "$existing" = "$version" ] && echo "✅ $pkg $version already built — skip" && continue
+            fi
+
+            echo "📦 Building jacket: $pkg ($ARCH/$PLATFORM)"
+            install_ok=0
+
+            case "$source" in
+              brew)
+                brew_pkg=$(echo "$install_cmd" | sed 's/.*brew install //' | awk '{print $1}')
+                brew install "$brew_pkg" 2>/dev/null && install_ok=1 || true
+                ;;
+              npm)
+                npm_pkg=$(echo "$install_cmd" | sed 's/npm install -g //')
+                npm install -g "$npm_pkg" 2>/dev/null && install_ok=1 || true
+                ;;
+              pip)
+                pip_pkg=$(echo "$install_cmd" | sed 's/pip3 install //')
+                pip3 install "$pip_pkg" 2>/dev/null && install_ok=1 || true
+                ;;
+              pipx)
+                pipx_pkg=$(echo "$install_cmd" | sed 's/pipx install //')
+                pipx install "$pipx_pkg" 2>/dev/null && install_ok=1 || true
+                ;;
+            esac
+
+            [ $install_ok -eq 0 ] && echo "⚠  Install failed for $pkg — skip" && continue
+
+            bin_path=$(command -v "$bin_name" 2>/dev/null || true)
+            [ -z "$bin_path" ] && echo "⚠  Binary '$bin_name' not found — skip" && continue
+
+            real_ver=$("$bin_name" --version 2>/dev/null | head -1 | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 || echo "$version")
+
+            # bundle binary (+ dylibs on macOS)
+            tmp_dir=$(mktemp -d)
+            cp "$bin_path" "$tmp_dir/$bin_name"
+            chmod +x "$tmp_dir/$bin_name"
+            if [[ "$PLATFORM" == "darwin" ]] && command -v otool &>/dev/null; then
+              otool -L "$bin_path" 2>/dev/null | grep -v '/usr/lib\|/System' | awk '{print $1}' | while read lib; do
+                [ -f "$lib" ] && cp "$lib" "$tmp_dir/" 2>/dev/null || true
+              done
+            fi
+
+            tar -czf "$jacket_file" -C "$tmp_dir" .
+            rm -rf "$tmp_dir"
+
+            cat > "$jacket_meta" << METAEOF
+{
+  "name": "$pkg",
+  "bin": "$bin_name",
+  "version": "$real_ver",
+  "arch": "$ARCH",
+  "platform": "$PLATFORM",
+  "source": "$source",
+  "description": "$description",
+  "file": "${jacket_name}.tar.gz",
+  "built": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+METAEOF
+
+            echo "✅ Built: $jacket_name ($real_ver)"
+            BUILT=$((BUILT + 1))
+
+          done <<< "$packages"
+
+          # rebuild index.json
+          node -e "
+            const fs = require('fs');
+            const dir = '$JACKET_DIR';
+            const metas = fs.readdirSync(dir).filter(f => f.endsWith('.json') && f !== 'index.json');
+            const jackets = {};
+            metas.forEach(f => {
+              try {
+                const m = JSON.parse(fs.readFileSync(dir+'/'+f));
+                if (!jackets[m.name]) jackets[m.name] = {};
+                jackets[m.name][m.arch+'_'+m.platform] = m;
+              } catch {}
+            });
+            fs.writeFileSync(dir+'/index.json', JSON.stringify({
+              version: '1.0.0',
+              updated: new Date().toISOString(),
+              jackets
+            }, null, 2));
+            console.log('index.json updated —', Object.keys(jackets).length, 'packages');
+          "
+
+          echo "built=$BUILT" >> $GITHUB_OUTPUT
+
+      - name: Commit jackets to dev
+        if: steps.build.outputs.built != '0'
+        run: |
+          git config user.name "Aurora-Shell Bot"
+          git config user.email "aurora-bot@seaus.tech"
+          git pull origin dev --rebase
+          git add .pack/
+          git diff --staged --quiet || git commit -m "🧥 jackets (${{ matrix.arch }}_${{ matrix.platform }})"
+          git push origin dev
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
