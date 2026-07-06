@@ -1,5 +1,5 @@
 #!/bin/bash
-SHELL_VER="--- Aurora-Shell v5.8.0 ---"
+SHELL_VER="--- Aurora-Shell v5.8.1 ---"
 
 # --- PATH CONFIGURATION ---
 OLD_SHELL="$HOME/.aurora-shell_files"
@@ -8,7 +8,7 @@ THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-VER="5.8.0"
+VER="5.8.1"
 
 echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
 
@@ -262,8 +262,6 @@ install_xcode_if_needed() {
     fi
 }
 
-install_xcode_if_needed
-
 authenticate_user() {
     local is_manual=0
     local target_pw
@@ -442,7 +440,23 @@ shell.aurora() {
             notify "Aurora-Shell" "⬇ Installing update v$remote_ver..." "Ping"
             bash <(curl -s "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/update.sh") "$branch"
             ;;
-        --config) open -a Xcode "$HOME/.aurora-shell_files/aurora-shell_settings" || ${EDITOR:-vi} "$HOME/.aurora-shell_files/aurora-shell_settings" ;;
+        --config)
+            local _cfg="$HOME/.aurora-shell_files/aurora-shell_settings"
+            if open -a "Xcode" "$_cfg" 2>/dev/null; then :
+            elif open -a "Xcode-beta" "$_cfg" 2>/dev/null; then :
+            elif open -a "Kiro" "$_cfg" 2>/dev/null; then :
+            elif open -a "Visual Studio Code" "$_cfg" 2>/dev/null; then :
+            elif open -a "Cursor" "$_cfg" 2>/dev/null; then :
+            elif open -a "Zed" "$_cfg" 2>/dev/null; then :
+            elif open -a "TextEdit" "$_cfg" 2>/dev/null; then :
+            elif command -v code &>/dev/null; then code "$_cfg"
+            elif command -v kiro &>/dev/null; then kiro "$_cfg"
+            elif command -v cursor &>/dev/null; then cursor "$_cfg"
+            elif command -v zed &>/dev/null; then zed "$_cfg"
+            elif command -v nano &>/dev/null; then nano "$_cfg"
+            else ${EDITOR:-vi} "$_cfg"
+            fi
+            ;;
         --lock)
             local _pin=$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)
             authenticate_user "MANUAL" && Show-Aurora
@@ -674,321 +688,11 @@ if [ ! -f "$PACKAGES_FILE" ]; then
 PKGEOF
 fi
 
-shell() {
-    case "$1" in
-        install)
-            local pkg="$2"
-            # Resolve alias to full ID
-            local resolved=$(jq -r ".packages | to_entries[] | select(.value.aliases? and (.value.aliases[] == \"$pkg\")) | .key" "$PACKAGES_FILE" 2>/dev/null | head -1)
-            [ -n "$resolved" ] && pkg="$resolved"
-            
-            local url=$(jq -r ".packages[\"$pkg\"].url" "$PACKAGES_FILE" 2>/dev/null)
-            local type=$(jq -r ".packages[\"$pkg\"].type" "$PACKAGES_FILE" 2>/dev/null)
-            
-            if [ "$url" = "null" ]; then
-                echo "🔍 Not in Aurora registry. Searching Homebrew..."
-                if brew info "$pkg" &>/dev/null; then
-                    echo "📦 Found in Homebrew: $pkg"
-                    echo -n "Install via brew? (y/n): "
-                    read confirm
-                    [ "$confirm" = "y" ] && brew install "$pkg" && echo "\033[32m✅ Installed via Homebrew\033[0m" || echo "\033[31m❌ Installation failed\033[0m"
-                else
-                    echo "❌ Package not found in Aurora or Homebrew"
-                fi
-                return
-            fi
-            
-            echo "📦 Installing $pkg..."
-            case "$type" in
-                dmg)
-                    local tmp="/tmp/$pkg.dmg"
-                    curl -L "$url" -o "$tmp"
-                    hdiutil attach "$tmp" -quiet
-                    local vol=$(ls /Volumes | grep -v Macintosh | head -1)
-                    cp -R "/Volumes/$vol"/*.app "$CASKS_DIR/" 2>/dev/null
-                    hdiutil detach "/Volumes/$vol" -quiet
-                    rm "$tmp"
-                    echo "\033[32m✅ Installed to $CASKS_DIR\033[0m"
-                    ;;
-                binary)
-                    curl -L "$url" -o "$INSTALLED_DIR/$pkg"
-                    chmod +x "$INSTALLED_DIR/$pkg"
-                    echo "✅ Installed to $INSTALLED_DIR"
-                    ;;
-                brew)
-                    brew install "$pkg"
-                    ;;
-                wx-installer)
-                    echo "📦 Installing wx..."
-                    local _wxd="$HOME/.aurora-shell_files/wx.js"
-                    curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/wx.js" -o "$_wxd" 2>/dev/null ||                     curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/wx.js" -o "$_wxd" 2>/dev/null || true
-                    printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$HOME/.aurora-shell_files/bin/wx"
-                    chmod +x "$HOME/.aurora-shell_files/bin/wx"
-                    [ -f "$_wxd" ] && echo "✅ wx installed — run: wx --help" || echo "❌ Failed to download wx.js"
-                    ;;
-                cli-installer)
-                    echo "📦 Installing Aurora-Shell CLI..."
-                    cat > "$INSTALLED_DIR/CLI" << 'CLIEOF'
-#!/bin/zsh
-CLI_PACKAGES_FILE="$HOME/.aurora-shell_files/cli-packages.json"
 
-# Always fetch latest packages from GitHub
-curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/cli-packages.json" -o "$CLI_PACKAGES_FILE" 2>/dev/null || true
+# shell() removed — use the jacket-based module system instead
+# Install with: shell.aurora --modules-components
+# Then use: shell install|search|list|update|outdated
 
-if [ ! -f "$CLI_PACKAGES_FILE" ]; then
-    cat > "$CLI_PACKAGES_FILE" << 'CLIPKG'
-{
-  "packages": {
-    "GitHub.CLI": {"aliases":["gh","github"],"command":"gh","version":"2.90.0","source":"brew","install":"brew install gh","description":"GitHub CLI"},
-    "Amazon.AWS": {"aliases":["aws"],"command":"aws","version":"2.x","source":"brew","install":"brew install awscli","description":"Amazon Web Services CLI"},
-    "Microsoft.Azure": {"aliases":["az","azure"],"command":"az","version":"2.x","source":"brew","install":"brew install azure-cli","description":"Microsoft Azure CLI"},
-    "Google.Cloud": {"aliases":["gcloud"],"command":"gcloud","version":"latest","source":"brew","install":"brew install google-cloud-sdk","description":"Google Cloud CLI"},
-    "Docker.CLI": {"aliases":["docker"],"command":"docker","version":"29.4.1","source":"brew","install":"brew install docker","description":"Docker container CLI"},
-    "Kubernetes.CLI": {"aliases":["kubectl","k8s"],"command":"kubectl","version":"1.35.4","source":"brew","install":"brew install kubectl","description":"Kubernetes CLI"},
-    "Helm.CLI": {"aliases":["helm"],"command":"helm","version":"4.1.4","source":"brew","install":"brew install helm","description":"Kubernetes package manager"},
-    "Heroku.CLI": {"aliases":["heroku"],"command":"heroku","version":"latest","source":"brew","install":"brew tap heroku/brew && brew install heroku","description":"Heroku platform CLI"},
-    "Vercel.CLI": {"aliases":["vercel","vc"],"command":"vercel","version":"latest","source":"npm","install":"npm install -g vercel","description":"Vercel deployment CLI"},
-    "Netlify.CLI": {"aliases":["netlify"],"command":"netlify","version":"latest","source":"npm","install":"npm install -g netlify-cli","description":"Netlify deployment CLI"},
-    "Google.Firebase": {"aliases":["firebase"],"command":"firebase","version":"latest","source":"npm","install":"npm install -g firebase-tools","description":"Firebase CLI"},
-    "HashiCorp.Terraform": {"aliases":["terraform","tf"],"command":"terraform","version":"1.x","source":"brew","install":"brew install terraform","description":"Infrastructure as code CLI"},
-    "RedHat.Ansible": {"aliases":["ansible"],"command":"ansible","version":"13.5.0","source":"brew","install":"brew install ansible","description":"Automation CLI"},
-    "Pulumi.CLI": {"aliases":["pulumi"],"command":"pulumi","version":"3.231.0","source":"brew","install":"brew install pulumi","description":"Infrastructure as code CLI"},
-    "Slack.CLI": {"aliases":["slack"],"command":"slack","version":"latest","source":"npm","install":"npm install -g @slack/cli","description":"Slack workspace CLI"},
-    "Twilio.CLI": {"aliases":["twilio"],"command":"twilio","version":"latest","source":"brew","install":"brew tap twilio/brew && brew install twilio","description":"Twilio communications CLI"},
-    "Stripe.CLI": {"aliases":["stripe"],"command":"stripe","version":"latest","source":"brew","install":"brew install stripe/stripe-cli/stripe","description":"Stripe payment CLI"},
-    "DigitalOcean.CLI": {"aliases":["doctl","digitalocean"],"command":"doctl","version":"1.155.0","source":"brew","install":"brew install doctl","description":"DigitalOcean CLI"},
-    "MongoDB.Shell": {"aliases":["mongosh","mongo"],"command":"mongosh","version":"2.8.2","source":"brew","install":"brew install mongosh","description":"MongoDB shell"},
-    "PostgreSQL.CLI": {"aliases":["psql","postgres"],"command":"psql","version":"18.3","source":"brew","install":"brew install postgresql","description":"PostgreSQL CLI"},
-    "MySQL.CLI": {"aliases":["mysql"],"command":"mysql","version":"9.6.0","source":"brew","install":"brew install mysql","description":"MySQL CLI"},
-    "Redis.CLI": {"aliases":["redis"],"command":"redis-cli","version":"8.6.2","source":"brew","install":"brew install redis","description":"Redis CLI"},
-    "Supabase.CLI": {"aliases":["supabase"],"command":"supabase","version":"latest","source":"brew","install":"brew install supabase/tap/supabase","description":"Supabase CLI"},
-    "Cloudflare.Wrangler": {"aliases":["wrangler","cf"],"command":"wrangler","version":"latest","source":"npm","install":"npm install -g wrangler","description":"Cloudflare Workers CLI"},
-    "Atlassian.Jira": {"aliases":["jira"],"command":"jira","version":"latest","source":"brew","install":"brew install ankitpokhrel/jira-cli/jira-cli","description":"Jira CLI"},
-    "GitLab.CLI": {"aliases":["glab","gitlab"],"command":"glab","version":"1.92.1","source":"brew","install":"brew install glab","description":"GitLab CLI"},
-    "Shopify.CLI": {"aliases":["shopify"],"command":"shopify","version":"latest","source":"brew","install":"brew tap shopify/shopify && brew install shopify-cli","description":"Shopify CLI"},
-    "OpenAI.CLI": {"aliases":["openai"],"command":"openai","version":"latest","source":"pip","install":"pip3 install openai","description":"OpenAI API CLI"},
-    "Anthropic.CLI": {"aliases":["anthropic","claude"],"command":"anthropic","version":"latest","source":"pip","install":"pip3 install anthropic","description":"Anthropic Claude CLI"},
-    "Seaus.Calc": {"aliases":["calc-app","calc"],"command":"calc-app","version":"latest","source":"pipx","install":"pipx install seaus-calc","description":"Seaus Calculator - natural-language, fraction-aware calculator"},
-    "Railway.CLI": {"aliases":["railway"],"command":"railway","version":"latest","source":"npm","install":"npm install -g @railway/cli","description":"Railway deployment CLI"},
-    "Fly.CLI": {"aliases":["flyctl","fly"],"command":"flyctl","version":"0.4.38","source":"brew","install":"brew install flyctl","description":"Fly.io deployment CLI"},
-    "VS.Code": {"aliases":["code","vscode"],"command":"code","version":"latest","source":"brew","install":"brew install --cask visual-studio-code","description":"Visual Studio Code"},
-    "Neovim.CLI": {"aliases":["nvim","neovim"],"command":"nvim","version":"0.12.1","source":"brew","install":"brew install neovim","description":"Neovim editor"},
-    "Flutter.CLI": {"aliases":["flutter"],"command":"flutter","version":"3.41.7","source":"brew","install":"brew install flutter","description":"Flutter framework CLI"},
-    "Fastlane.CLI": {"aliases":["fastlane"],"command":"fastlane","version":"2.233.0","source":"brew","install":"brew install fastlane","description":"Mobile deployment CLI"},
-    "Microsoft.Teams": {"aliases":["teams"],"command":"teams","version":"1.0.0","source":"aurora","install":"npm config set strict-ssl false; REPO=$(find ~ -name 'teams-cli' -type d -maxdepth 8 2>/dev/null | head -1) && [ -n \"$REPO\" ] && cd \"$REPO\" && npm install && printf '#!/bin/zsh\\nnode %s/src/index.js \"$@\"' \"$REPO\" > ~/.aurora-shell_files/bin/teams && chmod +x ~/.aurora-shell_files/bin/teams","description":"Microsoft Teams CLI"},
-    "AWS.Kiro": {"aliases":["kiro"],"command":"kiro","version":"latest","source":"kiro.dev","install":"curl -fsSL https://cli.kiro.dev/install | bash","description":"Kiro CLI - AI-assisted development in your terminal"}
-  }
-}
-CLIPKG
-fi
-
-case "$1" in
-    install)
-        pkg="$2"
-        # Resolve alias to full ID
-        local resolved=$(jq -r ".packages | to_entries[] | select(.value.aliases? and (.value.aliases[] == \"$pkg\")) | .key" "$CLI_PACKAGES_FILE" 2>/dev/null | head -1)
-        [ -n "$resolved" ] && pkg="$resolved"
-        
-        install_cmd=$(jq -r ".packages[\"$pkg\"].install" "$CLI_PACKAGES_FILE" 2>/dev/null)
-        cmd_name=$(jq -r ".packages[\"$pkg\"].command" "$CLI_PACKAGES_FILE" 2>/dev/null)
-        
-        if [ "$install_cmd" = "null" ]; then
-            echo "❌ CLI package '$pkg' not found"
-            echo "Available: $(jq -r '.packages | keys[]' "$CLI_PACKAGES_FILE" 2>/dev/null | tr '\n' ' ')"
-            exit 1
-        fi
-        
-        echo "📦 Installing $pkg CLI..."
-        echo "\033[1m$(whoami)@$(hostname -s) ~ % $install_cmd\033[0m"
-        # Braille spinner
-        node "$HOME/.aurora-shell_files/spinner.js" &
-        local spinner_pid=$!
-        local wrapped_cmd=$(echo "$install_cmd" | sed "s|brew install|python3 $HOME/.aurora-shell_files/brew-progress.py install|g")
-        eval "$wrapped_cmd"
-        local exit_code=$?
-        kill $spinner_pid 2>/dev/null
-        wait $spinner_pid 2>/dev/null
-        printf "\r  \r"
-        local exit_code=$?
-        
-        if [ $exit_code -eq 0 ] && command -v "$cmd_name" &>/dev/null; then
-            echo "\033[32m✅ $pkg CLI installed: $cmd_name\033[0m"
-        else
-            echo "\033[31m❌ Failed to install $pkg (exit code: $exit_code)\033[0m"
-        fi
-        ;;
-    list)
-        echo "📋 Available CLI packages:"
-        echo ""
-        printf "%-20s %-25s %s\n" "Name" "ID" "Description"
-        printf "%-20s %-25s %s\n" "--------------------" "-------------------------" "--------------------"
-        jq -r '.packages | to_entries[] | [(.value.description | split(" - ")[0] | .[0:20]), .key, .value.description] | @tsv' "$CLI_PACKAGES_FILE" 2>/dev/null | \
-        while IFS=$'\t' read -r name id desc; do
-            printf "%-20s %-25s %s\n" "${name:0:20}" "${id:0:25}" "${desc:0:40}"
-        done
-        ;;
-    search)
-        query=$(echo "$2" | tr '[:upper:]' '[:lower:]')
-        echo "🔍 Searching CLI packages for: $2"
-        echo ""
-        printf "%-20s %-25s %-10s %-10s %s\n" "Name" "ID" "Version" "Source" "Description"
-        printf "%-20s %-25s %-10s %-10s %s\n" "--------------------" "-------------------------" "----------" "----------" "--------------------"
-        jq -r ".packages | to_entries[] | select((.key | ascii_downcase | contains(\"$query\")) or (.value.aliases? // [] | map(. | contains(\"$query\")) | any)) | [(.value.description | split(\" - \")[0] | .[0:20]), .key, .value.version // \"latest\", .value.source // \"aurora\", .value.description] | @tsv" "$CLI_PACKAGES_FILE" 2>/dev/null | \
-        while IFS=$'\t' read -r name id ver src desc; do
-            printf "%-20s %-25s %-10s %-10s %s\n" "${name:0:20}" "${id:0:25}" "${ver:0:10}" "${src:0:10}" "${desc:0:40}"
-        done
-        ;;
-    uninstall)
-        pkg="$2"
-        local resolved=$(jq -r ".packages | to_entries[] | select(.value.aliases? and (.value.aliases[] == \"$pkg\")) | .key" "$CLI_PACKAGES_FILE" 2>/dev/null | head -1)
-        [ -n "$resolved" ] && pkg="$resolved"
-        cmd_name=$(jq -r ".packages[\"$pkg\"].command" "$CLI_PACKAGES_FILE" 2>/dev/null)
-        if [ "$cmd_name" = "null" ]; then echo "❌ CLI package '$pkg' not found"; exit 1; fi
-        npm unlink "$cmd_name" 2>/dev/null || true
-        echo "✅ Uninstalled $pkg"
-        ;;
-    *)
-        echo "Aurora-Shell CLI Installer"
-        echo ""
-        echo "Usage:"
-        echo "  CLI install <package>    - Install CLI version of an app"
-        echo "  CLI uninstall <package>  - Uninstall a CLI package"
-        echo "  CLI list                 - List available CLI packages"
-        echo "  CLI search <query>       - Search CLI packages"
-        echo ""
-        echo "Examples:"
-        echo "  CLI install GitHub"
-        echo "  CLI install Microsoft.Teams"
-        echo "  CLI uninstall Microsoft.Teams"
-        ;;
-esac
-CLIEOF
-                    chmod +x "$INSTALLED_DIR/CLI"
-                    echo "✅ CLI command installed"
-                    echo "Usage: CLI install GitHub"
-                    ;;
-            esac
-            ;;
-        search)
-            echo ""
-            printf "%-20s %-20s %-10s %-12s %s\n" "Name" "ID" "Version" "Source" "Description"
-            printf "%-20s %-20s %-10s %-12s %s\n" "--------------------" "--------------------" "----------" "------------" "--------------------"
-            jq -r ".packages | to_entries[] | [(.value.description | split(\" - \")[0] | .[0:20]), .key, .value.version // \"latest\", .value.source // \"aurora\", .value.description] | @tsv" "$PACKAGES_FILE" 2>/dev/null | \
-            while IFS=$'\t' read -r name id ver src desc; do
-                printf "%-20s %-20s %-10s %-12s %s\n" "${name:0:20}" "${id:0:20}" "${ver:0:10}" "${src:0:12}" "${desc:0:40}"
-            done
-            if [ -n "$2" ]; then
-                echo ""
-                echo "🍺 Homebrew results:"
-                brew search "$2" 2>/dev/null | head -10
-            fi
-            ;;
-        list)
-            echo "📦 Installed:"
-            ls -1 "$INSTALLED_DIR" 2>/dev/null || echo "  (none)"
-            ;;
-        add)
-            if [ -z "$2" ]; then
-                echo "❌ Missing package name"
-                echo ""
-                echo "Usage: shell add <package-name> <download-url> [type] [description]"
-                echo ""
-                echo "Examples:"
-                echo "  shell add my-tool https://example.com/tool.zip binary 'My custom tool'"
-                echo "  shell add my-app https://example.com/app.dmg dmg 'My application'"
-                echo ""
-                echo "Types: binary, dmg, brew"
-                return 1
-            fi
-            
-            if [ -z "$3" ]; then
-                echo "❌ Missing download URL"
-                echo ""
-                echo "Usage: shell add $2 <download-url> [type] [description]"
-                echo ""
-                echo "Example:"
-                echo "  shell add $2 https://example.com/$2.zip binary 'Description here'"
-                return 1
-            fi
-            
-            echo "📝 Package submission:"
-            echo "  Name: $2"
-            echo "  URL: $3"
-            echo "  Type: ${4:-binary}"
-            echo "  Description: ${5:-Custom package}"
-            echo ""
-            echo -n "Submit for approval? (y/n): "
-            read confirm
-            if [ "$confirm" = "y" ]; then
-                echo "📤 Adding to local registry..."
-                local tmp=$(mktemp)
-                jq ".packages[\"$2\"] = {\"url\": \"$3\", \"type\": \"${4:-binary}\", \"description\": \"${5:-Custom}\"}" "$PACKAGES_FILE" > "$tmp" 2>/dev/null
-                mv "$tmp" "$PACKAGES_FILE"
-                echo "✅ Added $2 locally"
-                echo ""
-                echo "🌐 Opening approval form in browser..."
-                local issue_url="https://github.com/Seaus-tech/Aurora-Shell/issues/new?title=Package%20Request:%20$2&body=**Package%20Name:**%20$2%0A**URL:**%20$3%0A**Type:**%20${4:-binary}%0A**Description:**%20${5:-Custom}%0A%0A----%0ASubmitted%20via%20shell%20add%20command"
-                open "$issue_url" 2>/dev/null || xdg-open "$issue_url" 2>/dev/null || echo "Visit: $issue_url"
-            fi
-            ;;
-        remove)
-            if [ -z "$2" ]; then
-                echo "Usage: shell remove <package>"
-                return 1
-            fi
-            echo "📝 Package removal request:"
-            echo "  Name: $2"
-            echo "  Reason: ${3:-No reason provided}"
-            echo ""
-            echo -n "Submit removal request and remove locally? (y/n): "
-            read confirm
-            if [ "$confirm" = "y" ]; then
-                echo "🗑️  Removing locally..."
-                local tmp=$(mktemp)
-                jq "del(.packages[\"$2\"])" "$PACKAGES_FILE" > "$tmp" 2>/dev/null
-                mv "$tmp" "$PACKAGES_FILE"
-                echo "✅ Removed $2 from local registry"
-                echo ""
-                echo "🌐 Opening removal request form..."
-                local issue_url="https://github.com/Seaus-tech/Aurora-Shell/issues/new?title=Package%20Removal:%20$2&body=**Package%20Name:**%20$2%0A**Reason:**%20${3:-No%20reason%20provided}%0A%0A----%0ASubmitted%20via%20shell%20remove%20command"
-                open "$issue_url" 2>/dev/null || xdg-open "$issue_url" 2>/dev/null || echo "Visit: $issue_url"
-            fi
-            ;;
-        uninstall)
-            if [ -z "$2" ]; then
-                echo "Usage: shell uninstall <package>"
-                return 1
-            fi
-            rm -f "$INSTALLED_DIR/$2"
-            rm -rf ~/Applications/"$2.app" /Applications/"$2.app"
-            echo "✅ Uninstalled $2"
-            ;;
-        update)
-            echo "🔄 Updating brew packages..." | safe_lolcat
-            brew upgrade 2>/dev/null
-            echo "🔄 Updating npm globals..." | safe_lolcat
-            npm update -g 2>/dev/null
-            echo "✅ All packages updated" | safe_lolcat
-            ;;
-        outdated)
-            echo "📋 Brew outdated:" && brew outdated 2>/dev/null
-            echo "📋 npm outdated:" && npm outdated -g 2>/dev/null
-            ;;
-        *)
-            echo "Usage: shell install|search|list|add|remove|uninstall|update|outdated"
-            echo ""
-            echo "Commands:"
-            echo "  install <pkg>   - Install a package"
-            echo "  uninstall <pkg> - Uninstall an installed package"
-            echo "  search [query]  - Search available packages"
-            echo "  list            - List installed packages"
-            echo "  add <name> <url> [type] [desc] - Submit package for approval"
-            echo "  remove <pkg> [reason] - Request package removal (local + online)"
-            echo "  update          - Update all installed brew/npm packages"
-            echo "  outdated        - Show packages with available updates"
-            ;;
-    esac
-}
 
 rainbow_prompt() {
   local raw_text="${AURORA_ID} %n@%m %* > "
