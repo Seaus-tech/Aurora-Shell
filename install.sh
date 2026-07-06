@@ -1,5 +1,5 @@
 #!/bin/bash
-SHELL_VER="--- Aurora-Shell v5.7.8 installer---"
+SHELL_VER="--- Aurora-Shell v5.7.9 ---"
 
 # --- PATH CONFIGURATION ---
 OLD_SHELL="$HOME/.aurora-shell_files"
@@ -8,7 +8,7 @@ THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-VER="5.7.8"
+VER="5.7.9"
 
 echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
 
@@ -31,11 +31,11 @@ safe_lolcat() {
 sync_env() {
     echo -ne "\033[1;33m🛠️  Syncing Environment... \033[0m"
     if ! command -v brew >/dev/null 2>&1; then
+        [ "${AURORA_UPDATE_MODE:-}" = "1" ] && echo "⚠ brew not found — skipping" && return
         mkdir -p "$HOME/.brew"
         curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C "$HOME/.brew"
         export PATH="$HOME/.brew/bin:$PATH"
     fi
-
     echo -ne "\033[1;33m📥 downloading extensions... \033[0m"
     brew install figlet lolcat pygments terminal-notifier 2>/dev/null
     echo -e "\033[1;32mREADY\033[0m"
@@ -100,9 +100,40 @@ dev_tools_bootstrap() {
 run_wizard() {
     echo -e "\n\033[1;32m--- AURORA CONFIGURATION WIZARD ---\033[0m"
     [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
+
+    # in update mode — auto-restore from backup, no prompts
+    if [ "${AURORA_UPDATE_MODE:-}" = "1" ] && [ -f "/tmp/aurora-shell-preferences/aurora-shell_settings" ]; then
+        source "/tmp/aurora-shell-preferences/aurora-shell_settings"
+        HDR_MODE="${AURORA_HDR_MODE:-BLOCK}"
+        HDR_VAL="${AURORA_HDR_VAL:-Aurora-Shell}"
+        FIGLET_FONT="${AURORA_FIGLET_FONT:-slant}"
+        BDAY="${AURORA_USER_BDAY:-}"
+        P_ID="${AURORA_ID:-}"
+        echo "⏭  Auto-restoring wizard settings from backup..." | safe_lolcat
+        cat << EOF > "$CONFIG_FILE"
+AURORA_VER="$VER"
+AURORA_HDR_MODE="$HDR_MODE"
+AURORA_HDR_VAL="$HDR_VAL"
+AURORA_FIGLET_FONT="${FIGLET_FONT:-slant}"
+AURORA_USER_BDAY="$BDAY"
+AURORA_ID="$P_ID"
+EOF
+        # restore account sign-in silently
+        if [ -f "/tmp/aurora-shell-preferences/active_account.json" ]; then
+            cp "/tmp/aurora-shell-preferences/active_account.json" "$DATA_DIR/active_account.json"
+            _uid=$(jq -r '.username // empty' "$DATA_DIR/active_account.json" 2>/dev/null)
+            [ -n "$_uid" ] && sed -i '' "s/^AURORA_ID=.*/AURORA_ID=\"$_uid\"/" "$CONFIG_FILE" 2>/dev/null
+            echo "  ✅ Account restored: $_uid" | safe_lolcat
+        fi
+        return
+    fi
+    [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
     
     read -s -p "🔐 Set Terminal PIN (Enter for none): " NEW_PW < /dev/tty; echo ""
-    if [ -n "$NEW_PW" ]; then
+    if [ "${AURORA_UPDATE_MODE:-}" = "1" ]; then
+        # keep existing keychain PIN silently
+        echo "🔒 PIN kept from previous install"
+    elif [ -n "$NEW_PW" ]; then
         security add-generic-password -a "$USER" -s "aurora-shell-pin" -w "$NEW_PW" -U 2>/dev/null
         echo "🔒 PIN stored securely in Keychain"
     fi

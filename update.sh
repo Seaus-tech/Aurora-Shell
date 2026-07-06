@@ -34,54 +34,13 @@ fi
 echo ""
 echo "⬇  Running fresh installer..." | safe_lolcat
 echo ""
-bash <(curl -sf "$REPO_BASE/$BRANCH/install.sh") "$BRANCH"
+AURORA_UPDATE_MODE=1 bash <(curl -sf "$REPO_BASE/$BRANCH/install.sh") "$BRANCH"
 
-# --- STEP 3: RESTORE ACCOUNT + PIN (skip wizard data) ---
+# --- STEP 3: CLEANUP ---
 echo ""
-echo "🔁 Restoring account and PIN..." | safe_lolcat
-
-if [ -d "$BACKUP_DIR" ]; then
-    # restore account
-    if [ -f "$BACKUP_DIR/active_account.json" ]; then
-        cp "$BACKUP_DIR/active_account.json" "$DATA_DIR/active_account.json"
-        _uid=$(jq -r '.username // empty' "$DATA_DIR/active_account.json" 2>/dev/null)
-        [ -n "$_uid" ] && echo "  ✅ Account restored: $_uid"
-    fi
-
-    # restore PIN
-    if [ -f "$BACKUP_DIR/aurora-pin.enc" ]; then
-        cp "$BACKUP_DIR/aurora-pin.enc" "$DATA_DIR/aurora-pin.enc"
-        echo "  ✅ PIN restored"
-    fi
-
-    # restore settings (header, birthday, prompt ID, etc.)
-    if [ -f "$BACKUP_DIR/aurora-shell_settings" ]; then
-        cp "$BACKUP_DIR/aurora-shell_settings" "$DATA_DIR/aurora-shell_settings"
-        # update version to new one
-        sed -i '' "s/^AURORA_VER=.*/AURORA_VER=\"$VER\"/" "$DATA_DIR/aurora-shell_settings" 2>/dev/null
-        echo "  ✅ Settings restored (header, birthday, prompt ID)"
-    fi
-
-    # restore login history
-    if [ -f "$BACKUP_DIR/login_history.log" ]; then
-        cp "$BACKUP_DIR/login_history.log" "$DATA_DIR/login_history.log"
-        echo "  ✅ Login history restored"
-    fi
-
-    # restore custom packages
-    if [ -f "$BACKUP_DIR/packages.json" ]; then
-        cp "$BACKUP_DIR/packages.json" "$DATA_DIR/packages.json"
-        echo "  ✅ Packages restored"
-    fi
-
-    # restore last_auth
-    if [ -f "$BACKUP_DIR/.last_auth" ]; then
-        cp "$BACKUP_DIR/.last_auth" "$DATA_DIR/.last_auth"
-    fi
-
-    rm -rf "$BACKUP_DIR"
-    echo "  🗑  Cleaned up backup"
-fi
+echo "🗑  Cleaning up..." | safe_lolcat
+rm -rf "$BACKUP_DIR"
+echo "  ✅ /tmp/aurora-shell-preferences removed"
 
 echo ""
 echo "✅ Aurora-Shell updated to v$VER" | safe_lolcat
