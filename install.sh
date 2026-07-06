@@ -1,5 +1,5 @@
 #!/bin/bash
-SHELL_VER="--- Aurora-Shell v5.7.9 ---"
+SHELL_VER="--- Aurora-Shell v5.8.0 ---"
 
 # --- PATH CONFIGURATION ---
 OLD_SHELL="$HOME/.aurora-shell_files"
@@ -8,7 +8,7 @@ THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-VER="5.7.9"
+VER="5.8.0"
 
 echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
 
@@ -36,9 +36,6 @@ sync_env() {
         curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C "$HOME/.brew"
         export PATH="$HOME/.brew/bin:$PATH"
     fi
-    echo -ne "\033[1;33m📥 downloading extensions... \033[0m"
-    brew install figlet lolcat pygments terminal-notifier 2>/dev/null
-    echo -e "\033[1;32mREADY\033[0m"
 }
 
 # --- INSTALL COMPONENTS ---
@@ -452,6 +449,140 @@ shell.aurora() {
             ;;
         --uninstall) rm -rf "$HOME/.aurora-shell_files" && rm -rf $HOME/Applications/Aurora-Shell.app && sed -i '' '/aurora-shell_files/d' ~/.zshrc ;;
         --account) aurora_account "$2" ;;
+        --modules-components|-mc)
+            echo "📦 Installing Aurora-Shell Module System..." | safe_lolcat
+            local _shell_dir="$HOME/.local/shell"
+            local _pack_base="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/.pack/shell/jackets"
+            local _arch=$(uname -m | sed 's/arm64/arm64/;s/x86_64/x86_64/')
+            local _platform=$(uname -s | tr '[:upper:]' '[:lower:]' | sed 's/darwin/darwin/;s/linux/linux/')
+
+            mkdir -p "$_shell_dir/bin" "$_shell_dir/cellar" "$_shell_dir/jackets"
+
+            # fetch jacket index
+            echo "  ⬇  Fetching jacket index..."
+            curl -sf "$_pack_base/index.json" -o "$_shell_dir/jackets/index.json" 2>/dev/null \
+                && echo "  ✅ Jacket index fetched" \
+                || echo "  ⚠  Could not fetch index — will use fallback"
+
+            # write the shell command
+            cat > "$_shell_dir/bin/shell" << 'SHELLEOF'
+#!/bin/zsh
+# Aurora-Shell module system
+SHELL_DIR="$HOME/.local/shell"
+JACKET_DIR="$SHELL_DIR/jackets"
+CELLAR_DIR="$SHELL_DIR/cellar"
+PACK_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/.pack/shell/jackets"
+ARCH=$(uname -m)
+PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
+
+safe_lolcat() { command -v lolcat &>/dev/null && command lolcat || cat; }
+
+_jacket_install() {
+    local pkg="$1"
+    local index="$JACKET_DIR/index.json"
+    [ ! -f "$index" ] && curl -sf "$PACK_BASE/index.json" -o "$index" 2>/dev/null
+
+    # resolve alias
+    local resolved=$(jq -r ".jackets | to_entries[] | select(.value | to_entries[].value | .name == \"$pkg\" or (.bin == \"$pkg\")) | .key" "$index" 2>/dev/null | head -1)
+    [ -n "$resolved" ] && pkg="$resolved"
+
+    local jacket_key="${ARCH}_${PLATFORM}"
+    local jacket=$(jq -r ".jackets[\"$pkg\"][\"$jacket_key\"] // empty" "$index" 2>/dev/null)
+
+    if [ -z "$jacket" ]; then
+        echo "⚠  No jacket found for $pkg ($jacket_key) — falling back to brew/npm..." | safe_lolcat
+        _fallback_install "$pkg"
+        return
+    fi
+
+    local file=$(echo "$jacket" | jq -r '.file')
+    local bin=$(echo "$jacket" | jq -r '.bin')
+    local ver=$(echo "$jacket" | jq -r '.version')
+    local url="$PACK_BASE/$file"
+
+    echo "🧥 Installing jacket: $pkg v$ver ($jacket_key)" | safe_lolcat
+    local tmp=$(mktemp -d)
+    curl -sf "$url" -o "$tmp/jacket.tar.gz" 2>/dev/null || { echo "❌ Download failed — falling back"; _fallback_install "$pkg"; rm -rf "$tmp"; return; }
+    tar -xzf "$tmp/jacket.tar.gz" -C "$tmp"
+    mkdir -p "$CELLAR_DIR/$pkg/$ver"
+    cp -R "$tmp/"* "$CELLAR_DIR/$pkg/$ver/" 2>/dev/null
+    ln -sf "$CELLAR_DIR/$pkg/$ver/$bin" "$SHELL_DIR/bin/$bin"
+    chmod +x "$SHELL_DIR/bin/$bin"
+    rm -rf "$tmp"
+    echo "✅ $pkg v$ver installed via jacket" | safe_lolcat
+}
+
+_fallback_install() {
+    local pkg="$1"
+    local cli_pkg=$(jq -r ".packages[\"$pkg\"] // empty" "$HOME/.aurora-shell_files/cli-packages.json" 2>/dev/null)
+    if [ -z "$cli_pkg" ]; then
+        echo "❌ $pkg not found in jackets or CLI registry" | safe_lolcat; return 1
+    fi
+    local cmd=$(echo "$cli_pkg" | jq -r '.install')
+    echo "⬇  Fallback: $cmd" | safe_lolcat
+    eval "$cmd"
+}
+
+case "$1" in
+    install)
+        _jacket_install "$2"
+        ;;
+    uninstall)
+        local pkg="$2"
+        local bin=$(jq -r ".jackets[\"$pkg\"] | to_entries[0].value.bin // empty" "$JACKET_DIR/index.json" 2>/dev/null)
+        rm -f "$SHELL_DIR/bin/$bin"
+        rm -rf "$CELLAR_DIR/$pkg"
+        echo "✅ Uninstalled $pkg" | safe_lolcat
+        ;;
+    list)
+        echo "🧥 Installed jackets:"
+        ls "$CELLAR_DIR" 2>/dev/null | while read p; do
+            local ver=$(ls "$CELLAR_DIR/$p" 2>/dev/null | head -1)
+            printf "  %-30s %s\n" "$p" "$ver"
+        done
+        ;;
+    search)
+        local q=$(echo "${2:-}" | tr '[:upper:]' '[:lower:]')
+        echo "🔍 Searching jackets..."
+        jq -r ".jackets | to_entries[] | select(.key | ascii_downcase | contains(\"$q\")) | \"  \(.key) — \(.value | to_entries[0].value.description)\"" "$JACKET_DIR/index.json" 2>/dev/null
+        ;;
+    update)
+        echo "🔄 Updating jacket index..." | safe_lolcat
+        curl -sf "$PACK_BASE/index.json" -o "$JACKET_DIR/index.json" 2>/dev/null && echo "✅ Index updated" | safe_lolcat
+        ;;
+    outdated)
+        echo "📋 Checking for outdated jackets..."
+        ls "$CELLAR_DIR" 2>/dev/null | while read p; do
+            local installed=$(ls "$CELLAR_DIR/$p" | head -1)
+            local latest=$(jq -r ".jackets[\"$p\"] | to_entries[0].value.version // \"unknown\"" "$JACKET_DIR/index.json" 2>/dev/null)
+            [ "$installed" != "$latest" ] && echo "  $p: $installed → $latest"
+        done
+        ;;
+    *)
+        echo "Aurora-Shell Module System (shell)"
+        echo ""
+        echo "Usage: shell install|uninstall|list|search|update|outdated <package>"
+        echo ""
+        echo "Packages are installed from pre-built jackets at:"
+        echo "  github.com/Seaus-tech/Aurora-Shell/.pack/shell/jackets"
+        echo "  Falls back to brew/npm if no jacket available."
+        ;;
+esac
+SHELLEOF
+            chmod +x "$_shell_dir/bin/shell"
+
+            # add to PATH if not already there
+            grep -q '\.local/shell/bin' ~/.zshrc 2>/dev/null || echo 'export PATH="$HOME/.local/shell/bin:$PATH"' >> ~/.zshrc
+            export PATH="$_shell_dir/bin:$PATH"
+
+            echo ""
+            echo "✅ Aurora-Shell Module System installed!" | safe_lolcat
+            echo "   shell install <package>   — install from jacket"
+            echo "   shell search <query>      — search jackets"
+            echo "   shell list                — list installed"
+            echo ""
+            echo "↺  Restart terminal or run: source ~/.zshrc"
+            ;;
         --motd)
             local motd=$(curl -sf --max-time 5 "https://zenquotes.io/api/today" 2>/dev/null | jq -r '.[0] | "\(.q) — \(.a)"' 2>/dev/null)
             [ -n "$motd" ] && echo "$motd" | safe_lolcat || echo "No MOTD available."
