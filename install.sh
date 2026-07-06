@@ -1127,10 +1127,10 @@ else
     [ -f "$DATA_DIR/wx.js" ] && printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$DATA_DIR/bin/wx" && chmod +x "$DATA_DIR/bin/wx"
 fi
 
-echo -e "\n\033[1;32m✅ successfully deployed Aurora-Shell v$VER .\033[0m"
+echo -e "\n\033[1;32m✅ successfully deployed Aurora-Shell v$VER.\033[0m"
 
 terminal-notifier -title "Aurora-Shell" -message "Setup complete" -sound "Ping"
 
 cd "$HOME"
 sleep 1
-zsh
+exec "$SHELL" -l
