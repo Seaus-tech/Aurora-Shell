@@ -1,8 +1,8 @@
-# v5.8.0
-# Aurora-Shell v5.8.0 installer — PowerShell port
+# v5.8.1
+# Aurora-Shell v5.8.1 installer — PowerShell port
 # FIX: Sentinel Auth Visuals + Separator + CPU/Disk Telemetry
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$VER      = "5.8.0"
+$VER      = "5.8.1"
 $DATA_DIR = "$HOME\.aurora-shell_files"
 $THEME_FILE  = "$DATA_DIR\aurora-shell_theme.ps1"
 $CONFIG_FILE = "$DATA_DIR\aurora-shell_settings.ps1"

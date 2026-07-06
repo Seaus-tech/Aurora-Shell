@@ -1,5 +1,5 @@
 #!/bin/bash
-SHELL_VER="--- Aurora-Shell v5.8.1 ---"
+SHELL_VER="--- Aurora-Shell v5.8.2 ---"
 
 # --- PATH CONFIGURATION ---
 OLD_SHELL="$HOME/.aurora-shell_files"
@@ -8,7 +8,7 @@ THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-VER="5.8.1"
+VER="5.8.2"
 
 echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
 
@@ -1127,9 +1127,9 @@ else
     [ -f "$DATA_DIR/wx.js" ] && printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$DATA_DIR/bin/wx" && chmod +x "$DATA_DIR/bin/wx"
 fi
 
-echo -e "\n\033[1;32m✅ v$VER Deployed.\033[0m"
+echo -e "\n\033[1;32m✅ successfully deployed Aurora-Shell v$VER .\033[0m"
 
-echo "welcome to Aurora-Shell" | safe_lolcat
+terminal-notifier -title "Aurora-Shell" -message "Setup complete" -sound "Ping"
 
 cd "$HOME"
 sleep 1
