@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   build-jackets:
@@ -127,7 +128,20 @@ jobs:
             bin_path=$(command -v "$bin_name" 2>/dev/null || true)
             [ -z "$bin_path" ] && echo "⚠  Binary '$bin_name' not found — skip" && continue
 
-            real_ver=$("$bin_name" --version 2>/dev/null | head -1 | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 || echo "$version")
+            raw_ver=$(
+              python3 - "$bin_name" <<'PY'
+import subprocess, sys
+cmd = [sys.argv[1], '--version']
+try:
+    p = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+    out = p.stdout.strip().splitlines()[0] if p.stdout else ''
+    sys.stdout.write(out)
+except Exception:
+    pass
+PY
+            )
+            echo "  raw_version_output: $raw_ver"
+            real_ver=$(printf '%s\n' "$raw_ver" | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 || echo "$version")
 
             # bundle binary (+ dylibs on macOS)
             tmp_dir=$(mktemp -d)
@@ -172,7 +186,7 @@ jobs:
           # create a PR against dev
           TITLE="🧥 jackets (${ARCH}_${PLATFORM})"
           BODY="Auto-generated jackets build from workflow run $GITHUB_RUN_ID. Branch: $BRANCH"
-          curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github+json" \
+          curl -s -X POST -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls" \
             -d "{\"title\":\"${TITLE}\",\"head\":\"${BRANCH}\",\"base\":\"dev\",\"body\":\"${BODY}\"}"
         env:
