@@ -11,6 +11,8 @@ on:
       package:
         description: 'Specific package to build (leave empty for all)'
         required: false
+  repository_dispatch:
+    types: [build-jackets]
 
 permissions:
   contents: write
@@ -135,18 +137,18 @@ jobs:
             rm -rf "$tmp_dir"
 
             cat > "$jacket_meta" << METAEOF
-{
-  "name": "$pkg",
-  "bin": "$bin_name",
-  "version": "$real_ver",
-  "arch": "$ARCH",
-  "platform": "$PLATFORM",
-  "source": "$source",
-  "description": "$description",
-  "file": "${jacket_name}.tar.gz",
-  "built": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-}
-METAEOF
+            {
+              "name": "$pkg",
+              "bin": "$bin_name",
+              "version": "$real_ver",
+              "arch": "$ARCH",
+              "platform": "$PLATFORM",
+              "source": "$source",
+              "description": "$description",
+              "file": "${jacket_name}.tar.gz",
+              "built": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            }
+            METAEOF
 
             echo "✅ Built: $jacket_name ($real_ver)"
             BUILT=$((BUILT + 1))
