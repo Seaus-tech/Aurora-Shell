@@ -1,0 +1,11 @@
+{
+  "name": "Docker.CLI",
+  "bin": "docker",
+  "version": "29.6.1",
+  "arch": "arm64",
+  "platform": "darwin",
+  "source": "brew",
+  "description": "Docker container CLI",
+  "file": "Docker.CLI_arm64_darwin.tar.gz",
+  "built": "2026-07-07T01:29:05Z"
+}
