@@ -148,7 +148,7 @@ jobs:
               "file": "${jacket_name}.tar.gz",
               "built": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             }
-            METAEOF
+          METAEOF
 
             echo "✅ Built: $jacket_name ($real_ver)"
             BUILT=$((BUILT + 1))
@@ -174,7 +174,7 @@ jobs:
             jackets
           }, null, 2));
           console.log('index.json updated —', Object.keys(jackets).length, 'packages');
-          NODE
+        NODE
 
           echo "built=$BUILT" >> $GITHUB_OUTPUT
 
