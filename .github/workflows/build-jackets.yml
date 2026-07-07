@@ -53,6 +53,7 @@ jobs:
         id: build
         run: |
           set -e
+           set -x
           ARCH="${{ matrix.arch }}"
           PLATFORM="${{ matrix.platform }}"
           JACKET_DIR=".pack/shell/jackets"
@@ -60,6 +61,8 @@ jobs:
           BUILT=0
 
           mkdir -p "$JACKET_DIR"
+           echo "=== Build jackets start: $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+           echo "ARCH=$ARCH PLATFORM=$PLATFORM JACKET_DIR=$JACKET_DIR SPECIFIC=$SPECIFIC"
 
           packages=$(node -e "
             const p = require('./cli-packages.json').packages;
@@ -71,6 +74,7 @@ jobs:
 
           while IFS= read -r pkg; do
             [ -z "$pkg" ] && continue
+             echo "--- Processing package: $pkg at $(date -u +%Y-%m-%dT%H:%M:%SZ) ---"
 
             source=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.source || '')")
             install_cmd=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.install || '')")
@@ -95,6 +99,8 @@ jobs:
             fi
 
             echo "📦 Building jacket: $pkg ($ARCH/$PLATFORM)"
+             echo "  install_cmd: $install_cmd"
+             echo "  (start) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             install_ok=0
 
             case "$source" in
@@ -133,6 +139,7 @@ jobs:
               done
             fi
 
+             echo "  bundling $jacket_name"
             tar -czf "$jacket_file" -C "$tmp_dir" .
             rm -rf "$tmp_dir"
 
@@ -140,24 +147,43 @@ jobs:
               "$pkg" "$bin_name" "$real_ver" "$ARCH" "$PLATFORM" "$source" "$description" "${jacket_name}.tar.gz" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
               > "$jacket_meta"
 
-            echo "✅ Built: $jacket_name ($real_ver)"
+              echo "✅ Built: $jacket_name ($real_ver) at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             BUILT=$((BUILT + 1))
 
           done <<< "$packages"
 
-          # rebuild index.json
-          node -e "const fs=require('fs');const dir=process.env.JACKET_DIR;const metas=fs.readdirSync(dir).filter(f=>f.endsWith('.json')&&f!=='index.json');const jackets={};metas.forEach(f=>{try{const m=JSON.parse(fs.readFileSync(dir+'/'+f));if(!jackets[m.name])jackets[m.name]={};jackets[m.name][m.arch+'_'+m.platform]=m;}catch{}});fs.writeFileSync(dir+'/index.json',JSON.stringify({version:'1.0.0',updated:new Date().toISOString(),jackets},null,2));console.log('index.json updated —',Object.keys(jackets).length,'packages');"
+          # rebuild index.json (use shell-expanded JACKET_DIR)
+            echo "Rebuilding index.json at $JACKET_DIR"
+          node -e "const fs=require('fs');const dir='$JACKET_DIR';const metas=fs.readdirSync(dir).filter(f=>f.endsWith('.json')&&f!=='index.json');const jackets={};metas.forEach(f=>{try{const m=JSON.parse(fs.readFileSync(dir+'/'+f));if(!jackets[m.name])jackets[m.name]={};jackets[m.name][m.arch+'_'+m.platform]=m;}catch{}});fs.writeFileSync(dir+'/index.json',JSON.stringify({version:'1.0.0',updated:new Date().toISOString(),jackets},null,2));console.log('index.json updated —',Object.keys(jackets).length,'packages');"
 
           echo "built=$BUILT" >> $GITHUB_OUTPUT
 
-      - name: Commit jackets to dev
+      - name: Create PR branch and open pull request
         if: steps.build.outputs.built != '0'
         run: |
           git config user.name "Aurora-Shell Bot"
           git config user.email "aurora-bot@seaus.tech"
-          git pull origin dev --rebase
+          BRANCH="jackets/${{ matrix.arch }}_${{ matrix.platform }}-$(date -u +%Y%m%d%H%M%S)"
+          git checkout -b "$BRANCH"
           git add .pack/
           git diff --staged --quiet || git commit -m "🧥 jackets (${{ matrix.arch }}_${{ matrix.platform }})"
-          git push origin dev
+          git push origin "$BRANCH"
+
+          # create a PR against dev
+          TITLE="🧥 jackets (${ARCH}_${PLATFORM})"
+          BODY="Auto-generated jackets build from workflow run $GITHUB_RUN_ID. Branch: $BRANCH"
+          curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls" \
+            -d "{\"title\":\"${TITLE}\",\"head\":\"${BRANCH}\",\"base\":\"dev\",\"body\":\"${BODY}\"}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  production-approval:
+    needs: build-jackets
+    runs-on: ubuntu-latest
+    environment: production
+    name: Request production deployment approval
+    steps:
+      - name: Notify
+        run: |
+          echo "Production deployment approval requested for jackets build run $GITHUB_RUN_ID. Review and approve in the Environments UI."
