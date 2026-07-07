@@ -148,7 +148,7 @@ jobs:
               "file": "${jacket_name}.tar.gz",
               "built": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             }
-          METAEOF
+            METAEOF
 
             echo "✅ Built: $jacket_name ($real_ver)"
             BUILT=$((BUILT + 1))
@@ -156,25 +156,7 @@ jobs:
           done <<< "$packages"
 
           # rebuild index.json
-          node <<'NODE'
-          const fs = require('fs');
-          const dir = process.env.JACKET_DIR;
-          const metas = fs.readdirSync(dir).filter(f => f.endsWith('.json') && f !== 'index.json');
-          const jackets = {};
-          metas.forEach(f => {
-            try {
-              const m = JSON.parse(fs.readFileSync(dir+'/'+f));
-              if (!jackets[m.name]) jackets[m.name] = {};
-              jackets[m.name][m.arch+'_'+m.platform] = m;
-            } catch {}
-          });
-          fs.writeFileSync(dir+'/index.json', JSON.stringify({
-            version: '1.0.0',
-            updated: new Date().toISOString(),
-            jackets
-          }, null, 2));
-          console.log('index.json updated —', Object.keys(jackets).length, 'packages');
-        NODE
+          node -e "const fs=require('fs');const dir=process.env.JACKET_DIR;const metas=fs.readdirSync(dir).filter(f=>f.endsWith('.json')&&f!=='index.json');const jackets={};metas.forEach(f=>{try{const m=JSON.parse(fs.readFileSync(dir+'/'+f));if(!jackets[m.name])jackets[m.name]={};jackets[m.name][m.arch+'_'+m.platform]=m;}catch{}});fs.writeFileSync(dir+'/index.json',JSON.stringify({version:'1.0.0',updated:new Date().toISOString(),jackets},null,2));console.log('index.json updated —',Object.keys(jackets).length,'packages');"
 
           echo "built=$BUILT" >> $GITHUB_OUTPUT
 
