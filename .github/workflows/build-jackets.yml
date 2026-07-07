@@ -148,7 +148,7 @@ jobs:
               "file": "${jacket_name}.tar.gz",
               "built": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             }
-            METAEOF
+METAEOF
 
             echo "✅ Built: $jacket_name ($real_ver)"
             BUILT=$((BUILT + 1))
