@@ -1,0 +1,11 @@
+{
+  "name": "Google.Cloud",
+  "bin": "gcloud",
+  "version": "574.0.0",
+  "arch": "arm64",
+  "platform": "darwin",
+  "source": "brew",
+  "description": "Google Cloud CLI",
+  "file": "Google.Cloud_arm64_darwin.tar.gz",
+  "built": "2026-07-07T01:29:01Z"
+}
