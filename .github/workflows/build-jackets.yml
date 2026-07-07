@@ -136,19 +136,9 @@ jobs:
             tar -czf "$jacket_file" -C "$tmp_dir" .
             rm -rf "$tmp_dir"
 
-            cat > "$jacket_meta" << METAEOF
-            {
-              "name": "$pkg",
-              "bin": "$bin_name",
-              "version": "$real_ver",
-              "arch": "$ARCH",
-              "platform": "$PLATFORM",
-              "source": "$source",
-              "description": "$description",
-              "file": "${jacket_name}.tar.gz",
-              "built": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            }
-METAEOF
+            printf '{\n  "name": "%s",\n  "bin": "%s",\n  "version": "%s",\n  "arch": "%s",\n  "platform": "%s",\n  "source": "%s",\n  "description": "%s",\n  "file": "%s",\n  "built": "%s"\n}\n' \
+              "$pkg" "$bin_name" "$real_ver" "$ARCH" "$PLATFORM" "$source" "$description" "${jacket_name}.tar.gz" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              > "$jacket_meta"
 
             echo "✅ Built: $jacket_name ($real_ver)"
             BUILT=$((BUILT + 1))
