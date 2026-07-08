@@ -7,5 +7,5 @@
   "source": "brew",
   "description": "Kubernetes package manager",
   "file": "Helm.CLI_arm64_darwin.tar.gz",
-  "built": "2026-07-07T01:29:15Z"
+  "built": "2026-07-08T01:31:23Z"
 }
