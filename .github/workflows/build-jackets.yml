@@ -107,19 +107,19 @@ jobs:
             case "$source" in
               brew)
                 brew_pkg=$(echo "$install_cmd" | sed 's/.*brew install //' | awk '{print $1}')
-                brew install "$brew_pkg" 2>/dev/null && install_ok=1 || true
+                timeout 120 brew install "$brew_pkg" 2>/dev/null && install_ok=1 || true
                 ;;
               npm)
                 npm_pkg=$(echo "$install_cmd" | sed 's/npm install -g //')
-                npm install -g "$npm_pkg" 2>/dev/null && install_ok=1 || true
+                timeout 120 npm install -g "$npm_pkg" 2>/dev/null && install_ok=1 || true
                 ;;
               pip)
                 pip_pkg=$(echo "$install_cmd" | sed 's/pip3 install //')
-                pip3 install "$pip_pkg" 2>/dev/null && install_ok=1 || true
+                timeout 120 pip3 install "$pip_pkg" 2>/dev/null && install_ok=1 || true
                 ;;
               pipx)
                 pipx_pkg=$(echo "$install_cmd" | sed 's/pipx install //')
-                pipx install "$pipx_pkg" 2>/dev/null && install_ok=1 || true
+                timeout 120 pipx install "$pipx_pkg" 2>/dev/null && install_ok=1 || true
                 ;;
             esac
 
@@ -129,7 +129,7 @@ jobs:
             [ -z "$bin_path" ] && echo "⚠  Binary '$bin_name' not found — skip" && continue
 
             raw_ver=$(
-              "$bin_name" --version 2>/dev/null | head -1 || echo "$version"
+              timeout 5 "$bin_name" --version 2>/dev/null | head -1 || echo "$version"
             )
             echo "  raw_version_output: $raw_ver"
             real_ver=$(printf '%s\n' "$raw_ver" | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 || echo "$version")
