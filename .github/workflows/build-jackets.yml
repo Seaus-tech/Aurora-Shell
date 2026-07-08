@@ -166,9 +166,26 @@ PY
 
           done <<< "$packages"
 
-          # rebuild index.json (use shell-expanded JACKET_DIR)
-            echo "Rebuilding index.json at $JACKET_DIR"
-          node -e "const fs=require('fs');const dir='$JACKET_DIR';const metas=fs.readdirSync(dir).filter(f=>f.endsWith('.json')&&f!=='index.json');const jackets={};metas.forEach(f=>{try{const m=JSON.parse(fs.readFileSync(dir+'/'+f));if(!jackets[m.name])jackets[m.name]={};jackets[m.name][m.arch+'_'+m.platform]=m;}catch{}});fs.writeFileSync(dir+'/index.json',JSON.stringify({version:'1.0.0',updated:new Date().toISOString(),jackets},null,2));console.log('index.json updated —',Object.keys(jackets).length,'packages');"
+          # rebuild index.json
+          node <<'NODE'
+          const fs = require('fs');
+          const dir = '.pack/shell/jackets';
+          const metas = fs.readdirSync(dir).filter(f => f.endsWith('.json') && f !== 'index.json');
+          const jackets = {};
+          metas.forEach(f => {
+            try {
+              const m = JSON.parse(fs.readFileSync(dir+'/'+f));
+              if (!jackets[m.name]) jackets[m.name] = {};
+              jackets[m.name][m.arch+'_'+m.platform] = m;
+            } catch {}
+          });
+          fs.writeFileSync(dir+'/index.json', JSON.stringify({
+            version: '1.0.0',
+            updated: new Date().toISOString(),
+            jackets
+          }, null, 2));
+          console.log('index.json updated —', Object.keys(jackets).length, 'packages');
+          NODE
 
           echo "built=$BUILT" >> $GITHUB_OUTPUT
 
