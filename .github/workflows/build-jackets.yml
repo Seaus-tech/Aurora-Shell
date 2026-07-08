@@ -129,16 +129,7 @@ jobs:
             [ -z "$bin_path" ] && echo "⚠  Binary '$bin_name' not found — skip" && continue
 
             raw_ver=$(
-              python3 - "$bin_name" <<'PY'
-import subprocess, sys
-cmd = [sys.argv[1], '--version']
-try:
-    p = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
-    out = p.stdout.strip().splitlines()[0] if p.stdout else ''
-    sys.stdout.write(out)
-except Exception:
-    pass
-PY
+              "$bin_name" --version 2>/dev/null | head -1 || echo "$version"
             )
             echo "  raw_version_output: $raw_ver"
             real_ver=$(printf '%s\n' "$raw_ver" | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 || echo "$version")
