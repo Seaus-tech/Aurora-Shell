@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updated": "2026-07-07T01:30:03.843Z",
+  "updated": "2026-07-08T01:32:11.401Z",
   "jackets": {
     "Amazon.AWS": {
       "arm64_darwin": {
@@ -12,7 +12,7 @@
         "source": "brew",
         "description": "Amazon Web Services CLI",
         "file": "Amazon.AWS_arm64_darwin.tar.gz",
-        "built": "2026-07-07T01:28:20Z"
+        "built": "2026-07-08T01:30:18Z"
       }
     },
     "Docker.CLI": {
@@ -25,7 +25,7 @@
         "source": "brew",
         "description": "Docker container CLI",
         "file": "Docker.CLI_arm64_darwin.tar.gz",
-        "built": "2026-07-07T01:29:05Z"
+        "built": "2026-07-08T01:31:10Z"
       }
     },
     "GitHub.CLI": {
@@ -38,7 +38,7 @@
         "source": "brew",
         "description": "GitHub CLI",
         "file": "GitHub.CLI_arm64_darwin.tar.gz",
-        "built": "2026-07-07T01:28:10Z"
+        "built": "2026-07-08T01:30:05Z"
       }
     },
     "Google.Cloud": {
@@ -51,7 +51,7 @@
         "source": "brew",
         "description": "Google Cloud CLI",
         "file": "Google.Cloud_arm64_darwin.tar.gz",
-        "built": "2026-07-07T01:29:01Z"
+        "built": "2026-07-08T01:31:05Z"
       }
     },
     "Helm.CLI": {
@@ -64,7 +64,7 @@
         "source": "brew",
         "description": "Kubernetes package manager",
         "file": "Helm.CLI_arm64_darwin.tar.gz",
-        "built": "2026-07-07T01:29:15Z"
+        "built": "2026-07-08T01:31:23Z"
       }
     },
     "Heroku.CLI": {
@@ -77,7 +77,7 @@
         "source": "brew",
         "description": "Heroku platform CLI",
         "file": "Heroku.CLI_arm64_darwin.tar.gz",
-        "built": "2026-07-07T01:30:03Z"
+        "built": "2026-07-08T01:32:11Z"
       }
     },
     "Kubernetes.CLI": {
@@ -90,7 +90,7 @@
         "source": "brew",
         "description": "Kubernetes CLI",
         "file": "Kubernetes.CLI_arm64_darwin.tar.gz",
-        "built": "2026-07-07T01:29:10Z"
+        "built": "2026-07-08T01:31:17Z"
       }
     },
     "Microsoft.Azure": {
@@ -103,7 +103,7 @@
         "source": "brew",
         "description": "Microsoft Azure CLI",
         "file": "Microsoft.Azure_arm64_darwin.tar.gz",
-        "built": "2026-07-07T01:28:22Z"
+        "built": "2026-07-08T01:30:21Z"
       }
     }
   }
