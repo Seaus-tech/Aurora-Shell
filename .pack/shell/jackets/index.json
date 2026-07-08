@@ -1,5 +1,175 @@
 {
   "version": "1.0.0",
-  "updated": "",
-  "jackets": {}
+  "updated": "2026-07-08T02:10:03.263Z",
+  "jackets": {
+    "Amazon.AWS": {
+      "arm64_darwin": {
+        "name": "Amazon.AWS",
+        "bin": "aws",
+        "version": "2.35.11",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "brew",
+        "description": "Amazon Web Services CLI",
+        "file": "Amazon.AWS_arm64_darwin.tar.gz",
+        "built": "2026-07-08T01:30:18Z"
+      }
+    },
+    "Cloudflare.Wrangler": {
+      "x86_64_linux": {
+        "name": "Cloudflare.Wrangler",
+        "bin": "wrangler",
+        "version": "4.86.0",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "npm",
+        "description": "Cloudflare Workers CLI",
+        "file": "Cloudflare.Wrangler_x86_64_linux.tar.gz",
+        "built": "2026-07-08T02:09:46Z"
+      }
+    },
+    "Docker.CLI": {
+      "arm64_darwin": {
+        "name": "Docker.CLI",
+        "bin": "docker",
+        "version": "29.6.1",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "brew",
+        "description": "Docker container CLI",
+        "file": "Docker.CLI_arm64_darwin.tar.gz",
+        "built": "2026-07-08T01:31:10Z"
+      }
+    },
+    "GitHub.CLI": {
+      "arm64_darwin": {
+        "name": "GitHub.CLI",
+        "bin": "gh",
+        "version": "2.95.0",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "brew",
+        "description": "GitHub CLI",
+        "file": "GitHub.CLI_arm64_darwin.tar.gz",
+        "built": "2026-07-08T01:30:05Z"
+      }
+    },
+    "Google.Cloud": {
+      "arm64_darwin": {
+        "name": "Google.Cloud",
+        "bin": "gcloud",
+        "version": "574.0.0",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "brew",
+        "description": "Google Cloud CLI",
+        "file": "Google.Cloud_arm64_darwin.tar.gz",
+        "built": "2026-07-08T01:31:05Z"
+      }
+    },
+    "Google.Firebase": {
+      "x86_64_linux": {
+        "name": "Google.Firebase",
+        "bin": "firebase",
+        "version": "15.22.4",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "npm",
+        "description": "Firebase CLI",
+        "file": "Google.Firebase_x86_64_linux.tar.gz",
+        "built": "2026-07-08T02:09:37Z"
+      }
+    },
+    "Helm.CLI": {
+      "arm64_darwin": {
+        "name": "Helm.CLI",
+        "bin": "helm",
+        "version": "",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "brew",
+        "description": "Kubernetes package manager",
+        "file": "Helm.CLI_arm64_darwin.tar.gz",
+        "built": "2026-07-08T01:31:23Z"
+      }
+    },
+    "Heroku.CLI": {
+      "arm64_darwin": {
+        "name": "Heroku.CLI",
+        "bin": "heroku",
+        "version": "11.7.1",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "brew",
+        "description": "Heroku platform CLI",
+        "file": "Heroku.CLI_arm64_darwin.tar.gz",
+        "built": "2026-07-08T01:32:11Z"
+      }
+    },
+    "Kubernetes.CLI": {
+      "arm64_darwin": {
+        "name": "Kubernetes.CLI",
+        "bin": "kubectl",
+        "version": "",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "brew",
+        "description": "Kubernetes CLI",
+        "file": "Kubernetes.CLI_arm64_darwin.tar.gz",
+        "built": "2026-07-08T01:31:17Z"
+      }
+    },
+    "Microsoft.Azure": {
+      "arm64_darwin": {
+        "name": "Microsoft.Azure",
+        "bin": "az",
+        "version": "2.87.0",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "brew",
+        "description": "Microsoft Azure CLI",
+        "file": "Microsoft.Azure_arm64_darwin.tar.gz",
+        "built": "2026-07-08T01:30:21Z"
+      }
+    },
+    "Netlify.CLI": {
+      "x86_64_linux": {
+        "name": "Netlify.CLI",
+        "bin": "netlify",
+        "version": "26.2.0",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "npm",
+        "description": "Netlify deployment CLI",
+        "file": "Netlify.CLI_x86_64_linux.tar.gz",
+        "built": "2026-07-08T02:09:23Z"
+      }
+    },
+    "Seaus.Calc": {
+      "x86_64_linux": {
+        "name": "Seaus.Calc",
+        "bin": "calc-app",
+        "version": "",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "pipx",
+        "description": "Seaus Calculator - natural-language, fraction-aware calculator",
+        "file": "Seaus.Calc_x86_64_linux.tar.gz",
+        "built": "2026-07-08T02:10:03Z"
+      }
+    },
+    "Vercel.CLI": {
+      "x86_64_linux": {
+        "name": "Vercel.CLI",
+        "bin": "vercel",
+        "version": "54.21.1",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "npm",
+        "description": "Vercel deployment CLI",
+        "file": "Vercel.CLI_x86_64_linux.tar.gz",
+        "built": "2026-07-08T02:08:30Z"
+      }
+    }
+  }
 }

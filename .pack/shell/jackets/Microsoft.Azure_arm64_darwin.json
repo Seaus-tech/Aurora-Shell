@@ -1,0 +1,11 @@
+{
+  "name": "Microsoft.Azure",
+  "bin": "az",
+  "version": "2.87.0",
+  "arch": "arm64",
+  "platform": "darwin",
+  "source": "brew",
+  "description": "Microsoft Azure CLI",
+  "file": "Microsoft.Azure_arm64_darwin.tar.gz",
+  "built": "2026-07-08T01:30:21Z"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Kubernetes.CLI",
+  "bin": "kubectl",
+  "version": "",
+  "arch": "arm64",
+  "platform": "darwin",
+  "source": "brew",
+  "description": "Kubernetes CLI",
+  "file": "Kubernetes.CLI_arm64_darwin.tar.gz",
+  "built": "2026-07-08T01:31:17Z"
+}

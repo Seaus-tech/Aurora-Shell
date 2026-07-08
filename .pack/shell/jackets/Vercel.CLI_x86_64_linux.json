@@ -1,0 +1,11 @@
+{
+  "name": "Vercel.CLI",
+  "bin": "vercel",
+  "version": "54.21.1",
+  "arch": "x86_64",
+  "platform": "linux",
+  "source": "npm",
+  "description": "Vercel deployment CLI",
+  "file": "Vercel.CLI_x86_64_linux.tar.gz",
+  "built": "2026-07-08T02:08:30Z"
+}
