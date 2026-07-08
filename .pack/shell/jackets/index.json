@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updated": "2026-07-07T01:30:03.843Z",
+  "updated": "2026-07-08T01:47:48.086Z",
   "jackets": {
     "Amazon.AWS": {
       "arm64_darwin": {
@@ -13,6 +13,19 @@
         "description": "Amazon Web Services CLI",
         "file": "Amazon.AWS_arm64_darwin.tar.gz",
         "built": "2026-07-07T01:28:20Z"
+      }
+    },
+    "Cloudflare.Wrangler": {
+      "x86_64_linux": {
+        "name": "Cloudflare.Wrangler",
+        "bin": "wrangler",
+        "version": "4.86.0",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "npm",
+        "description": "Cloudflare Workers CLI",
+        "file": "Cloudflare.Wrangler_x86_64_linux.tar.gz",
+        "built": "2026-07-08T01:47:30Z"
       }
     },
     "Docker.CLI": {
@@ -52,6 +65,19 @@
         "description": "Google Cloud CLI",
         "file": "Google.Cloud_arm64_darwin.tar.gz",
         "built": "2026-07-07T01:29:01Z"
+      }
+    },
+    "Google.Firebase": {
+      "x86_64_linux": {
+        "name": "Google.Firebase",
+        "bin": "firebase",
+        "version": "15.22.4",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "npm",
+        "description": "Firebase CLI",
+        "file": "Google.Firebase_x86_64_linux.tar.gz",
+        "built": "2026-07-08T01:47:22Z"
       }
     },
     "Helm.CLI": {
@@ -104,6 +130,45 @@
         "description": "Microsoft Azure CLI",
         "file": "Microsoft.Azure_arm64_darwin.tar.gz",
         "built": "2026-07-07T01:28:22Z"
+      }
+    },
+    "Netlify.CLI": {
+      "x86_64_linux": {
+        "name": "Netlify.CLI",
+        "bin": "netlify",
+        "version": "26.2.0",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "npm",
+        "description": "Netlify deployment CLI",
+        "file": "Netlify.CLI_x86_64_linux.tar.gz",
+        "built": "2026-07-08T01:47:07Z"
+      }
+    },
+    "Seaus.Calc": {
+      "x86_64_linux": {
+        "name": "Seaus.Calc",
+        "bin": "calc-app",
+        "version": "",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "pipx",
+        "description": "Seaus Calculator - natural-language, fraction-aware calculator",
+        "file": "Seaus.Calc_x86_64_linux.tar.gz",
+        "built": "2026-07-08T01:47:48Z"
+      }
+    },
+    "Vercel.CLI": {
+      "x86_64_linux": {
+        "name": "Vercel.CLI",
+        "bin": "vercel",
+        "version": "54.21.1",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "npm",
+        "description": "Vercel deployment CLI",
+        "file": "Vercel.CLI_x86_64_linux.tar.gz",
+        "built": "2026-07-08T01:46:12Z"
       }
     }
   }
