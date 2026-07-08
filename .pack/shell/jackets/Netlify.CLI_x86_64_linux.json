@@ -1,0 +1,11 @@
+{
+  "name": "Netlify.CLI",
+  "bin": "netlify",
+  "version": "26.2.0",
+  "arch": "x86_64",
+  "platform": "linux",
+  "source": "npm",
+  "description": "Netlify deployment CLI",
+  "file": "Netlify.CLI_x86_64_linux.tar.gz",
+  "built": "2026-07-08T01:47:07Z"
+}
