@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updated": "2026-07-08T02:10:03.263Z",
+  "updated": "2026-07-09T00:27:58.888Z",
   "jackets": {
     "Amazon.AWS": {
       "arm64_darwin": {
@@ -168,7 +168,7 @@
         "source": "npm",
         "description": "Vercel deployment CLI",
         "file": "Vercel.CLI_x86_64_linux.tar.gz",
-        "built": "2026-07-08T02:08:30Z"
+        "built": "2026-07-09T00:27:58Z"
       }
     }
   }
