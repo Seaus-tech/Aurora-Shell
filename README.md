@@ -1,10 +1,10 @@
 # 🌌 Aurora-Shell
 
-<p align="center>
+<p align="center">
   <strong>A sleek, high-performance terminal theme and diagnostic dashboard for macOS (Zsh) and Windows (PowerShell 7+).</strong>
 </p>
 
-<p align="center>
+<p align="center">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows-blue?style=flat-square&logo=apple" alt="Platform" />
   <img src="https://img.shields.io/badge/Shell-Zsh%20%7C%20PowerShell-0078D4?style=flat-square&logo=gnubash&logoColor=white" alt="Shell" />
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
@@ -156,6 +156,6 @@ open "https://forms.cloud.microsoft/r/GYXq1H83eU"
 
 ---
 
-<p align="center>
+<p align="center">
   <sub>© 2026 Seaus Tech. All rights reserved.</sub>
 </p>
