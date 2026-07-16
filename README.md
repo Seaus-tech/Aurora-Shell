@@ -106,19 +106,6 @@ Then install Aurora-Shell:
 irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
 ```
 
-## Dependencies
-
-### macOS
-
-macOS requires `lolcat` for colorful output:
-```bash
-brew install lolcat
-```
-
-### Windows
-
-No additional dependencies required for PowerShell 7+.
-
 ## Customization
 
 The main configuration logic is stored in:
@@ -130,14 +117,14 @@ The main configuration logic is stored in:
 
 ### macOS
 ```bash
-cd $HOME && shell.aurora --uninstall && cd -
+shell.aurora --uninstall
 ```
 
 ### Windows
 ```powershell
 Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell-2/main/uninstall.ps1" | PowerShell -ExecutionPolicy Bypass -Command -
 ```
-
+(We are working on a fix for shell.aurora --uninstall to come to windows. keep in mind this might sometimes fail so go in file explorer then delete .aurora-shell_files and remove the load in $PROFILE)
 ## Roadmap
 
 - [ ] Add support for bash and fish shells
@@ -157,9 +144,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📣 Stay Updated
+## 📣 Early Access
 
-Sign up for the Aurora-Shell dev program to get updates on new releases, features, and exclusive content!
+Sign up for the Aurora-Shell dev program to get early access to new releases and, features!
 
 ```bash
 open "https://forms.cloud.microsoft/r/GYXq1H83eU"
