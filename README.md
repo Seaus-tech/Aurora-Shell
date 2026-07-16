@@ -12,88 +12,33 @@
 
 ---
 
-## 🌟 Features
+## 📖 Table of Contents
 
-- 📊 **Real-time Diagnostics** — View Battery, CPU usage, and Disk space every time you open a terminal
-- ⏱️ **Session Tracking** — Displays a "Start Time" so you know exactly when you began your session
-- 🔄 **Cross-Platform** — Tailored experiences for both macOS and Windows environments
+- [Overview](#overview)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Installation](#installation)
+- [Dependencies](#dependencies)
+- [Customization](#customization)
+- [Uninstall](#uninstall)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
 
----
+## Overview
 
-## 🚀 Installation
+Aurora-Shell transforms your terminal into a high-performance dashboard with real-time system diagnostics. It provides beautiful, informative prompts for both macOS (Zsh) and Windows (PowerShell 7+).
 
-### 🍎 For macOS (Zsh)
+## Features
 
-**Option 1: Download macOS App (.dmg)**
-1. Download the latest `Aurora-Shell.dmg`
-2. Mount the DMG and install:
-```bash
-mkdir ~/Applications && unzip ~/downloads/Aurora-Shell.zip -d ~/Applications && xattr -d com.apple.quarantine ~/Applications/Aurora-Shell.app && open ~/Applications/Aurora-Shell.app
-```
+| Feature | Description |
+|---------|-------------|
+| 📊 **Real-time Diagnostics** | View Battery, CPU usage, and Disk space every time you open a terminal |
+| ⏱️ **Session Tracking** | Displays session start time and duration |
+| 🔄 **Cross-Platform** | Tailored experiences for macOS and Windows |
+| 🎨 **Multiple Themes** | Figlet and Block ASCII art styles |
+| 🛡️ **Security Terminal** | Dedicated authentication prompt |
 
-**Option 2: Command Line Install**
-```bash
-bash <(curl -s https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.sh)
-```
-
-### 🪟 For Windows (PowerShell 7+)
-
-> [!IMPORTANT]
-> This theme requires Microsoft PowerShell 7.0 or higher. It is not compatible with Windows PowerShell 5.1.
-
-**Install PowerShell 7 (if needed):**
-```powershell
-winget install Microsoft.PowerShell
-```
-
-Or for PowerShell Preview:
-```powershell
-winget install Microsoft.PowerShell.Preview
-```
-
-**Option 1**:
-```powershell
-irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
-```
-
-**Option 2: Download Installer (.exe)**
-1. Download [Aurora-Windows-Installer](https://github.com/Seaus-tech/Aurora-Shell-2/releases/download/v2.0.0/aurora-app.exe)
-
----
-
-## 📦 Dependencies
-
-macOS requires `lolcat` for colorful output:
-```bash
-brew install lolcat
-```
-
----
-
-## 🛠️ Customization
-
-The main configuration logic is stored in:
-
-- **macOS**: `~/.aurora-shell_tfiles` (sourced in your `.zshrc`)
-- **Windows**: `$PROFILE` (usually located in `Documents\PowerShell\Microsoft.PowerShell_profile.ps1`)
-
----
-
-## 🗑️ Uninstall
-
-To remove Aurora Shell on macOS:
-```bash
-cd $HOME && shell.aurora --uninstall && cd -
-```
-
-For Windows:
-```powershell
-Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell-2/main/uninstall.ps1" | PowerShell -ExecutionPolicy Bypass -Command -
-```
-
----
-
-## 📺 Example Banners
+## Screenshots
 
 ### Figlet Style
 ```
@@ -128,21 +73,87 @@ Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shel
 ------------------------------------------------------------------------------------------------------------------------
 ```
 
----
+## Installation
 
-## 🔐 Security Terminal
+### 🍎 For macOS (Zsh)
 
+**Option 1: Download macOS App (.dmg)**
+```bash
+mkdir ~/Applications && unzip ~/downloads/Aurora-Shell.zip -d ~/Applications && xattr -d com.apple.quarantine ~/Applications/Aurora-Shell.app && open ~/Applications/Aurora-Shell.app
 ```
-           .---.
-          /     \
-         | (00)  |  SYSTEM ENCRYPTED
-          \  ^  /
-           '---'
-     ╔════════════════════════════════════════╗
-     ║     AURORA-SHELL SECURITY TERMINAL     ║
-     ╚════════════════════════════════════════╝
-[AUTH] Key: 
+
+**Option 2: Command Line Install**
+```bash
+bash <(curl -s https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.sh)
 ```
+
+### 🪟 For Windows (PowerShell 7+)
+
+> **IMPORTANT**: This theme requires Microsoft PowerShell 7.0 or higher. It is not compatible with Windows PowerShell 5.1.
+
+Install PowerShell 7 (if needed):
+```powershell
+winget install Microsoft.PowerShell
+```
+
+Or for PowerShell Preview:
+```powershell
+winget install Microsoft.PowerShell.Preview
+```
+
+Then install Aurora-Shell:
+```powershell
+irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
+```
+
+## Dependencies
+
+### macOS
+
+macOS requires `lolcat` for colorful output:
+```bash
+brew install lolcat
+```
+
+### Windows
+
+No additional dependencies required for PowerShell 7+.
+
+## Customization
+
+The main configuration logic is stored in:
+
+- **macOS**: `~/.aurora-shell_tfiles` (sourced in your `.zshrc`)
+- **Windows**: `$PROFILE` (usually `Documents\PowerShell\Microsoft.PowerShell_profile.ps1`)
+
+## Uninstall
+
+### macOS
+```bash
+cd $HOME && shell.aurora --uninstall && cd -
+```
+
+### Windows
+```powershell
+Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell-2/main/uninstall.ps1" | PowerShell -ExecutionPolicy Bypass -Command -
+```
+
+## Roadmap
+
+- [ ] Add support for bash and fish shells
+- [ ] Create themed prompt customization UI
+- [ ] Add plugin system for custom modules
+- [ ] Implement terminal color scheme generator
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
@@ -156,6 +167,4 @@ open "https://forms.cloud.microsoft/r/GYXq1H83eU"
 
 ---
 
-<p align="center>
-  <sub>© 2026 Seaus Tech. All rights reserved.</sub>
-</p>
+© 2026 Seaus Tech. All rights reserved.
