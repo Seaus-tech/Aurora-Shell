@@ -12,88 +12,33 @@
 
 ---
 
-## 🌟 Features
+## 📖 Table of Contents
 
-- 📊 **Real-time Diagnostics** — View Battery, CPU usage, and Disk space every time you open a terminal
-- ⏱️ **Session Tracking** — Displays a "Start Time" so you know exactly when you began your session
-- 🔄 **Cross-Platform** — Tailored experiences for both macOS and Windows environments
+- [Overview](#overview)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Installation](#installation)
+- [Dependencies](#dependencies)
+- [Customization](#customization)
+- [Uninstall](#uninstall)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
 
----
+## Overview
 
-## 🚀 Installation
+Aurora-Shell transforms your terminal into a high-performance dashboard with real-time system diagnostics. It provides beautiful, informative prompts for both macOS (Zsh) and Windows (PowerShell 7+).
 
-### 🍎 For macOS (Zsh)
+## Features
 
-**Option 1: Download macOS App (.dmg)**
-1. Download the latest `Aurora-Shell.dmg`
-2. Mount the DMG and install:
-```bash
-mkdir ~/Applications && unzip ~/downloads/Aurora-Shell.zip -d ~/Applications && xattr -d com.apple.quarantine ~/Applications/Aurora-Shell.app && open ~/Applications/Aurora-Shell.app
-```
+| Feature | Description |
+|---------|-------------|
+| 📊 **Real-time Diagnostics** | View Battery, CPU usage, and Disk space every time you open a terminal |
+| ⏱️ **Session Tracking** | Displays session start time and duration |
+| 🔄 **Cross-Platform** | Tailored experiences for macOS and Windows |
+| 🎨 **Multiple Themes** | Figlet and Block ASCII art styles |
+| 🛡️ **Security Terminal** | Dedicated authentication prompt |
 
-**Option 2: Command Line Install**
-```bash
-bash <(curl -s https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.sh)
-```
-
-### 🪟 For Windows (PowerShell 7+)
-
-> [!IMPORTANT]
-> This theme requires Microsoft PowerShell 7.0 or higher. It is not compatible with Windows PowerShell 5.1.
-
-**Install PowerShell 7 (if needed):**
-```powershell
-winget install Microsoft.PowerShell
-```
-
-Or for PowerShell Preview:
-```powershell
-winget install Microsoft.PowerShell.Preview
-```
-
-**Option 1**:
-```powershell
-irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
-```
-
-**Option 2: Download Installer (.exe)**
-1. Download [Aurora-Windows-Installer](https://github.com/Seaus-tech/Aurora-Shell-2/releases/download/v2.0.0/aurora-app.exe)
-
----
-
-## 📦 Dependencies
-
-macOS requires `lolcat` for colorful output:
-```bash
-brew install lolcat
-```
-
----
-
-## 🛠️ Customization
-
-The main configuration logic is stored in:
-
-- **macOS**: `~/.aurora-shell_tfiles` (sourced in your `.zshrc`)
-- **Windows**: `$PROFILE` (usually located in `Documents\PowerShell\Microsoft.PowerShell_profile.ps1`)
-
----
-
-## 🗑️ Uninstall
-
-To remove Aurora Shell on macOS:
-```bash
-cd $HOME && shell.aurora --uninstall && cd -
-```
-
-For Windows:
-```powershell
-Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell-2/main/uninstall.ps1" | PowerShell -ExecutionPolicy Bypass -Command -
-```
-
----
-
-## 📺 Example Banners
+## Screenshots
 
 ### Figlet Style
 ```
@@ -128,27 +73,78 @@ Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shel
 ------------------------------------------------------------------------------------------------------------------------
 ```
 
----
+## Installation
 
-## 🔐 Security Terminal
+### 🍎 For macOS (Zsh)
 
-```
-           .---.
-          /     \
-         | (00)  |  SYSTEM ENCRYPTED
-          \  ^  /
-           '---'
-     ╔════════════════════════════════════════╗
-     ║     AURORA-SHELL SECURITY TERMINAL     ║
-     ╚════════════════════════════════════════╝
-[AUTH] Key: 
+**Option 1: Download macOS App (.dmg)**
+```bash
+mkdir ~/Applications && unzip ~/downloads/Aurora-Shell.zip -d ~/Applications && xattr -d com.apple.quarantine ~/Applications/Aurora-Shell.app && open ~/Applications/Aurora-Shell.app
 ```
 
+**Option 2: Command Line Install**
+```bash
+bash <(curl -s https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.sh)
+```
+
+### 🪟 For Windows (PowerShell 7+)
+
+> **IMPORTANT**: This theme requires Microsoft PowerShell 7.0 or higher. It is not compatible with Windows PowerShell 5.1.
+
+Install PowerShell 7 (if needed):
+```powershell
+winget install Microsoft.PowerShell
+```
+
+Or for PowerShell Preview:
+```powershell
+winget install Microsoft.PowerShell.Preview
+```
+
+Then install Aurora-Shell:
+```powershell
+irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" | iex
+```
+
+## Customization
+
+The main configuration logic is stored in:
+
+- **macOS**: `~/.aurora-shell_tfiles` (sourced in your `.zshrc`)
+- **Windows**: `$PROFILE` (usually `Documents\PowerShell\Microsoft.PowerShell_profile.ps1`)
+
+## Uninstall
+
+### macOS
+```bash
+shell.aurora --uninstall
+```
+
+### Windows
+```powershell
+Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell-2/main/uninstall.ps1" | PowerShell -ExecutionPolicy Bypass -Command -
+```
+(We are working on a fix for shell.aurora --uninstall to come to windows. keep in mind this might sometimes fail so go in file explorer then delete .aurora-shell_files and remove the load in $PROFILE)
+## Roadmap
+
+- [ ] Add support for bash and fish shells
+- [ ] Create themed prompt customization UI
+- [ ] Add plugin system for custom modules
+- [ ] Implement terminal color scheme generator
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Run ```open https://forms.cloud.microsoft/r/hnHpTcEuMQ``` in terminal
+2. Fill in the form.
+3. Wait for the results!
+
 ---
 
-## 📣 Stay Updated
+## 📣 Early Access
 
-Sign up for the Aurora-Shell dev program to get updates on new releases, features, and exclusive content!
+Sign up for the Aurora-Shell dev program to get early access to new releases and, features!
 
 ```bash
 open "https://forms.cloud.microsoft/r/GYXq1H83eU"
@@ -156,6 +152,4 @@ open "https://forms.cloud.microsoft/r/GYXq1H83eU"
 
 ---
 
-<p align="center">
-  <sub>© 2026 Seaus Tech. All rights reserved.</sub>
-</p>
+© 2026 Seaus Tech. All rights reserved.
