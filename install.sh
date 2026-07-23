@@ -31,10 +31,10 @@ safe_lolcat() {
 
 # -- HELPER: SED --
 safe_sed() {
-    if [ "$PLATFORM" = "macos" ]; then
-        sed -i '' "$@"
+    if [ "$PLATFORM" = "MacOS" ]; then
+        /usr/bin/sed -i '' "$@"
     else
-        sed -i "$@"
+        /usr/bin/sed -i "$@"
     fi
 }
 
@@ -58,7 +58,7 @@ sync_env() {
                 eval "$(/usr/local/bin/brew shellenv)"
             fi
         else
-             echo "⚠ brew not found. Please install it or dependencies manually."
+             echo "⚠ brew not found. Please install it manually."
         fi
     fi
     echo -e "\033[1;32mDONE\033[0m"
