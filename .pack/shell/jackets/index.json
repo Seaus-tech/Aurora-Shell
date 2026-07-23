@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updated": "2026-07-09T00:27:58.888Z",
+  "updated": "2026-07-23T03:06:17.965Z",
   "jackets": {
     "Amazon.AWS": {
       "arm64_darwin": {
@@ -25,7 +25,7 @@
         "source": "npm",
         "description": "Cloudflare Workers CLI",
         "file": "Cloudflare.Wrangler_x86_64_linux.tar.gz",
-        "built": "2026-07-08T02:09:46Z"
+        "built": "2026-07-23T03:06:00Z"
       }
     },
     "Docker.CLI": {
@@ -71,13 +71,13 @@
       "x86_64_linux": {
         "name": "Google.Firebase",
         "bin": "firebase",
-        "version": "15.22.4",
+        "version": "15.24.0",
         "arch": "x86_64",
         "platform": "linux",
         "source": "npm",
         "description": "Firebase CLI",
         "file": "Google.Firebase_x86_64_linux.tar.gz",
-        "built": "2026-07-08T02:09:37Z"
+        "built": "2026-07-23T03:05:52Z"
       }
     },
     "Helm.CLI": {
@@ -142,7 +142,7 @@
         "source": "npm",
         "description": "Netlify deployment CLI",
         "file": "Netlify.CLI_x86_64_linux.tar.gz",
-        "built": "2026-07-08T02:09:23Z"
+        "built": "2026-07-23T03:05:40Z"
       }
     },
     "Seaus.Calc": {
@@ -155,20 +155,20 @@
         "source": "pipx",
         "description": "Seaus Calculator - natural-language, fraction-aware calculator",
         "file": "Seaus.Calc_x86_64_linux.tar.gz",
-        "built": "2026-07-08T02:10:03Z"
+        "built": "2026-07-23T03:06:17Z"
       }
     },
     "Vercel.CLI": {
       "x86_64_linux": {
         "name": "Vercel.CLI",
         "bin": "vercel",
-        "version": "54.21.1",
+        "version": "56.5.0",
         "arch": "x86_64",
         "platform": "linux",
         "source": "npm",
         "description": "Vercel deployment CLI",
         "file": "Vercel.CLI_x86_64_linux.tar.gz",
-        "built": "2026-07-09T00:27:58Z"
+        "built": "2026-07-23T03:05:02Z"
       }
     }
   }
