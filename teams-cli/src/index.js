@@ -32,7 +32,7 @@ if (process.stdout.isTTY && !process.argv.includes('--no-logo')) {
 const handle = (fn) => (...args) => fn(...args).catch(e => console.error(chalk.red('❌ ' + e.message)));
 
 program
-    .name('teams')
+    .name('aurora-teams')
     .description('Aurora Shell - Microsoft Teams CLI')
     .version('1.0.0');
 

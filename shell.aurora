@@ -65,3 +65,14 @@ shell.aurora() {
 
 alias aurora="shell.aurora"
 alias auseaia="bash ~/aurora-shell-2/chat.sh"
+
+# Teams CLI wrapper function
+teams() {
+    # Check if the aurora-teams command exists
+    if command -v aurora-teams >/dev/null 2>&1; then
+        aurora-teams "$@"
+    else
+        # Fallback to direct node execution if not installed globally
+        node "$HOME/Library/Mobile Documents/com~apple~CloudDocs/Seaus/Aurora-Shell/teams-cli/src/index.js" "$@"
+    fi
+}

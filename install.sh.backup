@@ -1,79 +1,47 @@
 #!/bin/bash
-# --- Aurora-Shell Installer ---
-VER="5.8.2"
-SHELL_VER="--- Aurora-Shell v$VER ---"
-
-# --- DETECT OS ---
-OS="$(uname -s)"
-case "$OS" in
-    Darwin)  PLATFORM="macos" ;;
-    Linux)   PLATFORM="linux" ;;
-    *)       PLATFORM="unknown" ;;
-esac
+SHELL_VER="--- Aurora-Shell v5.8.2 ---"
 
 # --- PATH CONFIGURATION ---
+OLD_SHELL="$HOME/.aurora-shell_files"
 DATA_DIR="$HOME/.aurora-shell_files"
-OLD_SHELL="$DATA_DIR"
 THEME_FILE="$DATA_DIR/aurora-shell_theme"
 CONFIG_FILE="$DATA_DIR/aurora-shell_settings"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 GIT_CLONE="https://github.com/Seaus-tech/Aurora-Shell.git"
-CLI_PACKAGES_FILE="$DATA_DIR/cli-packages.json"
+VER="5.8.2"
+
+echo "running as $USER: rm -rf $OLD_SHELL" | lolcat
+
+rm -rf "$OLD_SHELL"
+sed -i '' '/aurora-shell_files/d' ~/.zshrc
+
+echo "running as $USER: mkdir $DATA_DIR" | lolcat
+
+mkdir -p "$DATA_DIR"
+[ -f "$THEME_FILE" ] && rm "$THEME_FILE"
+
+echo "$SHELL_VER" | lolcat
 
 # -- HELPER: SAFE LOLCAT --
 safe_lolcat() {
-    if command -v lolcat &> /dev/null; then
-        command lolcat "$@"
-    else
-        cat
-    fi
+    if command -v lolcat &> /dev/null; then command lolcat; else cat; fi
 }
-
-# -- HELPER: SED --
-safe_sed() {
-    if [ "$PLATFORM" = "MacOS" ]; then
-        /usr/bin/sed -i '' "$@"
-    else
-        /usr/bin/sed -i "$@"
-    fi
-}
-
-echo "Running as $USER..." | safe_lolcat
-
-# Prepare directory
-mkdir -p "$DATA_DIR"
-safe_sed '/aurora-shell_files/d' ~/.zshrc 2>/dev/null
 
 # --- SYNC ENVIRONMENT ---
 sync_env() {
     echo -ne "\033[1;33m🛠️  Syncing Environment... \033[0m"
     if ! command -v brew >/dev/null 2>&1; then
-        if [ "$PLATFORM" = "macos" ]; then
-            [ "${AURORA_UPDATE_MODE:-}" = "1" ] && echo "⚠ brew not found — skipping" && return
-            echo "⬇ Installing Homebrew..."
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            if [ -d "/opt/homebrew/bin" ]; then
-                eval "$(/opt/homebrew/bin/brew shellenv)"
-            elif [ -d "/usr/local/bin" ]; then
-                eval "$(/usr/local/bin/brew shellenv)"
-            fi
-        else
-             echo "⚠ brew not found. Please install it manually."
-        fi
+        [ "${AURORA_UPDATE_MODE:-}" = "1" ] && echo "⚠ brew not found — skipping" && return
+        mkdir -p "$HOME/.brew"
+        curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C "$HOME/.brew"
+        export PATH="$HOME/.brew/bin:$PATH"
     fi
-    echo -e "\033[1;32mDONE\033[0m"
 }
 
 # --- INSTALL COMPONENTS ---
 install_com() {
-    echo -ne "\033[1;33m📥 Downloading extensions... \033[0m"
-    if command -v brew >/dev/null 2>&1; then
-        brew install figlet lolcat pygments terminal-notifier jq fzf 2>/dev/null
-    elif [ "$PLATFORM" = "linux" ]; then
-        if command -v apt-get >/dev/null 2>&1; then
-            sudo apt-get update && sudo apt-get install -y figlet lolcat python3-pygments jq fzf
-        fi
-    fi
+    echo -ne "\033[1;33m📥 downloading extensions... \033[0m"
+    brew install figlet lolcat pygments terminal-notifier 2>/dev/null
     echo -e "\033[1;32mREADY\033[0m"
 }
 
@@ -128,8 +96,6 @@ dev_tools_bootstrap() {
 # --- CONFIG WIZARD ---
 run_wizard() {
     echo -e "\n\033[1;32m--- AURORA CONFIGURATION WIZARD ---\033[0m"
-    
-    # Load existing config if available
     [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
 
     # in update mode — auto-restore from backup, no prompts
@@ -153,11 +119,12 @@ EOF
         if [ -f "/tmp/aurora-shell-preferences/active_account.json" ]; then
             cp "/tmp/aurora-shell-preferences/active_account.json" "$DATA_DIR/active_account.json"
             _uid=$(jq -r '.username // empty' "$DATA_DIR/active_account.json" 2>/dev/null)
-            [ -n "$_uid" ] && safe_sed "s/^AURORA_ID=.*/AURORA_ID=\"$_uid\"/" "$CONFIG_FILE" 2>/dev/null
+            [ -n "$_uid" ] && sed -i '' "s/^AURORA_ID=.*/AURORA_ID=\"$_uid\"/" "$CONFIG_FILE" 2>/dev/null
             echo "  ✅ Account restored: $_uid" | safe_lolcat
         fi
         return
     fi
+    [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
     
     read -s -p "🔐 Set Terminal PIN (Enter for none): " NEW_PW < /dev/tty; echo ""
     if [ "${AURORA_UPDATE_MODE:-}" = "1" ]; then
@@ -213,7 +180,7 @@ EOF
             else
                 echo "$_resp" > "$DATA_DIR/active_account.json"
                 _uid=$(echo "$_resp" | jq -r '.username')
-                safe_sed "s/^AURORA_ID=.*/AURORA_ID=\"$_uid\"/" "$CONFIG_FILE" 2>/dev/null
+                sed -i '' "s/^AURORA_ID=.*/AURORA_ID=\"$_uid\"/" "$CONFIG_FILE" 2>/dev/null
                 echo "   ✅ Signed in as $_uid"
             fi
             ;;
@@ -254,11 +221,9 @@ notify() {
     local title="${1:-Aurora-Shell}"
     local msg="${2:-}"
     local sound="${3:-}"
-    if [[ "$(uname -s)" == "Darwin" ]] && command -v terminal-notifier &>/dev/null; then
+    if command -v terminal-notifier &>/dev/null; then
         { terminal-notifier -title "$title" -message "$msg" ${sound:+-sound "$sound"} 2>/dev/null; } &>/dev/null &
         disown
-    elif command -v notify-send &>/dev/null; then
-        notify-send "$title" "$msg"
     fi
 }
 install_xcode_if_needed() {
@@ -323,7 +288,7 @@ authenticate_user() {
            '---'
      ╔════════════════════════════════════════╗
      ║     AURORA-SHELL SECURITY TERMINAL     ║
-     ╚════════════════════════════════════════╝" | safe_lolcat
+     ╚════════════════════════════════════════╝" | lolcat -a -d 1
     local attempts=0
     while true; do
         echo -ne "[AUTH] Key: " | safe_lolcat
@@ -407,20 +372,12 @@ Show-Aurora() {
 
     while IFS= read -r line; do
         printf "%${pad}s%s\n" "" "$line"
-    done <<< "$content" | safe_lolcat
+    done <<< "$content" | lolcat -a -d 1
 
     # --- TELEMETRY ---
-    local cpu_load="?"
-    case "$(uname -s)" in
-        Darwin) cpu_load=$(top -l 1 | grep "CPU usage" | awk '{print $3}' | sed 's/%//') ;;
-        Linux)  cpu_load=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d. -f1) ;;
-    esac
+    local cpu_load=$(top -l 1 | grep "CPU usage" | awk '{print $3}' | sed 's/%//')
     local disk_free=$(df -h / | tail -1 | awk '{print $4}')
-    local batt="?"
-    case "$(uname -s)" in
-        Darwin) batt=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 || echo "?") ;;
-        Linux)  batt=$(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo "AC") ;;
-    esac
+    local batt=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 || echo "100%")
     
     local stats="⚡ AURORA v$AURORA_VER | 🧠 CPU: ${cpu_load}% | 💾 FREE: $disk_free | 🔋 $batt | 📅 $(date +'%D')"
     local s_pad=$(( (cols - ${#stats}) / 2 ))
@@ -430,19 +387,13 @@ Show-Aurora() {
     # --- THE SEPARATOR DASH LINE ---
     local line_str=""
     for ((i=1; i<=$cols; i++)); do line_str+="-"; done
-    echo "$line_str" | safe_lolcat
+    echo "$line_str" | lolcat -a -d 1
 }
 
 shell.aurora() {
     case "$1" in
         --display) Show-Aurora ;;
-        --sys)
-            case "$(uname -s)" in
-                Darwin) sw_vers && sysctl -n machdep.cpu.brand_string ;;
-                Linux)  cat /etc/os-release 2>/dev/null && lscpu | grep "Model name" | head -1 ;;
-                *)      uname -a ;;
-            esac
-            ;;
+        --sys) sw_vers && sysctl -n machdep.cpu.brand_string ;;
         --update)
             local branch="${2:-main}"
             # fetch remote version
@@ -465,7 +416,7 @@ shell.aurora() {
                 printf "  ✅ Already up to date.\n" | safe_lolcat
                 printf "\n"; echo "$line_str" | safe_lolcat; return 0
             fi
-            printf "  ⬆  Update available: v$AURORA_VER → v$remote_ver\n" | safe_lolcat
+            printf "  ⬆  Update available: v$AURORA_VER → v$remote_ver\n" | lolcat -a -d 1
             printf "\n"; echo "$line_str" | safe_lolcat; printf "\n"
             # account password gate
             if [[ -f "$HOME/.aurora-shell_files/active_account.json" ]]; then
@@ -535,7 +486,6 @@ SHELL_DIR="$HOME/.local/shell"
 JACKET_DIR="$SHELL_DIR/jackets"
 CELLAR_DIR="$SHELL_DIR/cellar"
 PACK_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/.pack/shell/jackets"
-CLI_PACKAGES_FILE="$HOME/.aurora-shell_files/cli-packages.json"
 ARCH=$(uname -m)
 PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
 
@@ -578,175 +528,16 @@ _jacket_install() {
 
 _fallback_install() {
     local pkg="$1"
-    
-    # First try to find in CLI packages (third-party tools)
-    local cli_pkg=$(jq -r ".packages[\"$pkg\"] // empty" "$CLI_PACKAGES_FILE" 2>/dev/null)
-    local pkg_source="cli-packages"
-    
+    local cli_pkg=$(jq -r ".packages[\"$pkg\"] // empty" "$HOME/.aurora-shell_files/cli-packages.json" 2>/dev/null)
     if [ -z "$cli_pkg" ]; then
-        # If not found in CLI packages, try core Aurora packages
-        cli_pkg=$(jq -r ".packages[\"$pkg\"] // empty" "$PACKAGES_FILE" 2>/dev/null)
-        pkg_source="packages"
+        echo "❌ $pkg not found in jackets or CLI registry" | safe_lolcat; return 1
     fi
-    
-    if [ -z "$cli_pkg" ]; then
-        echo "❌ $pkg not found in jackets or package registries" | safe_lolcat; return 1
-    fi
-    
-    # Handle based on package source/type
-    if [ "$pkg_source" = "cli-packages" ]; then
-        # Third-party CLI tool - execute install command directly
-        local cmd=$(echo "$cli_pkg" | jq -r '.install')
-        echo "⬇  Fallback: $cmd" | safe_lolcat
-        eval "$cmd"
-    else
-        # Core Aurora package - handle based on type
-        local pkg_type=$(echo "$cli_pkg" | jq -r '.type // empty')
-        local pkg_url=$(echo "$cli_pkg" | jq -r '.url // empty')
-        
-        case "$pkg_type" in
-            "dmg")
-                # Download and install .dmg file
-                echo "⬇  Downloading DMG package..." | safe_lolcat
-                local dmg_file="$TEMP_DIR/$(basename "$pkg_url")"
-                if curl -sfL "$pkg_url" -o "$dmg_file"; then
-                    echo "⬇  Installing from DMG..." | safe_lolcat
-                    if hdiutil attach "$dmg_file" -quiet -noautoopen -mountpoint "/Volumes/Install"; then
-                        # Find .app file in the mounted volume
-                        local app_path=$(find "/Volumes/Install" -name "*.app" -maxdepth 1 -type d | head -n 1)
-                        if [ -n "$app_path" ]; then
-                            cp -R "$app_path" "/Applications/" && echo "✅ Installed application to /Applications" | safe_lolcat
-                        else
-                            echo "❌ No .app file found in DMG" | safe_lolcat
-                        fi
-                        hdiutil detach "/Volumes/Install" -quiet
-                    else
-                        echo "❌ Failed to mount DMG" | safe_lolcat
-                    fi
-                    rm -f "$dmg_file"
-                else
-                    echo "❌ Failed to download DMG" | safe_lolcat
-                fi
-                ;;
-            "wx-installer")
-                # Handle wx package (file converter)
-                echo "⬇  Installing wx package..." | safe_lolcat
-                local wx_file="$INSTALLED_DIR/wx.js"
-                if [ ! -f "$wx_file" ]; then
-                    if curl -sfL "$pkg_url" -o "$wx_file"; then
-                        chmod +x "$wx_file"
-                        echo "✅ Installed wx.js" | safe_lolcat
-                    else
-                        echo "❌ Failed to download wx.js" | safe_lolcat
-                        return 1
-                    fi
-                fi
-                # Create wrapper script
-                local wrapper="$INSTALLED_DIR/bin/wx"
-                mkdir -p "$(dirname "$wrapper")"
-                printf '#!/bin/zsh\nnode "%s" "$@"\n' "$wx_file" > "$wrapper"
-                chmod +x "$wrapper"
-                echo "✅ Created wx wrapper" | safe_lolcat
-                ;;
-            "cli-installer")
-                # Handle cli package (CLI framework itself)
-                echo "⬇  Installing CLI package..." | safe_lolcat
-                local cli_file="$INSTALLED_DIR/cli.js"
-                if [ ! -f "$cli_file" ]; then
-                    # Try to download cli.js if URL is provided
-                    if [ -n "$pkg_url" ] && [ "$pkg_url" != "install-cli" ]; then
-                        if curl -sfL "$pkg_url" -o "$cli_file"; then
-                            chmod +x "$cli_file"
-                            echo "✅ Installed cli.js" | safe_lolcat
-                        else
-                            echo "⚠  Failed to download cli.js, creating basic wrapper" | safe_lolcat
-                            # Create a basic cli.js file
-                            cat > "$cli_file" << 'CLI_EOF'
-#!/usr/bin/env node
-// Aurora-Shell CLI - Install CLI versions of apps
-// This is a placeholder implementation
-
-const program = require('commander');
-program
-  .name('cli')
-  .description('Aurora-Shell CLI - Install CLI versions of apps')
-  .version('1.0.0');
-
-program
-  .command('install <package>')
-  .description('Install a CLI tool')
-  .action((package) => {
-    console.log(`Installing CLI tool: ${package}`);
-    console.log('Use: shell install <package> instead');
-  });
-
-program
-  .command('list')
-  .description('List available CLI tools')
-  .action(() => {
-    console.log('Available CLI tools can be installed with: shell install <package>');
-    console.log('Examples: shell install gh, shell install aws, shell install docker');
-  });
-
-program.parse(process.argv);
-CLI_EOF
-                            chmod +x "$cli_file"
-                        fi
-                    else
-                        # Create a basic cli.js file
-                        cat > "$cli_file" << 'CLI_EOF'
-#!/usr/bin/env node
-// Aurora-Shell CLI - Install CLI versions of apps
-// This is a placeholder implementation
-
-const program = require('commander');
-program
-  .name('cli')
-  .description('Aurora-Shell CLI - Install CLI versions of apps')
-  .version('1.0.0');
-
-program
-  .command('install <package>')
-  .description('Install a CLI tool')
-  .action((package) => {
-    console.log(`Installing CLI tool: ${package}`);
-    console.log('Use: shell install <package> instead');
-  });
-
-program
-  .command('list')
-  .description('List available CLI tools')
-  .action(() => {
-    console.log('Available CLI tools can be installed with: shell install <package>');
-    console.log('Examples: shell install gh, shell install aws, shell install docker');
-  });
-
-program.parse(process.argv);
-CLI_EOF
-                        chmod +x "$cli_file"
-                    fi
-                fi
-                # Create wrapper script
-                local wrapper="$INSTALLED_DIR/bin/cli"
-                mkdir -p "$(dirname "$wrapper")"
-                printf '#!/bin/zsh\nnode "%s" "$@"\n' "$cli_file" > "$wrapper"
-                chmod +x "$wrapper"
-                echo "✅ Created cli wrapper" | safe_lolcat
-                ;;
-            *)
-                # Fallback: treat install field as a command to execute
-                local cmd=$(echo "$cli_pkg" | jq -r '.install')
-                if [ -n "$cmd" ] && [ "$cmd" != "null" ]; then
-                    echo "⬇  Fallback: $cmd" | safe_lolcat
-                    eval "$cmd"
-                else
-                    echo "❌ No install command available for package" | safe_lolcat
-                    return 1
-                fi
-                ;;
-        esac
-    fi
+    local cmd=$(echo "$cli_pkg" | jq -r '.install')
+    echo "⬇  Fallback: $cmd" | safe_lolcat
+    eval "$cmd"
 }
+
+case "$1" in
     install)
         _jacket_install "$2"
         ;;
@@ -931,7 +722,7 @@ _setup_zsh_plugins() {
         [ ! -d "$zsh_custom/plugins/zsh-syntax-highlighting" ] && \
             git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "$zsh_custom/plugins/zsh-syntax-highlighting" &>/dev/null
         grep -q "zsh-autosuggestions" "$HOME/.zshrc" 2>/dev/null || \
-            safe_sed 's/^plugins=(\(.*\))/plugins=(\1 zsh-autosuggestions zsh-syntax-highlighting)/' "$HOME/.zshrc" 2>/dev/null
+            sed -i '' 's/^plugins=(\(.*\))/plugins=(\1 zsh-autosuggestions zsh-syntax-highlighting)/' "$HOME/.zshrc" 2>/dev/null
     fi
 }
 _setup_zsh_plugins
@@ -994,9 +785,9 @@ _aurora_apply_profile() {
     _aurora_take_snapshot
 
     # Apply account settings
-    safe_sed 's/^AURORA_ID=.*/AURORA_ID=\"$uid\"/' "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
-    safe_sed "s/^AURORA_HDR_VAL=.*/AURORA_HDR_VAL=\"$hdr\"/" "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
-    safe_sed "s/^AURORA_HDR_MODE=.*/AURORA_HDR_MODE=\"$hdr_mode\"/" "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
+    sed -i '' "s/^AURORA_ID=.*/AURORA_ID=\"$uid\"/" "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
+    sed -i '' "s/^AURORA_HDR_VAL=.*/AURORA_HDR_VAL=\"$hdr\"/" "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
+    sed -i '' "s/^AURORA_HDR_MODE=.*/AURORA_HDR_MODE=\"$hdr_mode\"/" "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
 
     if [ "$fast" != "--fast" ]; then
         # Install oh-my-zsh if not present
@@ -1021,7 +812,7 @@ _aurora_apply_profile() {
 
         # Inject plugins into .zshrc
         if [ -f "$HOME/.zshrc" ] && [ -n "$plugins" ]; then
-            safe_sed "s/^plugins=(.*/plugins=($(echo "$plugins" | tr '\n' ' '))/" "$HOME/.zshrc" 2>/dev/null
+            sed -i '' "s/^plugins=(.*/plugins=($(echo "$plugins" | tr '\n' ' '))/" "$HOME/.zshrc" 2>/dev/null
         fi
     fi
 
@@ -1301,34 +1092,22 @@ install_com
 run_wizard
 generate_theme
 
-safe_sed '/aurora-shell_theme/d' ~/.zshrc 2>/dev/null
+sed -i '' '/aurora-shell_theme/d' ~/.zshrc 2>/dev/null
 echo "source $THEME_FILE" >> "$HOME/.zshrc"
 
-# --- REPO DISCOVERY ---
 echo "🌀 Checking Aurora-shell..."
-cd "$HOME"
 
-# Targeted search instead of global find
-check_dir() {
-    [ -z "$1" ] && return 1
-    if [ -d "$1/.git" ]; then
-        local origin=$(git -C "$1" remote get-url origin 2>/dev/null)
-        if [ "$origin" = "$GIT_CLONE" ]; then
-            echo "$1"
-            return 0
+cd "$HOME"
+# Search the entire home folder for a REAL Aurora-shell Git repo
+FOUND_REPO=$(find "$HOME" -maxdepth 10 -type d 2>/dev/null | grep -i "aurora-shell$" | while read -r dir; do
+    if [ -d "$dir/.git" ]; then
+        ORIGIN=$(git -C "$dir" remote get-url origin 2>/dev/null)
+        if [ "$ORIGIN" = "$GIT_CLONE" ]; then
+            echo "$dir"
+            break
         fi
     fi
-    return 1
-}
-
-FOUND_REPO=""
-# Check common locations
-for d in "$(pwd)" "$HOME/Documents/Aurora-Shell" "$HOME/Aurora-Shell" "$DATA_DIR/aurora-shell"; do
-    if FOUND_REPO=$(check_dir "$d"); then
-        break
-    fi
-    FOUND_REPO=""
-done
+done)
 
 if [ -n "$FOUND_REPO" ]; then
     echo "🔄 Found existing Aurora-shell repo at: $FOUND_REPO"
@@ -1337,12 +1116,12 @@ if [ -n "$FOUND_REPO" ]; then
     cp "$FOUND_REPO/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
     cp "$FOUND_REPO/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
     cp "$FOUND_REPO/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
+    # ensure wx wrapper exists in bin
     [ -f "$DATA_DIR/wx.js" ] && printf '#!/bin/zsh\nnode "$HOME/.aurora-shell_files/wx.js" "$@"\n' > "$DATA_DIR/bin/wx" && chmod +x "$DATA_DIR/bin/wx"
 else
     echo "⬇ No matching repo found — cloning fresh copy..."
     cd "$DATA_DIR"
-    rm -rf aurora-shell # Clean up if it exists but is not a repo
-    git clone "$GIT_CLONE" aurora-shell || true
+    git clone "$GIT_CLONE" || true
     cp "$DATA_DIR/aurora-shell/brew-progress.py" "$DATA_DIR/brew-progress.py" 2>/dev/null || true
     cp "$DATA_DIR/aurora-shell/spinner.js" "$DATA_DIR/spinner.js" 2>/dev/null || true
     cp "$DATA_DIR/aurora-shell/wx.js" "$DATA_DIR/wx.js" 2>/dev/null || true
@@ -1351,9 +1130,7 @@ fi
 
 echo -e "\n\033[1;32m✅ successfully deployed Aurora-Shell v$VER.\033[0m"
 
-if command -v terminal-notifier &>/dev/null; then
-    terminal-notifier -title "Aurora-Shell" -message "Setup complete" -sound "Ping"
-fi
+terminal-notifier -title "Aurora-Shell" -message "Setup complete" -sound "Ping"
 
 cd "$HOME"
 sleep 1
