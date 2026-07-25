@@ -34,7 +34,7 @@ safe_sed() {
     if [ "$PLATFORM" = "MacOS" ]; then
         /usr/bin/sed -i '' "$@"
     else
-        /usr/bin/sed -i "$@"
+        sed -i "$@"
     fi
 }
 
@@ -106,8 +106,8 @@ dev_tools_bootstrap() {
                     if command -v git >/dev/null 2>&1; then
                         echo "✔ Git already installed: $(git --version)"
                     else
-                        echo "⬇ Installing Git via Xcode Command Line Tools..."
-                        xcode-select --install 2>/dev/null || open "/System/Library/CoreServices/Install Command Line Developer Tools.app" 2>/dev/null || true
+                        echo "⬇ Installing Git..."
+                        brew install git 2>/dev/null || open "/System/Library/CoreServices/Install Command Line Developer Tools.app" 2>/dev/null || true
                     fi
                     ;;
                 "Docker")
