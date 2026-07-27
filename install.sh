@@ -1324,7 +1324,7 @@ check_dir() {
 
 FOUND_REPO=""
 # Check common locations
-for d in "$(pwd)" "$HOME/Documents/Aurora-Shell" "$HOME/Aurora-Shell" "$DATA_DIR/aurora-shell"; do
+for d in "$(pwd)" "$HOME/Documents/Aurora-Shell" "$HOME/Aurora-Shell" "$DATA_DIR/aurora-shell" "$HOME/Seaus/Aurora-Shell; do
     if FOUND_REPO=$(check_dir "$d"); then
         break
     fi
