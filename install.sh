@@ -1303,6 +1303,7 @@ generate_theme
 
 safe_sed '/aurora-shell_theme/d' ~/.zshrc 2>/dev/null
 echo "source $THEME_FILE" >> "$HOME/.zshrc"
+echo "PROFILE=$HOME/.zshrc" >> "$HOME/.zshrc"
 
 # --- REPO DISCOVERY ---
 echo "🌀 Checking Aurora-shell..."
