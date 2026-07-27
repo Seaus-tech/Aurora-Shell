@@ -110,8 +110,8 @@ irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" 
 
 The main configuration logic is stored in:
 
-- **macOS**: `~/.aurora-shell_tfiles` (sourced in your `.zshrc`)
-- **Windows**: `$PROFILE` (usually `Documents\PowerShell\Microsoft.PowerShell_profile.ps1`)
+- **macOS**: `~/.aurora-shell_files` (sourced in your `$PROFILE`)
+- **Windows**: `C:\Users\$USER\.aurora-shell_files` (usually sourced in your `$PROFILE`)
 
 ## Uninstall
 
