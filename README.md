@@ -136,8 +136,8 @@ Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shel
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Run ```open https://forms.cloud.microsoft/r/hnHpTcEuMQ``` in terminal
-2. Fill in the form.
+1. Run ```open https://github.com/Seaus-tech/Aurora-Shell/issues``` in terminal
+2. tell idea.
 3. Wait for the results!
 
 ---
