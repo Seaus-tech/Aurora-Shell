@@ -33,7 +33,7 @@ jobs:
           echo "SHA: $SHA"
 
           # Clone the tap repo
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Seaus-tech/homebrew-aurora-shell.git tap
+          git clone https://x-access-token:${{ secrets.TAP_TOKEN }}@github.com/Seaus-tech/homebrew-aurora-shell.git tap
           cd tap
 
           sed -i "s|sha256 \".*\"|sha256 \"$SHA\"|" Formula/aurora-shell.rb
