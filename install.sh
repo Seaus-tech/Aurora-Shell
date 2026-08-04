@@ -364,10 +364,26 @@ install_xcode_if_needed() {
 _aurora_try_touchid() {
     security find-generic-password -a "$USER" -s "aurora-shell-touchid" -w &>/dev/null || return 1
     bioutil -r -s 2>/dev/null | grep -q "Touch ID" || return 1
-    # Trigger Touch ID via a privileged osascript dialog
-    local _ok
-    _ok=$(osascript 2>/dev/null -e 'do shell script "echo ok" with prompt "Aurora-Shell login" with administrator privileges') 2>/dev/null
-    [ "$_ok" = "ok" ]
+    # Use swift to trigger a real Touch ID prompt via LocalAuthentication
+    local _result
+    _result=$(swift - 2>/dev/null << 'SWEOF'
+import LocalAuthentication
+import Foundation
+let ctx = LAContext()
+var err: NSError?
+guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &err) else {
+    print("unavailable"); exit(1)
+}
+let sem = DispatchSemaphore(value: 0)
+var success = false
+ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Aurora-Shell login") { ok, _ in
+    success = ok; sem.signal()
+}
+sem.wait()
+print(success ? "ok" : "fail")
+SWEOF
+)
+    [ "$_result" = "ok" ]
 }
 
 _aurora_try_yubikey() {
