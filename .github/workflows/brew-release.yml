@@ -11,13 +11,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create GitHub Release
+      - name: Build tarball and release
+        run: |
+          set -x
+          TAG=${GITHUB_REF#refs/tags/}
+          TARBALL="aurora-shell-${TAG}.tar.gz"
+
+          # Build tarball from repo contents
+          mkdir -p aurora-shell-pkg
+          cp install.sh brew-install.sh aurora-shell-pkg/
+          [ -f shell.aurora ] && cp shell.aurora aurora-shell-pkg/ || true
+          tar -czf "$TARBALL" aurora-shell-pkg/
+
+          SHA=$(shasum -a 256 "$TARBALL" | awk '{print $1}')
+          echo "SHA=$SHA" >> $GITHUB_ENV
+          echo "TARBALL=$TARBALL" >> $GITHUB_ENV
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "ASSET_URL=https://github.com/Seaus-tech/Aurora-Shell/releases/download/${TAG}/${TARBALL}" >> $GITHUB_ENV
+
+      - name: Create GitHub Release with tarball
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            install.sh
-            brew-install.sh
-            shell.aurora
+          files: ${{ env.TARBALL }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -25,23 +40,6 @@ jobs:
       - name: Update formula in tap repo
         run: |
           set -x
-          TAG=${GITHUB_REF#refs/tags/}
-          
-          # Use the release asset URL (serves Content-Length, shows progress in brew)
-          ASSET_URL="https://github.com/Seaus-tech/Aurora-Shell/releases/download/${TAG}/aurora-shell-${TAG}.tar.gz"
-          
-          # Create a clean tarball of just the needed files
-          mkdir -p aurora-shell-pkg
-          cp install.sh brew-install.sh aurora-shell-pkg/ 2>/dev/null || true
-          [ -f shell.aurora ] && cp shell.aurora aurora-shell-pkg/
-          tar -czf "aurora-shell-${TAG}.tar.gz" aurora-shell-pkg/
-          SHA=$(shasum -a 256 "aurora-shell-${TAG}.tar.gz" | awk '{print $1}')
-          echo "SHA: $SHA"
-
-          # Upload as release asset
-          gh release upload "${TAG}" "aurora-shell-${TAG}.tar.gz" --clobber
-
-          # Clone the tap repo and update formula
           git clone https://x-access-token:${{ secrets.TAP_TOKEN }}@github.com/Seaus-tech/homebrew-aurora-shell.git tap
           cd tap
 
@@ -56,4 +54,3 @@ jobs:
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
