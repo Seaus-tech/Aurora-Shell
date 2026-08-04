@@ -38,8 +38,9 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout dev
           git add Formula/aurora-shell.rb
-          git commit -m "chore: update formula for ${TAG}" || true
-          git push origin HEAD:dev
+          git commit -m "chore: update formula for ${TAG}" || echo "No changes to commit"
+          git push origin dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
