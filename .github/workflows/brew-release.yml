@@ -26,18 +26,27 @@ jobs:
         run: |
           set -x
           TAG=${GITHUB_REF#refs/tags/}
-          URL="https://github.com/Seaus-tech/Aurora-Shell/archive/refs/tags/${TAG}.tar.gz"
           
-          curl -sL "$URL" -o release.tar.gz
-          SHA=$(shasum -a 256 release.tar.gz | awk '{print $1}')
+          # Use the release asset URL (serves Content-Length, shows progress in brew)
+          ASSET_URL="https://github.com/Seaus-tech/Aurora-Shell/releases/download/${TAG}/aurora-shell-${TAG}.tar.gz"
+          
+          # Create a clean tarball of just the needed files
+          mkdir -p aurora-shell-pkg
+          cp install.sh brew-install.sh aurora-shell-pkg/ 2>/dev/null || true
+          [ -f shell.aurora ] && cp shell.aurora aurora-shell-pkg/
+          tar -czf "aurora-shell-${TAG}.tar.gz" aurora-shell-pkg/
+          SHA=$(shasum -a 256 "aurora-shell-${TAG}.tar.gz" | awk '{print $1}')
           echo "SHA: $SHA"
 
-          # Clone the tap repo
+          # Upload as release asset
+          gh release upload "${TAG}" "aurora-shell-${TAG}.tar.gz" --clobber
+
+          # Clone the tap repo and update formula
           git clone https://x-access-token:${{ secrets.TAP_TOKEN }}@github.com/Seaus-tech/homebrew-aurora-shell.git tap
           cd tap
 
           sed -i "s|sha256 \".*\"|sha256 \"$SHA\"|" Formula/aurora-shell.rb
-          sed -i "s|url \".*tar.gz\"|url \"$URL\"|" Formula/aurora-shell.rb
+          sed -i "s|url \".*\"|url \"$ASSET_URL\"|" Formula/aurora-shell.rb
           sed -i "s|version \".*\"|version \"${TAG#v}\"|" Formula/aurora-shell.rb
 
           git config user.name "github-actions[bot]"
@@ -47,3 +56,4 @@ jobs:
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
