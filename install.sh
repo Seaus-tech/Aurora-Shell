@@ -388,10 +388,8 @@ ASEOF
 _aurora_try_yubikey() {
     local _stored
     _stored=$(security find-generic-password -a "$USER" -s "aurora-shell-yubikey" -w 2>/dev/null) || return 1
-    command -v ykman >/dev/null 2>&1 || return 1
-    local _current
-    _current=$(ykman list 2>/dev/null | grep -o '[0-9]\{8,\}' | head -1)
-    [ "$_current" = "$_stored" ]
+    # Detect by USB product name via ioreg — works for YubiKey, ZUKEY 2 FIDO, and any FIDO2 key
+    ioreg -p IOUSB -l -w 0 2>/dev/null | grep -qi "$_stored"
 }
 
 _aurora_try_keyfile() {
@@ -462,12 +460,18 @@ aurora_security() {
             fi
             ;;
         --add-yubikey)
-            command -v ykman >/dev/null 2>&1 || { echo "❌ Install ykman: brew install ykman"; return 1; }
-            local _serial
-            _serial=$(ykman list 2>/dev/null | grep -o '[0-9]\{8,\}' | head -1)
-            [ -z "$_serial" ] && echo "❌ No YubiKey detected — insert it first" && return 1
-            security add-generic-password -a "$USER" -s "aurora-shell-yubikey" -w "$_serial" -U 2>/dev/null
-            echo "✅ YubiKey registered (serial: $_serial)"
+            # Detect FIDO2/security key via ioreg (works for YubiKey, ZUKEY, and other FIDO2 keys)
+            local _fido_device
+            _fido_device=$(ioreg -p IOUSB -l -w 0 2>/dev/null | grep -i "fido\|yubikey\|zukey\|u2f\|feitian" | grep -o '"USB Product Name" = "[^"]*"' | head -1 | sed 's/"USB Product Name" = "\(.*\)"/\1/')
+            if [ -z "$_fido_device" ]; then
+                echo "❌ No FIDO2/security key detected — insert it first"
+                return 1
+            fi
+            # Use product name + location as identifier (no serial needed)
+            local _fido_id
+            _fido_id=$(ioreg -p IOUSB -l -w 0 2>/dev/null | grep -i "fido\|yubikey\|zukey\|u2f\|feitian" | grep -o '"USB Vendor Name" = "[^"]*"\|"USB Product Name" = "[^"]*"\|"locationID" = [0-9]*' | tr '\n' '|' | head -c 200)
+            security add-generic-password -a "$USER" -s "aurora-shell-yubikey" -w "$_fido_device" -U 2>/dev/null
+            echo "✅ Security key registered: $_fido_device"
             ;;
         --add-keyfile)
             printf "📁 Path to key file: "; read -r _kpath < /dev/tty
