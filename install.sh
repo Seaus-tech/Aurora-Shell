@@ -915,6 +915,92 @@ rainbow_prompt() {
   echo -n "$out"
 }
 
+# ── BREW FIRST-LAUNCH WIZARD ─────────────────────────────────────────────────
+if [[ -f "$HOME/.aurora-shell_files/.brew_first_launch" ]]; then
+    rm -f "$HOME/.aurora-shell_files/.brew_first_launch"
+    echo ""
+    echo "🎉 Welcome to Aurora-Shell (installed via Homebrew)" | safe_lolcat
+    echo "   Let's set up your profile in just a few seconds."
+    echo ""
+
+    echo "🎨 Header style:"
+    echo "   1) Mega-Block (default)  2) Slant  3) Doom  4) Banner  5) Big  6) Digital"
+    printf "   Selection [1]: "
+    read -r _choice < /dev/tty
+    case "$_choice" in
+        2) _HDR_MODE="CUSTOM"; printf "✍️  Header Name: "; read -r _HDR_VAL < /dev/tty; _FONT="slant" ;;
+        3) _HDR_MODE="CUSTOM"; printf "✍️  Header Name: "; read -r _HDR_VAL < /dev/tty; _FONT="doom" ;;
+        4) _HDR_MODE="CUSTOM"; printf "✍️  Header Name: "; read -r _HDR_VAL < /dev/tty; _FONT="banner" ;;
+        5) _HDR_MODE="CUSTOM"; printf "✍️  Header Name: "; read -r _HDR_VAL < /dev/tty; _FONT="big" ;;
+        6) _HDR_MODE="CUSTOM"; printf "✍️  Header Name: "; read -r _HDR_VAL < /dev/tty; _FONT="digital" ;;
+        *) _HDR_MODE="BLOCK"; _HDR_VAL="Aurora-Shell"; _FONT="" ;;
+    esac
+
+    printf "🔐 Set Terminal PIN (Enter for none): "
+    read -rs _pin < /dev/tty; echo ""
+    if [ -n "$_pin" ]; then
+        security add-generic-password -a "$USER" -s "aurora-shell-pin" -w "$_pin" -U 2>/dev/null
+        echo "🔒 PIN stored in Keychain"
+    fi
+
+    printf "🎂 Birthday (MMDD, Enter to skip): "; read -r _bday < /dev/tty
+    printf "🆔 Prompt ID (Enter to use $USER): "; read -r _pid < /dev/tty
+    _pid="${_pid:-$USER}"
+
+    cat > "$HOME/.aurora-shell_files/aurora-shell_settings" << _CFG
+AURORA_VER="$AURORA_VER"
+AURORA_HDR_MODE="$_HDR_MODE"
+AURORA_HDR_VAL="${_HDR_VAL:-Aurora-Shell}"
+AURORA_FIGLET_FONT="${_FONT:-slant}"
+AURORA_USER_BDAY="${_bday:-}"
+AURORA_ID="$_pid"
+_CFG
+    source "$HOME/.aurora-shell_files/aurora-shell_settings"
+
+    echo ""
+    echo "🌐 Aurora Account (optional — syncs profile across machines)"
+    printf "   Sign in? (y/n/create) [n]: "
+    read -r _acct < /dev/tty
+    case "$_acct" in
+        y|yes)
+            printf "   👤 Username: "; read -r _uname < /dev/tty
+            printf "   🔐 Password: "; read -rs _pw < /dev/tty; echo ""
+            _hash=$(echo -n "$_pw" | shasum -a 256 | awk '{print $1}')
+            _resp=$(curl -sf -X POST -H "Content-Type: application/json" \
+                -d "{\"username\":\"$_uname\",\"password_hash\":\"$_hash\"}" \
+                "https://aurora-accounts.yash-behera.workers.dev/accounts/login" 2>/dev/null)
+            _err=$(echo "$_resp" | jq -r '.error // empty' 2>/dev/null)
+            if [ -n "$_err" ]; then echo "   ❌ $_err"
+            else
+                _resp=$(echo "$_resp" | jq --arg h "$_hash" '. + {password_hash: $h}')
+                echo "$_resp" > "$HOME/.aurora-shell_files/active_account.json"
+                echo "   ✅ Signed in as $(echo "$_resp" | jq -r '.username')"
+            fi
+            ;;
+        create)
+            printf "   👤 New username: "; read -r _uname < /dev/tty
+            printf "   🔐 Password: "; read -rs _pw < /dev/tty; echo ""
+            printf "   🔐 Confirm:  "; read -rs _pw2 < /dev/tty; echo ""
+            if [ "$_pw" != "$_pw2" ]; then echo "   ❌ Passwords don't match"
+            else
+                _hash=$(echo -n "$_pw" | shasum -a 256 | awk '{print $1}')
+                _payload=$(jq -n --arg u "$_uname" --arg h "$_hash" \
+                    '{username:$u,password_hash:$h,installed:"",plugins:[],linked:{},header:"Aurora-Shell",header_mode:"BLOCK"}')
+                _resp=$(curl -sf -X POST -H "Content-Type: application/json" -d "$_payload" \
+                    "https://aurora-accounts.yash-behera.workers.dev/accounts" 2>/dev/null)
+                _err=$(echo "$_resp" | jq -r '.error // empty' 2>/dev/null)
+                [ -n "$_err" ] && echo "   ❌ $_err" || echo "   ✅ Account created!"
+            fi
+            ;;
+    esac
+
+    echo ""
+    echo "✅ All set! Reloading Aurora-Shell..." | safe_lolcat
+    sleep 1
+    exec "$SHELL" -l
+fi
+# ─────────────────────────────────────────────────────────────────────────────
+
 authenticate_user || { echo "🔒 Session locked." | safe_lolcat; exit; }
 Show-Aurora
 
