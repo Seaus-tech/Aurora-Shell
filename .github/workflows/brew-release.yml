@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update formula SHA256
+      - name: Update formula in tap repo
         run: |
           set -x
           TAG=${GITHUB_REF#refs/tags/}
@@ -31,25 +31,19 @@ jobs:
           curl -sL "$URL" -o release.tar.gz
           SHA=$(shasum -a 256 release.tar.gz | awk '{print $1}')
           echo "SHA: $SHA"
-          echo "URL: $URL"
-          echo "TAG: $TAG"
-          
-          sed -i "s|sha256 \"PLACEHOLDER\"|sha256 \"$SHA\"|" Formula/aurora-shell.rb
+
+          # Clone the tap repo
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Seaus-tech/homebrew-aurora-shell.git tap
+          cd tap
+
+          sed -i "s|sha256 \".*\"|sha256 \"$SHA\"|" Formula/aurora-shell.rb
           sed -i "s|url \".*tar.gz\"|url \"$URL\"|" Formula/aurora-shell.rb
           sed -i "s|version \".*\"|version \"${TAG#v}\"|" Formula/aurora-shell.rb
-          
-          cat Formula/aurora-shell.rb
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin dev
-          git checkout dev
-          cp Formula/aurora-shell.rb /tmp/aurora-shell.rb
-          git checkout dev -- .
-          cp /tmp/aurora-shell.rb Formula/aurora-shell.rb
           git add Formula/aurora-shell.rb
-          git diff --staged
           git commit -m "chore: update formula for ${TAG}" || echo "No changes to commit"
-          git push origin dev
+          git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

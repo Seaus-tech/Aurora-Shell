@@ -510,7 +510,12 @@ shell.aurora() {
             local _pin=$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null)
             authenticate_user "MANUAL" && Show-Aurora
             ;;
-        --uninstall) rm -rf "$HOME/.aurora-shell_files" && rm -rf $HOME/Applications/Aurora-Shell.app && sed -i '' '/aurora-shell_files/d' ~/.zshrc ;;
+        --uninstall)
+            rm -rf "$HOME/.aurora-shell_files"
+            rm -rf "$HOME/Applications/Aurora-Shell.app"
+            grep -v "aurora-shell" "$HOME/.zshrc" > /tmp/.zshrc_clean && mv /tmp/.zshrc_clean "$HOME/.zshrc"
+            echo "✅ Aurora-Shell uninstalled."
+            ;;
         --account) aurora_account "$2" ;;
         --modules-components|-mc)
             echo "📦 Installing Aurora-Shell Module System..." | safe_lolcat
