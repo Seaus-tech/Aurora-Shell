@@ -32,9 +32,9 @@ jobs:
           SHA=$(shasum -a 256 release.tar.gz | awk '{print $1}')
           
           # Update formula
-          sed -i "s/sha256 \"PLACEHOLDER\"/sha256 \"$SHA\"/" Formula/aurora-shell.rb
-          sed -i "s/url \".*tar.gz\"/url \"$URL\"/" Formula/aurora-shell.rb
-          sed -i "s/version \".*\"/version \"${TAG#v}\"/" Formula/aurora-shell.rb
+          sed -i "s|sha256 \"PLACEHOLDER\"|sha256 \"$SHA\"|" Formula/aurora-shell.rb
+          sed -i "s|url \".*tar.gz\"|url \"$URL\"|" Formula/aurora-shell.rb
+          sed -i "s|version \".*\"|version \"${TAG#v}\"|" Formula/aurora-shell.rb
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
