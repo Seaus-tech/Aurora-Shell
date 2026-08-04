@@ -444,6 +444,12 @@ shell.aurora() {
             esac
             ;;
         --update)
+            # Block update if managed by brew
+            if command -v brew >/dev/null 2>&1 && brew list aurora-shell &>/dev/null 2>/dev/null; then
+                echo "🍺 Aurora-Shell is managed by Homebrew." | safe_lolcat
+                echo "   Run: brew upgrade aurora-shell" | safe_lolcat
+                return 0
+            fi
             local branch="${2:-main}"
             # fetch remote version
             local remote_ver=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/$branch/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
@@ -1380,10 +1386,21 @@ trap '_aurora_logout_cleanup' EXIT
 
 # --- VERSION CHECK ---
 REMOTE_VER=$(curl -sf "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.sh" 2>/dev/null | grep '^VER=' | head -1 | sed 's/VER="\(.*\)"/\1/')
-if [ -n "$REMOTE_VER" ] && [ "$REMOTE_VER" != "$AURORA_VER" ]; then
+
+_ver_gt() {
+    # returns 0 if $1 > $2 using semver comparison
+    [ "$(printf '%s\n' "$1" "$2" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)" = "$1" ] && [ "$1" != "$2" ]
+}
+
+if [ -n "$REMOTE_VER" ] && _ver_gt "$REMOTE_VER" "$AURORA_VER"; then
     echo ""
-    echo "🔔 Aurora-Shell update available (v$AURORA_VER → v$REMOTE_VER) — run: shell.aurora --update" | safe_lolcat
-    notify "Aurora-Shell" "Update available: v$AURORA_VER → v$REMOTE_VER" "Ping"
+    if command -v brew >/dev/null 2>&1 && brew list aurora-shell &>/dev/null 2>/dev/null; then
+        echo "🔔 Aurora-Shell update available (v$AURORA_VER → v$REMOTE_VER) — run: brew upgrade aurora-shell" | safe_lolcat
+        notify "Aurora-Shell" "Update available: v$AURORA_VER → v$REMOTE_VER — run: brew upgrade aurora-shell" "Ping"
+    else
+        echo "🔔 Aurora-Shell update available (v$AURORA_VER → v$REMOTE_VER) — run: shell.aurora --update" | safe_lolcat
+        notify "Aurora-Shell" "Update available: v$AURORA_VER → v$REMOTE_VER" "Ping"
+    fi
 fi
 EOF
 }
