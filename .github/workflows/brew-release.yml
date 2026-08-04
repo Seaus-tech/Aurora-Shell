@@ -17,6 +17,9 @@ jobs:
           TAG=${GITHUB_REF#refs/tags/}
           TARBALL="aurora-shell-${TAG}.tar.gz"
 
+          # Bump VER in install.sh to match the tag
+          sed -i "s|^VER=\".*\"|VER=\"${TAG#v}\"|" install.sh
+
           # Build tarball from repo contents
           mkdir -p aurora-shell-pkg
           cp install.sh brew-install.sh aurora-shell-pkg/
