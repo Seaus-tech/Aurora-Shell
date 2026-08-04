@@ -24,22 +24,31 @@ jobs:
 
       - name: Update formula SHA256
         run: |
+          set -x
           TAG=${GITHUB_REF#refs/tags/}
           URL="https://github.com/Seaus-tech/Aurora-Shell/archive/refs/tags/${TAG}.tar.gz"
           
-          # Download and compute SHA
           curl -sL "$URL" -o release.tar.gz
           SHA=$(shasum -a 256 release.tar.gz | awk '{print $1}')
+          echo "SHA: $SHA"
+          echo "URL: $URL"
+          echo "TAG: $TAG"
           
-          # Update formula
           sed -i "s|sha256 \"PLACEHOLDER\"|sha256 \"$SHA\"|" Formula/aurora-shell.rb
           sed -i "s|url \".*tar.gz\"|url \"$URL\"|" Formula/aurora-shell.rb
           sed -i "s|version \".*\"|version \"${TAG#v}\"|" Formula/aurora-shell.rb
-
+          
+          cat Formula/aurora-shell.rb
+          
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin dev
           git checkout dev
+          cp Formula/aurora-shell.rb /tmp/aurora-shell.rb
+          git checkout dev -- .
+          cp /tmp/aurora-shell.rb Formula/aurora-shell.rb
           git add Formula/aurora-shell.rb
+          git diff --staged
           git commit -m "chore: update formula for ${TAG}" || echo "No changes to commit"
           git push origin dev
         env:
