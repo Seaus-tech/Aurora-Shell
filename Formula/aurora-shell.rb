@@ -24,41 +24,45 @@ class AuroraShell < Formula
       brew-progress.py
       spinner.js
       wx.js
-      aurora_theme.sh
-      cli-packages.json
     ].each do |f|
       (share_dir/f).write (buildpath/f).read if (buildpath/f).exist?
     end
 
-    # Make shell.aurora executable and link to bin
     chmod 0755, share_dir/"brew-install.sh"
+    chmod 0755, share_dir/"install.sh"
     chmod 0755, share_dir/"shell.aurora"
+
+    # Create a setup script that runs as the user
+    (bin/"aurora-shell-setup").write <<~SH
+      #!/bin/bash
+      export AURORA_BREW_INSTALL=1
+      bash "#{share}/aurora-shell/install.sh"
+    SH
+    chmod 0755, bin/"aurora-shell-setup"
     bin.install_symlink share_dir/"shell.aurora"
   end
 
   def post_install
-    # Run the silent installer
-    system "bash", "#{share}/aurora-shell/brew-install.sh"
+    # No-op: user must run aurora-shell-setup manually (post_install runs as root)
   end
 
   def caveats
     <<~EOS
       Aurora-Shell has been installed! 🐚
 
-      Open a new terminal tab to complete setup.
-      The configuration wizard will run automatically.
+      Run the setup wizard now:
+        aurora-shell-setup
 
-      To manually run the wizard:
-        shell.aurora --config
+      Then open a new terminal tab — Aurora-Shell will be active.
 
-      To update Aurora-Shell:
-        shell.aurora --update
-        or: brew upgrade aurora-shell
+      To update:
+        brew upgrade aurora-shell
+        aurora-shell-setup
     EOS
   end
 
   test do
-    assert_predicate share/"aurora-shell/brew-install.sh", :exist?
+    assert_predicate bin/"aurora-shell-setup", :exist?
     assert_predicate bin/"shell.aurora", :exist?
   end
 end
