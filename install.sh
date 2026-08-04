@@ -363,26 +363,11 @@ install_xcode_if_needed() {
 
 _aurora_try_touchid() {
     security find-generic-password -a "$USER" -s "aurora-shell-touchid" -w &>/dev/null || return 1
-    local _tid_ok
-    _tid_ok=$(osascript 2>/dev/null << 'ASEOF'
-use framework "LocalAuthentication"
-set ctx to current application's LAContext's new()
-set {canAuth, err} to ctx's canEvaluatePolicy:1 |error|:(missing value)
-if not canAuth then return "unavailable"
-set resultHolder to {done:false, success:false}
-ctx's evaluatePolicy:1 localizedReason:"Aurora-Shell login" reply:(handler(s, e)
-    set resultHolder's done to true
-    set resultHolder's success to s
-end handler)
-repeat 150 times
-    delay 0.1
-    if resultHolder's done then exit repeat
-end repeat
-if resultHolder's success then return "ok"
-return "fail"
-ASEOF
-)
-    [ "$_tid_ok" = "ok" ]
+    bioutil -r -s 2>/dev/null | grep -q "Touch ID" || return 1
+    # Trigger Touch ID via a privileged osascript dialog
+    local _ok
+    _ok=$(osascript 2>/dev/null -e 'do shell script "echo ok" with prompt "Aurora-Shell login" with administrator privileges') 2>/dev/null
+    [ "$_ok" = "ok" ]
 }
 
 _aurora_try_yubikey() {
@@ -552,7 +537,19 @@ authenticate_user() {
     # Try extra methods first (Touch ID / YubiKey / Key File)
     if [[ $_has_extra -eq 1 ]]; then
         if _aurora_auth; then
-            _aurora_show_login_banner
+            date +%s > "$HOME/.aurora-shell_files/.last_auth"
+            source "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
+            local _box_w=100
+            local _label="Logged in as ${AURORA_ID:-$USER}"
+            local _iw=$(( _box_w - 2 ))
+            local _pad=$(( (_iw - ${#_label}) / 2 ))
+            local _padr=$(( _iw - ${#_label} - _pad ))
+            printf "╭%s╮\n│%*s│\n│%*s%s%*s│\n│%*s│\n╰%s╯\n" \
+                "$(printf '─%.0s' $(seq 1 $_iw))" \
+                $_iw "" \
+                $_pad "" "$_label" $_padr "" \
+                $_iw "" \
+                "$(printf '─%.0s' $(seq 1 $_iw))" | safe_lolcat
             return 0
         fi
     fi
