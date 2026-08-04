@@ -1195,6 +1195,50 @@ if [[ -f "$HOME/.aurora-shell_files/.brew_first_launch" ]]; then
         echo "🔒 PIN stored in Keychain"
     fi
 
+    # --- SECURITY METHODS ---
+    echo ""
+    echo "🔐 Security method(s) — PIN is always kept. Add extras:"
+    echo "   1) Touch ID"
+    echo "   2) YubiKey"
+    echo "   3) Security Key File (USB)"
+    echo "   4) All of the above"
+    echo "   5) PIN only (default)"
+    printf "   Selection (e.g. 1 2 or 4): "
+    read -r _sec < /dev/tty
+
+    if [[ "$_sec" == *"1"* || "$_sec" == *"4"* ]]; then
+        if bioutil -r -s 2>/dev/null | grep -q "Touch ID"; then
+            security add-generic-password -a "$USER" -s "aurora-shell-touchid" -w "enabled" -U 2>/dev/null
+            echo "   ✅ Touch ID enabled"
+        else
+            echo "   ⚠️  Touch ID not available"
+        fi
+    fi
+    if [[ "$_sec" == *"2"* || "$_sec" == *"4"* ]]; then
+        if command -v ykman >/dev/null 2>&1; then
+            _yk=$(ykman list 2>/dev/null | grep -o '[0-9]\{8,\}' | head -1)
+            if [ -n "$_yk" ]; then
+                security add-generic-password -a "$USER" -s "aurora-shell-yubikey" -w "$_yk" -U 2>/dev/null
+                echo "   ✅ YubiKey registered (serial: $_yk)"
+            else
+                echo "   ⚠️  No YubiKey detected — run: shell.aurora --security --add-yubikey"
+            fi
+        else
+            echo "   ⚠️  ykman not found — install: brew install ykman, then: shell.aurora --security --add-yubikey"
+        fi
+    fi
+    if [[ "$_sec" == *"3"* || "$_sec" == *"4"* ]]; then
+        printf "   📁 Path to key file: "; read -r _kf < /dev/tty
+        if [ -f "$_kf" ]; then
+            _kfh=$(shasum -a 256 "$_kf" | awk '{print $1}')
+            security add-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w "$_kf" -U 2>/dev/null
+            security add-generic-password -a "$USER" -s "aurora-shell-keyfile-hash" -w "$_kfh" -U 2>/dev/null
+            echo "   ✅ Key file registered"
+        else
+            echo "   ⚠️  File not found — run: shell.aurora --security --add-keyfile"
+        fi
+    fi
+
     printf "🎂 Birthday (MMDD, Enter to skip): "; read -r _bday < /dev/tty
     printf "🆔 Prompt ID (Enter to use $USER): "; read -r _pid < /dev/tty
     _pid="${_pid:-$USER}"
