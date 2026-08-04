@@ -1389,6 +1389,19 @@ EOF
 # --- EXECUTE ---
 sync_env
 install_com
+
+# Brew mode: skip wizard, just generate theme + wire .zshrc, mark for first-launch wizard
+if [ "${AURORA_BREW_INSTALL:-0}" = "1" ]; then
+    touch "$HOME/.aurora-shell_files/.brew_first_launch"
+    generate_theme
+    safe_sed '/aurora-shell_theme/d' ~/.zshrc 2>/dev/null
+    grep -q "aurora-shell_theme" "$HOME/.zshrc" 2>/dev/null || echo "source $THEME_FILE" >> "$HOME/.zshrc"
+    grep -q "aurora-shell_files/bin" "$HOME/.zshrc" 2>/dev/null || echo 'export PATH="$HOME/.aurora-shell_files/bin:$PATH"' >> "$HOME/.zshrc"
+    echo ""
+    echo "✅ Aurora-Shell installed! Open a new terminal tab to complete setup."
+    exit 0
+fi
+
 run_wizard
 generate_theme
 
