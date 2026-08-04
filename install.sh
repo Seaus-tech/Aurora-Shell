@@ -409,6 +409,9 @@ _aurora_auth() {
     security find-generic-password -a "$USER" -s "aurora-shell-yubikey" -w &>/dev/null && _has_yubikey=1
     security find-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w &>/dev/null && _has_keyfile=1
 
+    # Lock down signals during auth
+    trap '' INT TSTP QUIT HUP
+
     if [ -n "$_has_touchid" ]; then
         echo "👆 Touch ID required..." | safe_lolcat
         if _aurora_try_touchid; then
@@ -554,6 +557,7 @@ authenticate_user() {
     if [[ $_has_extra -eq 1 ]]; then
         if _aurora_auth; then
             date +%s > "$HOME/.aurora-shell_files/.last_auth"
+            trap - INT TSTP QUIT HUP
             source "$HOME/.aurora-shell_files/aurora-shell_settings" 2>/dev/null
             local _box_w=100
             local _label="Logged in as ${AURORA_ID:-$USER}"
@@ -573,6 +577,8 @@ authenticate_user() {
     # Fall through to PIN — skip if no PIN set
     [[ -z "$target_pw" ]] && return 0
     clear
+    # Trap Ctrl+C, Ctrl+Z, Ctrl+D — cannot escape the lock screen
+    trap '' INT TSTP QUIT HUP
     echo "           .---.
           /     \\
          | (00)  |  SYSTEM ENCRYPTED
@@ -584,14 +590,15 @@ authenticate_user() {
     local attempts=0
     while true; do
         echo -ne "[AUTH] Key: " | safe_lolcat
-        if ! read -s in_pw; then echo ""; echo "DENIED"; continue; fi
+        if ! read -s in_pw < /dev/tty; then in_pw=""; fi
         in_pw=$(echo "$in_pw" | tr -d '\n\r')
         echo ""
         if [[ "$in_pw" == "$target_pw" ]]; then
             date +%s > "$lock_file"
             echo "$(date '+%Y-%m-%d %H:%M:%S') — login OK" >> "$HOME/.aurora-shell_files/login_history.log"
             notify "Aurora-Shell" "✅ Logged in as ${AURORA_ID:-$USER}" "default"
-            if [[ ! -o interactive ]]; then trap INT; trap TSTP; trap QUIT; fi
+            # Restore signal handlers
+            trap - INT TSTP QUIT HUP
             clear
             break
         else
