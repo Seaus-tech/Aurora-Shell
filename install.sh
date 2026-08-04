@@ -1,6 +1,6 @@
 #!/bin/bash
 # --- Aurora-Shell Installer ---
-VER="6.0.0"
+VER="6.1.0"
 SHELL_VER="--- Aurora-Shell v$VER ---"
 
 # --- DETECT OS ---
@@ -161,11 +161,61 @@ EOF
     
     read -s -p "🔐 Set Terminal PIN (Enter for none): " NEW_PW < /dev/tty; echo ""
     if [ "${AURORA_UPDATE_MODE:-}" = "1" ]; then
-        # keep existing keychain PIN silently
         echo "🔒 PIN kept from previous install"
     elif [ -n "$NEW_PW" ]; then
         security add-generic-password -a "$USER" -s "aurora-shell-pin" -w "$NEW_PW" -U 2>/dev/null
         echo "🔒 PIN stored securely in Keychain"
+    fi
+
+    # --- SECURITY METHODS ---
+    echo ""
+    echo "🔐 Security method(s) — PIN is always kept. Add extras:"
+    echo "   1) Touch ID"
+    echo "   2) YubiKey"
+    echo "   3) Security Key File (USB)"
+    echo "   4) All of the above"
+    echo "   5) PIN only (default)"
+    printf "   Selection (e.g. 1 2 or 4): "
+    read -r _sec_choice < /dev/tty
+
+    # Touch ID
+    if [[ "$_sec_choice" == *"1"* || "$_sec_choice" == *"4"* ]]; then
+        if bioutil -r -s 2>/dev/null | grep -q "Touch ID"; then
+            security add-generic-password -a "$USER" -s "aurora-shell-touchid" -w "enabled" -U 2>/dev/null
+            echo "   ✅ Touch ID enabled"
+        else
+            echo "   ⚠️  Touch ID not available on this machine"
+        fi
+    fi
+
+    # YubiKey
+    if [[ "$_sec_choice" == *"2"* || "$_sec_choice" == *"4"* ]]; then
+        if command -v ykman >/dev/null 2>&1; then
+            _yk_serial=$(ykman list 2>/dev/null | grep -o '[0-9]\{8,\}' | head -1)
+            if [ -n "$_yk_serial" ]; then
+                security add-generic-password -a "$USER" -s "aurora-shell-yubikey" -w "$_yk_serial" -U 2>/dev/null
+                echo "   ✅ YubiKey registered (serial: $_yk_serial)"
+            else
+                echo "   ⚠️  No YubiKey detected — insert it and re-run: shell.aurora --security --add-yubikey"
+            fi
+        else
+            echo "   ⚠️  ykman not found — install with: brew install ykman"
+            echo "       Then run: shell.aurora --security --add-yubikey"
+        fi
+    fi
+
+    # Security Key File
+    if [[ "$_sec_choice" == *"3"* || "$_sec_choice" == *"4"* ]]; then
+        printf "   📁 Path to key file (e.g. /Volumes/USB/aurora.key): "
+        read -r _kf_path < /dev/tty
+        if [ -f "$_kf_path" ]; then
+            _kf_hash=$(shasum -a 256 "$_kf_path" | awk '{print $1}')
+            security add-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w "$_kf_path" -U 2>/dev/null
+            security add-generic-password -a "$USER" -s "aurora-shell-keyfile-hash" -w "$_kf_hash" -U 2>/dev/null
+            echo "   ✅ Key file registered"
+        else
+            echo "   ⚠️  File not found — run: shell.aurora --security --add-keyfile"
+        fi
     fi
     echo "🎨 Header style:"
     echo "   1) Mega-Block  2) Slant  3) Doom  4) Banner  5) Big  6) Digital  7) Custom text"
@@ -309,6 +359,164 @@ install_xcode_if_needed() {
     fi
 }
 
+# ── MULTI-METHOD AUTH ────────────────────────────────────────────────────────
+
+_aurora_try_touchid() {
+    security find-generic-password -a "$USER" -s "aurora-shell-touchid" -w &>/dev/null || return 1
+    local _tid_ok
+    _tid_ok=$(osascript 2>/dev/null << 'ASEOF'
+use framework "LocalAuthentication"
+set ctx to current application's LAContext's new()
+set {canAuth, err} to ctx's canEvaluatePolicy:1 |error|:(missing value)
+if not canAuth then return "unavailable"
+set resultHolder to {done:false, success:false}
+ctx's evaluatePolicy:1 localizedReason:"Aurora-Shell login" reply:(handler(s, e)
+    set resultHolder's done to true
+    set resultHolder's success to s
+end handler)
+repeat 150 times
+    delay 0.1
+    if resultHolder's done then exit repeat
+end repeat
+if resultHolder's success then return "ok"
+return "fail"
+ASEOF
+)
+    [ "$_tid_ok" = "ok" ]
+}
+
+_aurora_try_yubikey() {
+    local _stored
+    _stored=$(security find-generic-password -a "$USER" -s "aurora-shell-yubikey" -w 2>/dev/null) || return 1
+    command -v ykman >/dev/null 2>&1 || return 1
+    local _current
+    _current=$(ykman list 2>/dev/null | grep -o '[0-9]\{8,\}' | head -1)
+    [ "$_current" = "$_stored" ]
+}
+
+_aurora_try_keyfile() {
+    local _path _stored_hash
+    _path=$(security find-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w 2>/dev/null) || return 1
+    _stored_hash=$(security find-generic-password -a "$USER" -s "aurora-shell-keyfile-hash" -w 2>/dev/null) || return 1
+    [ -f "$_path" ] || return 1
+    local _current_hash
+    _current_hash=$(shasum -a 256 "$_path" | awk '{print $1}')
+    [ "$_current_hash" = "$_stored_hash" ]
+}
+
+_aurora_auth() {
+    local _has_touchid _has_yubikey _has_keyfile
+    security find-generic-password -a "$USER" -s "aurora-shell-touchid" -w &>/dev/null && _has_touchid=1
+    security find-generic-password -a "$USER" -s "aurora-shell-yubikey" -w &>/dev/null && _has_yubikey=1
+    security find-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w &>/dev/null && _has_keyfile=1
+
+    if [ -n "$_has_touchid" ]; then
+        echo "👆 Touch ID required..." | safe_lolcat
+        if _aurora_try_touchid; then
+            date +%s > "$HOME/.aurora-shell_files/.last_auth"
+            echo "$(date '+%Y-%m-%d %H:%M:%S') — login OK (Touch ID)" >> "$HOME/.aurora-shell_files/login_history.log"
+            notify "Aurora-Shell" "✅ Logged in via Touch ID" "default"
+            return 0
+        fi
+        echo "⚠️  Touch ID failed — trying next method..." | safe_lolcat
+    fi
+
+    if [ -n "$_has_yubikey" ]; then
+        echo "🔑 Insert your YubiKey..." | safe_lolcat
+        local _yk_attempts=0
+        while [ $_yk_attempts -lt 3 ]; do
+            if _aurora_try_yubikey; then
+                date +%s > "$HOME/.aurora-shell_files/.last_auth"
+                echo "$(date '+%Y-%m-%d %H:%M:%S') — login OK (YubiKey)" >> "$HOME/.aurora-shell_files/login_history.log"
+                notify "Aurora-Shell" "✅ Logged in via YubiKey" "default"
+                return 0
+            fi
+            (( _yk_attempts++ ))
+            sleep 1
+        done
+        echo "⚠️  YubiKey not detected — trying next method..." | safe_lolcat
+    fi
+
+    if [ -n "$_has_keyfile" ]; then
+        echo "💾 Checking security key file..." | safe_lolcat
+        if _aurora_try_keyfile; then
+            date +%s > "$HOME/.aurora-shell_files/.last_auth"
+            echo "$(date '+%Y-%m-%d %H:%M:%S') — login OK (Key File)" >> "$HOME/.aurora-shell_files/login_history.log"
+            notify "Aurora-Shell" "✅ Logged in via Key File" "default"
+            return 0
+        fi
+        echo "⚠️  Key file not found — falling back to PIN..." | safe_lolcat
+    fi
+
+    return 1  # no extra method succeeded — fall through to PIN
+}
+
+aurora_security() {
+    case "$1" in
+        --add-touchid)
+            if bioutil -r -s 2>/dev/null | grep -q "Touch ID"; then
+                security add-generic-password -a "$USER" -s "aurora-shell-touchid" -w "enabled" -U 2>/dev/null
+                echo "✅ Touch ID enabled"
+            else
+                echo "❌ Touch ID not available on this machine"
+            fi
+            ;;
+        --add-yubikey)
+            command -v ykman >/dev/null 2>&1 || { echo "❌ Install ykman: brew install ykman"; return 1; }
+            local _serial
+            _serial=$(ykman list 2>/dev/null | grep -o '[0-9]\{8,\}' | head -1)
+            [ -z "$_serial" ] && echo "❌ No YubiKey detected — insert it first" && return 1
+            security add-generic-password -a "$USER" -s "aurora-shell-yubikey" -w "$_serial" -U 2>/dev/null
+            echo "✅ YubiKey registered (serial: $_serial)"
+            ;;
+        --add-keyfile)
+            printf "📁 Path to key file: "; read -r _kpath < /dev/tty
+            [ ! -f "$_kpath" ] && echo "❌ File not found" && return 1
+            local _khash
+            _khash=$(shasum -a 256 "$_kpath" | awk '{print $1}')
+            security add-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w "$_kpath" -U 2>/dev/null
+            security add-generic-password -a "$USER" -s "aurora-shell-keyfile-hash" -w "$_khash" -U 2>/dev/null
+            echo "✅ Key file registered: $_kpath"
+            ;;
+        --remove)
+            case "$2" in
+                touchid)  security delete-generic-password -a "$USER" -s "aurora-shell-touchid" 2>/dev/null; echo "🗑 Touch ID removed" ;;
+                yubikey)  security delete-generic-password -a "$USER" -s "aurora-shell-yubikey" 2>/dev/null; echo "🗑 YubiKey removed" ;;
+                keyfile)
+                    security delete-generic-password -a "$USER" -s "aurora-shell-keyfile-path" 2>/dev/null
+                    security delete-generic-password -a "$USER" -s "aurora-shell-keyfile-hash" 2>/dev/null
+                    echo "🗑 Key file removed"
+                    ;;
+                pin)  security delete-generic-password -a "$USER" -s "aurora-shell-pin" 2>/dev/null; echo "🗑 PIN removed" ;;
+                *)    echo "Usage: shell.aurora --security --remove <touchid|yubikey|keyfile|pin>" ;;
+            esac
+            ;;
+        --status)
+            echo "🔐 Security Methods:"
+            security find-generic-password -a "$USER" -s "aurora-shell-pin" -w &>/dev/null \
+                && echo "   ✅ PIN" || echo "   ❌ PIN (none set)"
+            security find-generic-password -a "$USER" -s "aurora-shell-touchid" -w &>/dev/null \
+                && echo "   ✅ Touch ID" || echo "   ➖ Touch ID"
+            security find-generic-password -a "$USER" -s "aurora-shell-yubikey" -w &>/dev/null \
+                && echo "   ✅ YubiKey ($(security find-generic-password -a "$USER" -s "aurora-shell-yubikey" -w 2>/dev/null))" \
+                || echo "   ➖ YubiKey"
+            security find-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w &>/dev/null \
+                && echo "   ✅ Key File ($(security find-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w 2>/dev/null))" \
+                || echo "   ➖ Key File"
+            ;;
+        *)
+            echo "Usage: shell.aurora --security <option>"
+            echo "  --add-touchid    Enable Touch ID"
+            echo "  --add-yubikey    Register YubiKey"
+            echo "  --add-keyfile    Register a security key file"
+            echo "  --remove <type>  Remove a method (touchid|yubikey|keyfile|pin)"
+            echo "  --status         Show configured methods"
+            ;;
+    esac
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+
 authenticate_user() {
     local is_manual=0
     local target_pw
@@ -318,15 +526,35 @@ authenticate_user() {
     else
         target_pw="${1:-$(security find-generic-password -a "$USER" -s "aurora-shell-pin" -w 2>/dev/null | tr -d '\n\r')}"
     fi
-    [[ -z "$target_pw" ]] && return
+
     local lock_file="$HOME/.aurora-shell_files/.last_auth"
+
+    # Check session cache (skip auth if within 10 min)
     if [[ $is_manual -eq 0 ]]; then
         if [[ -f "$lock_file" ]]; then
             local last=$(cat "$lock_file" 2>/dev/null)
             local now=$(date +%s)
-            [[ $(( now - last )) -lt 600 ]] && return
+            [[ $(( now - last )) -lt 600 ]] && return 0
         fi
     fi
+
+    # No PIN and no extra methods = no auth needed
+    local _has_extra=0
+    security find-generic-password -a "$USER" -s "aurora-shell-touchid" -w &>/dev/null && _has_extra=1
+    security find-generic-password -a "$USER" -s "aurora-shell-yubikey" -w &>/dev/null && _has_extra=1
+    security find-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w &>/dev/null && _has_extra=1
+    [[ -z "$target_pw" && $_has_extra -eq 0 ]] && return 0
+
+    # Try extra methods first (Touch ID / YubiKey / Key File)
+    if [[ $_has_extra -eq 1 ]]; then
+        if _aurora_auth; then
+            _aurora_show_login_banner
+            return 0
+        fi
+    fi
+
+    # Fall through to PIN — skip if no PIN set
+    [[ -z "$target_pw" ]] && return 0
     clear
     echo "           .---.
           /     \\
@@ -535,6 +763,7 @@ shell.aurora() {
             echo "✅ Aurora-Shell uninstalled."
             ;;
         --account) aurora_account "$2" ;;
+        --security) aurora_security "$2" "$3" ;;
         --modules-components|-mc)
             echo "📦 Installing Aurora-Shell Module System..." | safe_lolcat
             local _shell_dir="$HOME/.local/shell"
@@ -879,7 +1108,7 @@ SHELLEOF
             else echo "❌ No recognisable project type in $(pwd)"; fi
             ;;
         *)
-            echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account, --motd, --doctor, --sync, --history, --run"
+            echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account, --security, --motd, --doctor, --sync, --history, --run"
             ;;
     esac
 }
