@@ -1,0 +1,45 @@
+name: Homebrew Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            install.sh
+            brew-install.sh
+            shell.aurora
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update formula SHA256
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          URL="https://github.com/Seaus-tech/Aurora-Shell/archive/refs/tags/${TAG}.tar.gz"
+          
+          # Download and compute SHA
+          curl -sL "$URL" -o release.tar.gz
+          SHA=$(shasum -a 256 release.tar.gz | awk '{print $1}')
+          
+          # Update formula
+          sed -i "s/sha256 \"PLACEHOLDER\"/sha256 \"$SHA\"/" Formula/aurora-shell.rb
+          sed -i "s/url \".*tar.gz\"/url \"$URL\"/" Formula/aurora-shell.rb
+          sed -i "s/version \".*\"/version \"${TAG#v}\"/" Formula/aurora-shell.rb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/aurora-shell.rb
+          git commit -m "chore: update formula for ${TAG}" || true
+          git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

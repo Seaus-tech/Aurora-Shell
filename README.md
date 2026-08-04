@@ -48,7 +48,7 @@ Aurora-Shell transforms your terminal into a high-performance dashboard with rea
                              / ___ / /_/ / /  / /_/ / /  / /_/ /_____/__/ / / / /  __/ / /  
                             /_/  |_\__,_/_/   \____/_/   \__,_/     /____/_/ /_/\___/_/_/   
                                                                                             
-                          ⚡ AURORA v5.4.0 | 🧠 CPU: 10.00% | 💾 FREE: 100Gi | 🔋 100% | 📅 00/00/00
+                          ⚡ AURORA v0.0.0 | 🧠 CPU: 10.00% | 💾 FREE: 100Gi | 🔋 100% | 📅 00/00/00
 ------------------------------------------------------------------------------------------------------------------------
 ```
 
@@ -69,7 +69,7 @@ Aurora-Shell transforms your terminal into a high-performance dashboard with rea
                                         ███████║██║  ██║███████╗███████╗███████╗     
                                         ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
                                   
-                          ⚡ AURORA v5.4.0 | 🧠 CPU: 10.00% | 💾 FREE: 100Gi | 🔋 100% | 📅 00/00/00
+                          ⚡ AURORA v0.0.0 | 🧠 CPU: 10.00% | 💾 FREE: 100Gi | 🔋 100% | 📅 00/00/00
 ------------------------------------------------------------------------------------------------------------------------
 ```
 
@@ -110,8 +110,8 @@ irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" 
 
 The main configuration logic is stored in:
 
-- **macOS**: `~/.aurora-shell_tfiles` (sourced in your `.zshrc`)
-- **Windows**: `$PROFILE` (usually `Documents\PowerShell\Microsoft.PowerShell_profile.ps1`)
+- **macOS**: `~/.aurora-shell_files` (sourced in your `$PROFILE`)
+- **Windows**: `C:\Users\$USER\.aurora-shell_files` (usually sourced in your `$PROFILE`)
 
 ## Uninstall
 
@@ -136,8 +136,8 @@ Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shel
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Run ```open https://forms.cloud.microsoft/r/hnHpTcEuMQ``` in terminal
-2. Fill in the form.
+1. Run ```open https://github.com/Seaus-tech/Aurora-Shell/issues``` in terminal
+2. tell idea.
 3. Wait for the results!
 
 ---
