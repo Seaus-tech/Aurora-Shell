@@ -1001,6 +1001,8 @@ _CFG
 
     echo ""
     echo "✅ All set! Reloading Aurora-Shell..." | safe_lolcat
+    # Remove aurora-shell-setup now that first-launch is complete
+    rm -f "$(command -v aurora-shell-setup 2>/dev/null)" 2>/dev/null
     sleep 1
     exec "$SHELL" -l
 fi
