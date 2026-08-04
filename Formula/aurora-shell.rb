@@ -46,6 +46,17 @@ class AuroraShell < Formula
     # No-op: user must run aurora-shell-setup manually (post_install runs as root)
   end
 
+  def uninstall
+    # Remove user data directory
+    system "rm", "-rf", "#{Dir.home}/.aurora-shell_files"
+    # Remove .zshrc lines
+    zshrc = "#{Dir.home}/.zshrc"
+    if File.exist?(zshrc)
+      lines = File.readlines(zshrc).reject { |l| l.include?("aurora-shell") }
+      File.write(zshrc, lines.join)
+    end
+  end
+
   def caveats
     <<~EOS
       Aurora-Shell has been installed! 🐚
