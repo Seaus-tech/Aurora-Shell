@@ -1,6 +1,6 @@
 #!/bin/bash
 # --- Aurora-Shell Installer ---
-VER="5.8.5"
+VER="5.9.6"
 SHELL_VER="--- Aurora-Shell v$VER ---"
 
 # --- DETECT OS ---
@@ -1410,7 +1410,7 @@ echo "source $THEME_FILE" >> "$HOME/.zshrc"
 echo "PROFILE=$HOME/.zshrc" >> "$HOME/.zshrc"
 
 # --- REPO DISCOVERY ---
-echo "🌀 Checking Aurora-shell..."
+echo "🌀 Checking for Aurora-shell repository..."
 cd "$HOME"
 
 # Targeted search instead of global find
