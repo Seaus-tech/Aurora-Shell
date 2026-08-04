@@ -68,7 +68,7 @@ sync_env() {
 install_com() {
     echo -ne "\033[1;33m📥 Downloading extensions... \033[0m"
     if command -v brew >/dev/null 2>&1; then
-        brew install figlet lolcat pygments terminal-notifier jq fzf 2>/dev/null
+        brew install figlet lolcat pygments terminal-notifier jq fzf zsh bash 2>/dev/null
     elif [ "$PLATFORM" = "linux" ]; then
         if command -v apt-get >/dev/null 2>&1; then
             sudo apt-get update && sudo apt-get install -y figlet lolcat python3-pygments jq fzf
@@ -1387,18 +1387,26 @@ EOF
 }
 
 # --- EXECUTE ---
-sync_env
-install_com
 
-# Brew mode: skip wizard, just generate theme + wire .zshrc, mark for first-launch wizard
+# Brew mode: skip sync/install (deps handled by formula), just generate theme
 if [ "${AURORA_BREW_INSTALL:-0}" = "1" ]; then
+    mkdir -p "$HOME/.aurora-shell_files/bin"
+    # Write settings with correct version
+    cat > "$CONFIG_FILE" << CFGEOF
+AURORA_VER="$VER"
+AURORA_HDR_MODE="BLOCK"
+AURORA_HDR_VAL="Aurora-Shell"
+AURORA_FIGLET_FONT="slant"
+AURORA_USER_BDAY=""
+AURORA_ID="$USER"
+CFGEOF
     touch "$HOME/.aurora-shell_files/.brew_first_launch"
     generate_theme
-    safe_sed '/aurora-shell_theme/d' ~/.zshrc 2>/dev/null
-    grep -q "aurora-shell_theme" "$HOME/.zshrc" 2>/dev/null || echo "source $THEME_FILE" >> "$HOME/.zshrc"
-    grep -q "aurora-shell_files/bin" "$HOME/.zshrc" 2>/dev/null || echo 'export PATH="$HOME/.aurora-shell_files/bin:$PATH"' >> "$HOME/.zshrc"
+    grep -v "aurora-shell_theme\|aurora-shell_files/bin" "$HOME/.zshrc" > /tmp/.zshrc_clean 2>/dev/null && mv /tmp/.zshrc_clean "$HOME/.zshrc"
+    echo "source $THEME_FILE" >> "$HOME/.zshrc"
+    echo 'export PATH="$HOME/.aurora-shell_files/bin:$PATH"' >> "$HOME/.zshrc"
     echo ""
-    echo "✅ Aurora-Shell installed! Open a new terminal tab to complete setup."
+    echo "✅ Aurora-Shell v$VER installed! Open a new terminal tab to complete setup."
     exit 0
 fi
 
