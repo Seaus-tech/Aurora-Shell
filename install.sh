@@ -1143,7 +1143,15 @@ SHELLEOF
             else echo "❌ No recognisable project type in $(pwd)"; fi
             ;;
         *)
-            echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account, --security, --motd, --doctor, --sync, --history, --run"
+            # No flag — launch Aurora-Shell.app if installed, otherwise show flags
+            if [ -d "$HOME/Applications/Aurora-Shell.app" ] || [ -d "/Applications/Aurora-Shell.app" ]; then
+                open -a "Aurora-Shell" 2>/dev/null && open "aurora-shell://lock" 2>/dev/null
+            elif [ -z "$1" ]; then
+                # No args and no app — just show the header
+                Show-Aurora
+            else
+                echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account, --security, --motd, --doctor, --sync, --history, --run"
+            fi
             ;;
     esac
 }
