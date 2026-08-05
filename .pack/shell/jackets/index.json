@@ -2,6 +2,52 @@
   "version": "1.0.0",
   "updated": "2026-07-23T03:06:17.965Z",
   "jackets": {
+    "Aurora.GitTUI": {
+      "arm64_darwin": {
+        "name": "Aurora.GitTUI",
+        "bin": "git-tui",
+        "version": "1.0.0",
+        "arch": "arm64",
+        "platform": "darwin",
+        "source": "aurora",
+        "description": "Full-screen TUI git manager — status, diff, log, AI commit",
+        "file": "Aurora.GitTUI_any.tar.gz",
+        "built": "2026-08-04T00:00:00Z"
+      },
+      "x86_64_darwin": {
+        "name": "Aurora.GitTUI",
+        "bin": "git-tui",
+        "version": "1.0.0",
+        "arch": "x86_64",
+        "platform": "darwin",
+        "source": "aurora",
+        "description": "Full-screen TUI git manager — status, diff, log, AI commit",
+        "file": "Aurora.GitTUI_any.tar.gz",
+        "built": "2026-08-04T00:00:00Z"
+      },
+      "x86_64_linux": {
+        "name": "Aurora.GitTUI",
+        "bin": "git-tui",
+        "version": "1.0.0",
+        "arch": "x86_64",
+        "platform": "linux",
+        "source": "aurora",
+        "description": "Full-screen TUI git manager — status, diff, log, AI commit",
+        "file": "Aurora.GitTUI_any.tar.gz",
+        "built": "2026-08-04T00:00:00Z"
+      },
+      "arm64_linux": {
+        "name": "Aurora.GitTUI",
+        "bin": "git-tui",
+        "version": "1.0.0",
+        "arch": "arm64",
+        "platform": "linux",
+        "source": "aurora",
+        "description": "Full-screen TUI git manager — status, diff, log, AI commit",
+        "file": "Aurora.GitTUI_any.tar.gz",
+        "built": "2026-08-04T00:00:00Z"
+      }
+    },
     "Amazon.AWS": {
       "arm64_darwin": {
         "name": "Amazon.AWS",

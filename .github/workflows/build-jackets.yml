@@ -2,210 +2,40 @@ name: Build Jackets
 
 on:
   push:
-    branches: [dev]
     paths:
-      - 'cli-packages.json'
-      - '.github/workflows/build-jackets.yml'
+      - '.pack/shell/git-tui/**'
+      - '.pack/shell/jackets/index.json'
   workflow_dispatch:
-    inputs:
-      package:
-        description: 'Specific package to build (leave empty for all)'
-        required: false
-  repository_dispatch:
-    types: [build-jackets]
-
-permissions:
-  contents: write
-  pull-requests: write
 
 jobs:
-  build-jackets:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos-14
-            arch: arm64
-            platform: darwin
-          - os: macos-14
-            arch: x86_64
-            platform: darwin
-          - os: ubuntu-22.04
-            arch: x86_64
-            platform: linux
-
-    runs-on: ${{ matrix.os }}
-    name: Build jackets (${{ matrix.arch }}_${{ matrix.platform }})
-
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-          ref: dev
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Build jackets
-        id: build
+      - name: Build Aurora.GitTUI jacket
         run: |
-          set -e
           set -x
-          ARCH="${{ matrix.arch }}"
-          PLATFORM="${{ matrix.platform }}"
-          JACKET_DIR=".pack/shell/jackets"
-          SPECIFIC="${{ github.event.inputs.package }}"
-          BUILT=0
+          VERSION=$(grep -A2 '"Aurora.GitTUI"' .pack/shell/jackets/index.json | grep '"version"' | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "Building Aurora.GitTUI v$VERSION"
 
-          mkdir -p "$JACKET_DIR"
-          echo "=== Build jackets start: $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
-          echo "ARCH=$ARCH PLATFORM=$PLATFORM JACKET_DIR=$JACKET_DIR SPECIFIC=$SPECIFIC"
+          cp .pack/shell/git-tui/git-tui /tmp/git-tui
+          chmod +x /tmp/git-tui
+          tar -czf .pack/shell/jackets/Aurora.GitTUI_any.tar.gz -C /tmp git-tui
+          rm /tmp/git-tui
+          echo "✅ Built Aurora.GitTUI_any.tar.gz ($(du -h .pack/shell/jackets/Aurora.GitTUI_any.tar.gz | cut -f1))"
 
-          packages=$(node -e "
-            const p = require('./cli-packages.json').packages;
-            const keys = Object.keys(p);
-            const target = '$SPECIFIC';
-            const list = target ? keys.filter(k => k === target || (p[k].aliases||[]).includes(target)) : keys;
-            console.log(list.join('\n'));
-          ")
+          # Update built timestamp in index
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          sed -i "s|\"built\": \".*\"|\"built\": \"$NOW\"|g" .pack/shell/jackets/index.json
 
-          while IFS= read -r pkg; do
-            [ -z "$pkg" ] && continue
-            echo "--- Processing package: $pkg at $(date -u +%Y-%m-%dT%H:%M:%SZ) ---"
-
-            source=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.source || '')")
-            install_cmd=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.install || '')")
-            bin_name=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.command || '')")
-            version=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.version || 'latest')")
-            description=$(node -e "console.log(require('./cli-packages.json').packages['$pkg']?.description || '')")
-
-            # skip non-buildable sources
-            if [[ "$source" == "aurora" || "$source" == "kiro.dev" ]]; then
-              echo "⏭  Skipping $pkg (source: $source)"
-              continue
-            fi
-
-            jacket_name="${pkg//\//_}_${ARCH}_${PLATFORM}"
-            jacket_file="$JACKET_DIR/${jacket_name}.tar.gz"
-            jacket_meta="$JACKET_DIR/${jacket_name}.json"
-
-            # skip if already built at same version
-            if [ -f "$jacket_meta" ] && [ "$version" != "latest" ]; then
-              existing=$(node -e "try{console.log(require('./$jacket_meta').version)}catch{console.log('')}" 2>/dev/null)
-              [ "$existing" = "$version" ] && echo "✅ $pkg $version already built — skip" && continue
-            fi
-
-            echo "📦 Building jacket: $pkg ($ARCH/$PLATFORM)"
-            echo "  install_cmd: $install_cmd"
-            echo "  (start) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            install_ok=0
-
-            case "$source" in
-              brew)
-                brew_pkg=$(echo "$install_cmd" | sed 's/.*brew install //' | awk '{print $1}')
-                timeout 120 brew install "$brew_pkg" 2>/dev/null && install_ok=1 || true
-                ;;
-              npm)
-                npm_pkg=$(echo "$install_cmd" | sed 's/npm install -g //')
-                timeout 120 npm install -g "$npm_pkg" 2>/dev/null && install_ok=1 || true
-                ;;
-              pip)
-                pip_pkg=$(echo "$install_cmd" | sed 's/pip3 install //')
-                timeout 120 pip3 install "$pip_pkg" 2>/dev/null && install_ok=1 || true
-                ;;
-              pipx)
-                pipx_pkg=$(echo "$install_cmd" | sed 's/pipx install //')
-                timeout 120 pipx install "$pipx_pkg" 2>/dev/null && install_ok=1 || true
-                ;;
-            esac
-
-            [ $install_ok -eq 0 ] && echo "⚠  Install failed for $pkg — skip" && continue
-
-            bin_path=$(command -v "$bin_name" 2>/dev/null || true)
-            [ -z "$bin_path" ] && echo "⚠  Binary '$bin_name' not found — skip" && continue
-
-            raw_ver=$(
-              timeout 5 "$bin_name" --version 2>/dev/null | head -1 || echo "$version"
-            )
-            echo "  raw_version_output: $raw_ver"
-            real_ver=$(printf '%s\n' "$raw_ver" | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 || echo "$version")
-
-            # bundle binary (+ dylibs on macOS)
-            tmp_dir=$(mktemp -d)
-            cp "$bin_path" "$tmp_dir/$bin_name"
-            chmod +x "$tmp_dir/$bin_name"
-            if [[ "$PLATFORM" == "darwin" ]] && command -v otool &>/dev/null; then
-              otool -L "$bin_path" 2>/dev/null | grep -v '/usr/lib\|/System' | awk '{print $1}' | while read lib; do
-                [ -f "$lib" ] && cp "$lib" "$tmp_dir/" 2>/dev/null || true
-              done
-            fi
-
-            echo "  bundling $jacket_name"
-            tar -czf "$jacket_file" -C "$tmp_dir" .
-            rm -rf "$tmp_dir"
-
-            printf '{\n  "name": "%s",\n  "bin": "%s",\n  "version": "%s",\n  "arch": "%s",\n  "platform": "%s",\n  "source": "%s",\n  "description": "%s",\n  "file": "%s",\n  "built": "%s"\n}\n' \
-              "$pkg" "$bin_name" "$real_ver" "$ARCH" "$PLATFORM" "$source" "$description" "${jacket_name}.tar.gz" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-              > "$jacket_meta"
-
-              echo "✅ Built: $jacket_name ($real_ver) at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            BUILT=$((BUILT + 1))
-
-          done <<< "$packages"
-
-          # rebuild index.json
-          node <<'NODE'
-          const fs = require('fs');
-          const dir = '.pack/shell/jackets';
-          const metas = fs.readdirSync(dir).filter(f => f.endsWith('.json') && f !== 'index.json');
-          const jackets = {};
-          metas.forEach(f => {
-            try {
-              const m = JSON.parse(fs.readFileSync(dir+'/'+f));
-              if (!jackets[m.name]) jackets[m.name] = {};
-              jackets[m.name][m.arch+'_'+m.platform] = m;
-            } catch {}
-          });
-          fs.writeFileSync(dir+'/index.json', JSON.stringify({
-            version: '1.0.0',
-            updated: new Date().toISOString(),
-            jackets
-          }, null, 2));
-          console.log('index.json updated —', Object.keys(jackets).length, 'packages');
-          NODE
-
-          echo "built=$BUILT" >> $GITHUB_OUTPUT
-
-      - name: Create PR branch and open pull request
-        if: steps.build.outputs.built != '0'
+      - name: Commit updated jacket
         run: |
-          git config user.name "Aurora-Shell Bot"
-          git config user.email "aurora-bot@seaus.tech"
-          BRANCH="jackets/${{ matrix.arch }}_${{ matrix.platform }}-$(date -u +%Y%m%d%H%M%S)"
-          git checkout -b "$BRANCH"
-          git add .pack/
-          git diff --staged --quiet || git commit -m "🧥 jackets (${{ matrix.arch }}_${{ matrix.platform }})"
-          git push origin "$BRANCH"
-
-          # create a PR against dev
-          TITLE="🧥 jackets (${{ matrix.arch }}_${{ matrix.platform }})"
-          BODY="Auto-generated jackets build from workflow run $GITHUB_RUN_ID. Branch: $BRANCH"
-          curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls" \
-            -d "{\"title\":\"${TITLE}\",\"head\":\"${BRANCH}\",\"base\":\"dev\",\"body\":\"${BODY}\"}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .pack/shell/jackets/Aurora.GitTUI_any.tar.gz .pack/shell/jackets/index.json
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "chore: rebuild Aurora.GitTUI jacket"
+          git push origin dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  production-approval:
-    needs: build-jackets
-    runs-on: ubuntu-latest
-    environment: production
-    name: Request production deployment approval
-    steps:
-      - name: Notify
-        run: |
-          echo "Production deployment approval requested for jackets build run $GITHUB_RUN_ID. Review and approve in the Environments UI."
