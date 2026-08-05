@@ -556,6 +556,7 @@ authenticate_user() {
 
     # If Aurora-Shell.app is running, bring it to front (it handles its own lock screen)
     if pgrep -x "Aurora-Shell" &>/dev/null; then
+        open "aurora-shell://lock" 2>/dev/null
         osascript -e 'tell application "Aurora-Shell" to activate' 2>/dev/null
         return 0
     fi
