@@ -554,6 +554,12 @@ authenticate_user() {
     security find-generic-password -a "$USER" -s "aurora-shell-keyfile-path" -w &>/dev/null && _has_extra=1
     [[ -z "$target_pw" && $_has_extra -eq 0 ]] && return 0
 
+    # If Aurora-Shell.app is running, bring it to front (it handles its own lock screen)
+    if pgrep -x "Aurora-Shell" &>/dev/null; then
+        osascript -e 'tell application "Aurora-Shell" to activate' 2>/dev/null
+        return 0
+    fi
+
     # Try extra methods first (Touch ID / YubiKey / Key File)
     if [[ $_has_extra -eq 1 ]]; then
         if _aurora_auth; then
