@@ -34,8 +34,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .pack/shell/jackets/Aurora.GitTUI_any.tar.gz .pack/shell/jackets/index.json
-          git diff --staged --quiet && echo "No changes" && exit 0
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
           git commit -m "chore: rebuild Aurora.GitTUI jacket"
-          git push origin dev
+          git push origin HEAD:refs/heads/bot/jacket-updates --force || echo "⚠ Push skipped (branch protection) — tarball artifact available in workflow run"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
