@@ -1,6 +1,6 @@
 #!/bin/bash
 # --- Aurora-Shell Installer ---
-VER="6.2.3"
+VER="6.2.4"
 SHELL_VER="--- Aurora-Shell v$VER ---"
 
 # --- DETECT OS ---
