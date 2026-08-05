@@ -817,265 +817,160 @@ shell.aurora() {
             # write the shell command
             cat > "$_shell_dir/bin/shell" << 'SHELLEOF'
 #!/bin/zsh
-# Aurora-Shell module system
+# Aurora-Shell Package Manager — shell
+# Jackets: pre-built binaries from .pack/shell/jackets
+# Fallback: brew/npm/pip via cli-packages.json
+
 SHELL_DIR="$HOME/.local/shell"
 JACKET_DIR="$SHELL_DIR/jackets"
 CELLAR_DIR="$SHELL_DIR/cellar"
 PACK_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/.pack/shell/jackets"
-CLI_PACKAGES_FILE="$HOME/.aurora-shell_files/cli-packages.json"
+PKG_INDEX="$HOME/.aurora-shell_files/cli-packages.json"
 ARCH=$(uname -m)
 PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
 
 safe_lolcat() { command -v lolcat &>/dev/null && command lolcat || cat; }
 
-_jacket_install() {
+_resolve_alias() {
     local pkg="$1"
+    local index="$JACKET_DIR/index.json"
+    # Check jacket index aliases
+    local resolved
+    resolved=$(jq -r ".jackets | to_entries[] | select(.value | to_entries[].value.bin == \"$pkg\") | .key" "$index" 2>/dev/null | head -1)
+    [ -n "$resolved" ] && echo "$resolved" && return
+    # Check cli-packages.json aliases
+    resolved=$(jq -r ".packages | to_entries[] | select(.value.aliases[]? == \"$pkg\") | .key" "$PKG_INDEX" 2>/dev/null | head -1)
+    [ -n "$resolved" ] && echo "$resolved" && return
+    echo "$pkg"
+}
+
+_jacket_install() {
+    local pkg
+    pkg=$(_resolve_alias "$1")
     local index="$JACKET_DIR/index.json"
     [ ! -f "$index" ] && curl -sf "$PACK_BASE/index.json" -o "$index" 2>/dev/null
 
-    # resolve alias
-    local resolved=$(jq -r ".jackets | to_entries[] | select(.value | to_entries[].value | .name == \"$pkg\" or (.bin == \"$pkg\")) | .key" "$index" 2>/dev/null | head -1)
-    [ -n "$resolved" ] && pkg="$resolved"
-
     local jacket_key="${ARCH}_${PLATFORM}"
-    local jacket=$(jq -r ".jackets[\"$pkg\"][\"$jacket_key\"] // empty" "$index" 2>/dev/null)
+    local jacket
+    jacket=$(jq -r ".jackets[\"$pkg\"][\"$jacket_key\"] // empty" "$index" 2>/dev/null)
 
-    if [ -z "$jacket" ]; then
-        echo "⚠  No jacket found for $pkg ($jacket_key) — falling back to brew/npm..." | safe_lolcat
+    if [ -n "$jacket" ]; then
+        local file bin ver url tmp
+        file=$(echo "$jacket" | jq -r '.file')
+        bin=$(echo "$jacket" | jq -r '.bin')
+        ver=$(echo "$jacket" | jq -r '.version')
+        url="$PACK_BASE/$file"
+        echo "🧥 Installing jacket: $pkg v$ver ($jacket_key)" | safe_lolcat
+        tmp=$(mktemp -d)
+        if curl -sf "$url" -o "$tmp/jacket.tar.gz" 2>/dev/null; then
+            tar -xzf "$tmp/jacket.tar.gz" -C "$tmp"
+            mkdir -p "$CELLAR_DIR/$pkg/$ver"
+            cp -R "$tmp/"* "$CELLAR_DIR/$pkg/$ver/" 2>/dev/null
+            ln -sf "$CELLAR_DIR/$pkg/$ver/$bin" "$SHELL_DIR/bin/$bin"
+            chmod +x "$SHELL_DIR/bin/$bin"
+            echo "✅ $pkg v$ver installed" | safe_lolcat
+        else
+            echo "⚠  Jacket download failed — falling back to brew/npm" | safe_lolcat
+            _fallback_install "$pkg"
+        fi
+        rm -rf "$tmp"
+    else
+        echo "⚠  No jacket for $pkg ($jacket_key) — using brew/npm fallback" | safe_lolcat
         _fallback_install "$pkg"
-        return
     fi
-
-    local file=$(echo "$jacket" | jq -r '.file')
-    local bin=$(echo "$jacket" | jq -r '.bin')
-    local ver=$(echo "$jacket" | jq -r '.version')
-    local url="$PACK_BASE/$file"
-
-    echo "🧥 Installing jacket: $pkg v$ver ($jacket_key)" | safe_lolcat
-    local tmp=$(mktemp -d)
-    curl -sf "$url" -o "$tmp/jacket.tar.gz" 2>/dev/null || { echo "❌ Download failed — falling back"; _fallback_install "$pkg"; rm -rf "$tmp"; return; }
-    tar -xzf "$tmp/jacket.tar.gz" -C "$tmp"
-    mkdir -p "$CELLAR_DIR/$pkg/$ver"
-    cp -R "$tmp/"* "$CELLAR_DIR/$pkg/$ver/" 2>/dev/null
-    ln -sf "$CELLAR_DIR/$pkg/$ver/$bin" "$SHELL_DIR/bin/$bin"
-    chmod +x "$SHELL_DIR/bin/$bin"
-    rm -rf "$tmp"
-    echo "✅ $pkg v$ver installed via jacket" | safe_lolcat
 }
 
 _fallback_install() {
     local pkg="$1"
-    
-    # First try to find in CLI packages (third-party tools)
-    local cli_pkg=$(jq -r ".packages[\"$pkg\"] // empty" "$CLI_PACKAGES_FILE" 2>/dev/null)
-    local pkg_source="cli-packages"
-    
-    if [ -z "$cli_pkg" ]; then
-        # If not found in CLI packages, try core Aurora packages
-        cli_pkg=$(jq -r ".packages[\"$pkg\"] // empty" "$PACKAGES_FILE" 2>/dev/null)
-        pkg_source="packages"
+    # Look up in unified cli-packages.json
+    local entry
+    entry=$(jq -r ".packages[\"$pkg\"] // empty" "$PKG_INDEX" 2>/dev/null)
+    if [ -z "$entry" ]; then
+        echo "❌ $pkg not found. Try: shell search $pkg" | safe_lolcat
+        return 1
     fi
-    
-    if [ -z "$cli_pkg" ]; then
-        echo "❌ $pkg not found in jackets or package registries" | safe_lolcat; return 1
-    fi
-    
-    # Handle based on package source/type
-    if [ "$pkg_source" = "cli-packages" ]; then
-        # Third-party CLI tool - execute install command directly
-        local cmd=$(echo "$cli_pkg" | jq -r '.install')
-        echo "⬇  Fallback: $cmd" | safe_lolcat
-        eval "$cmd"
-    else
-        # Core Aurora package - handle based on type
-        local pkg_type=$(echo "$cli_pkg" | jq -r '.type // empty')
-        local pkg_url=$(echo "$cli_pkg" | jq -r '.url // empty')
-        
-        case "$pkg_type" in
-            "dmg")
-                # Download and install .dmg file
-                echo "⬇  Downloading DMG package..." | safe_lolcat
-                local dmg_file="$TEMP_DIR/$(basename "$pkg_url")"
-                if curl -sfL "$pkg_url" -o "$dmg_file"; then
-                    echo "⬇  Installing from DMG..." | safe_lolcat
-                    if hdiutil attach "$dmg_file" -quiet -noautoopen -mountpoint "/Volumes/Install"; then
-                        # Find .app file in the mounted volume
-                        local app_path=$(find "/Volumes/Install" -name "*.app" -maxdepth 1 -type d | head -n 1)
-                        if [ -n "$app_path" ]; then
-                            cp -R "$app_path" "/Applications/" && echo "✅ Installed application to /Applications" | safe_lolcat
-                        else
-                            echo "❌ No .app file found in DMG" | safe_lolcat
-                        fi
-                        hdiutil detach "/Volumes/Install" -quiet
-                    else
-                        echo "❌ Failed to mount DMG" | safe_lolcat
-                    fi
-                    rm -f "$dmg_file"
-                else
-                    echo "❌ Failed to download DMG" | safe_lolcat
-                fi
-                ;;
-            "wx-installer")
-                # Handle wx package (file converter)
-                echo "⬇  Installing wx package..." | safe_lolcat
-                local wx_file="$INSTALLED_DIR/wx.js"
-                if [ ! -f "$wx_file" ]; then
-                    if curl -sfL "$pkg_url" -o "$wx_file"; then
-                        chmod +x "$wx_file"
-                        echo "✅ Installed wx.js" | safe_lolcat
-                    else
-                        echo "❌ Failed to download wx.js" | safe_lolcat
-                        return 1
-                    fi
-                fi
-                # Create wrapper script
-                local wrapper="$INSTALLED_DIR/bin/wx"
-                mkdir -p "$(dirname "$wrapper")"
-                printf '#!/bin/zsh\nnode "%s" "$@"\n' "$wx_file" > "$wrapper"
-                chmod +x "$wrapper"
-                echo "✅ Created wx wrapper" | safe_lolcat
-                ;;
-            "cli-installer")
-                # Handle cli package (CLI framework itself)
-                echo "⬇  Installing CLI package..." | safe_lolcat
-                local cli_file="$INSTALLED_DIR/cli.js"
-                if [ ! -f "$cli_file" ]; then
-                    # Try to download cli.js if URL is provided
-                    if [ -n "$pkg_url" ] && [ "$pkg_url" != "install-cli" ]; then
-                        if curl -sfL "$pkg_url" -o "$cli_file"; then
-                            chmod +x "$cli_file"
-                            echo "✅ Installed cli.js" | safe_lolcat
-                        else
-                            echo "⚠  Failed to download cli.js, creating basic wrapper" | safe_lolcat
-                            # Create a basic cli.js file
-                            cat > "$cli_file" << 'CLI_EOF'
-#!/usr/bin/env node
-// Aurora-Shell CLI - Install CLI versions of apps
-// This is a placeholder implementation
-
-const program = require('commander');
-program
-  .name('cli')
-  .description('Aurora-Shell CLI - Install CLI versions of apps')
-  .version('1.0.0');
-
-program
-  .command('install <package>')
-  .description('Install a CLI tool')
-  .action((package) => {
-    console.log(`Installing CLI tool: ${package}`);
-    console.log('Use: shell install <package> instead');
-  });
-
-program
-  .command('list')
-  .description('List available CLI tools')
-  .action(() => {
-    console.log('Available CLI tools can be installed with: shell install <package>');
-    console.log('Examples: shell install gh, shell install aws, shell install docker');
-  });
-
-program.parse(process.argv);
-CLI_EOF
-                            chmod +x "$cli_file"
-                        fi
-                    else
-                        # Create a basic cli.js file
-                        cat > "$cli_file" << 'CLI_EOF'
-#!/usr/bin/env node
-// Aurora-Shell CLI - Install CLI versions of apps
-// This is a placeholder implementation
-
-const program = require('commander');
-program
-  .name('cli')
-  .description('Aurora-Shell CLI - Install CLI versions of apps')
-  .version('1.0.0');
-
-program
-  .command('install <package>')
-  .description('Install a CLI tool')
-  .action((package) => {
-    console.log(`Installing CLI tool: ${package}`);
-    console.log('Use: shell install <package> instead');
-  });
-
-program
-  .command('list')
-  .description('List available CLI tools')
-  .action(() => {
-    console.log('Available CLI tools can be installed with: shell install <package>');
-    console.log('Examples: shell install gh, shell install aws, shell install docker');
-  });
-
-program.parse(process.argv);
-CLI_EOF
-                        chmod +x "$cli_file"
-                    fi
-                fi
-                # Create wrapper script
-                local wrapper="$INSTALLED_DIR/bin/cli"
-                mkdir -p "$(dirname "$wrapper")"
-                printf '#!/bin/zsh\nnode "%s" "$@"\n' "$cli_file" > "$wrapper"
-                chmod +x "$wrapper"
-                echo "✅ Created cli wrapper" | safe_lolcat
-                ;;
-            *)
-                # Fallback: treat install field as a command to execute
-                local cmd=$(echo "$cli_pkg" | jq -r '.install')
-                if [ -n "$cmd" ] && [ "$cmd" != "null" ]; then
-                    echo "⬇  Fallback: $cmd" | safe_lolcat
-                    eval "$cmd"
-                else
-                    echo "❌ No install command available for package" | safe_lolcat
-                    return 1
-                fi
-                ;;
-        esac
-    fi
+    local cmd
+    cmd=$(echo "$entry" | jq -r '.install')
+    echo "⬇  Installing $pkg via fallback: $cmd" | safe_lolcat
+    eval "$cmd" && echo "✅ $pkg installed" | safe_lolcat
 }
+
+case "$1" in
     install)
+        [ -z "$2" ] && echo "Usage: shell install <package>" && exit 1
         _jacket_install "$2"
         ;;
     uninstall)
-        local pkg="$2"
-        local bin=$(jq -r ".jackets[\"$pkg\"] | to_entries[0].value.bin // empty" "$JACKET_DIR/index.json" 2>/dev/null)
+        local pkg bin
+        pkg=$(_resolve_alias "${2:-}")
+        bin=$(jq -r ".jackets[\"$pkg\"] | to_entries[0].value.bin // empty" "$JACKET_DIR/index.json" 2>/dev/null)
         rm -f "$SHELL_DIR/bin/$bin"
         rm -rf "$CELLAR_DIR/$pkg"
         echo "✅ Uninstalled $pkg" | safe_lolcat
         ;;
     list)
-        echo "🧥 Installed jackets:"
-        ls "$CELLAR_DIR" 2>/dev/null | while read p; do
-            local ver=$(ls "$CELLAR_DIR/$p" 2>/dev/null | head -1)
-            printf "  %-30s %s\n" "$p" "$ver"
-        done
+        echo "🧥 Installed packages:"
+        if [ -d "$CELLAR_DIR" ]; then
+            ls "$CELLAR_DIR" | while read -r p; do
+                local ver
+                ver=$(ls "$CELLAR_DIR/$p" 2>/dev/null | head -1)
+                printf "  %-30s %s\n" "$p" "$ver"
+            done
+        fi
+        echo ""
+        echo "📦 Available to install: shell search"
         ;;
     search)
-        local q=$(echo "${2:-}" | tr '[:upper:]' '[:lower:]')
-        echo "🔍 Searching jackets..."
-        jq -r ".jackets | to_entries[] | select(.key | ascii_downcase | contains(\"$q\")) | \"  \(.key) — \(.value | to_entries[0].value.description)\"" "$JACKET_DIR/index.json" 2>/dev/null
+        local q
+        q=$(echo "${2:-}" | tr '[:upper:]' '[:lower:]')
+        echo "🔍 Results for '${2:-all}':" | safe_lolcat
+        # Search jacket index
+        [ -f "$JACKET_DIR/index.json" ] && \
+            jq -r ".jackets | to_entries[] | select(.key | ascii_downcase | contains(\"$q\")) | \"  🧥 \(.key) — \(.value | to_entries[0].value.description) [\(.value | to_entries[0].value.version)]\"" \
+            "$JACKET_DIR/index.json" 2>/dev/null
+        # Search cli-packages.json
+        [ -f "$PKG_INDEX" ] && \
+            jq -r ".packages | to_entries[] | select(.key | ascii_downcase | contains(\"$q\")) | \"  📦 \(.key) — \(.value.description) [\(.value.version)]\"" \
+            "$PKG_INDEX" 2>/dev/null
         ;;
     update)
-        echo "🔄 Updating jacket index..." | safe_lolcat
-        curl -sf "$PACK_BASE/index.json" -o "$JACKET_DIR/index.json" 2>/dev/null && echo "✅ Index updated" | safe_lolcat
+        echo "🔄 Updating package index..." | safe_lolcat
+        curl -sf "$PACK_BASE/index.json" -o "$JACKET_DIR/index.json" 2>/dev/null \
+            && echo "✅ Jacket index updated" | safe_lolcat \
+            || echo "⚠  Could not reach jacket registry" | safe_lolcat
         ;;
     outdated)
-        echo "📋 Checking for outdated jackets..."
-        ls "$CELLAR_DIR" 2>/dev/null | while read p; do
-            local installed=$(ls "$CELLAR_DIR/$p" | head -1)
-            local latest=$(jq -r ".jackets[\"$p\"] | to_entries[0].value.version // \"unknown\"" "$JACKET_DIR/index.json" 2>/dev/null)
+        echo "📋 Checking for outdated packages..."
+        [ -d "$CELLAR_DIR" ] && ls "$CELLAR_DIR" | while read -r p; do
+            local installed latest
+            installed=$(ls "$CELLAR_DIR/$p" | head -1)
+            latest=$(jq -r ".jackets[\"$p\"] | to_entries[0].value.version // \"unknown\"" "$JACKET_DIR/index.json" 2>/dev/null)
             [ "$installed" != "$latest" ] && echo "  $p: $installed → $latest"
         done
         ;;
+    info)
+        local pkg
+        pkg=$(_resolve_alias "${2:-}")
+        echo "📦 $pkg" | safe_lolcat
+        jq -r ".jackets[\"$pkg\"] | to_entries[] | \"  \(.key): v\(.value.version) [\(.value.source)]\"" \
+            "$JACKET_DIR/index.json" 2>/dev/null
+        jq -r ".packages[\"$pkg\"] | \"  source: \(.source)\n  install: \(.install)\n  description: \(.description)\"" \
+            "$PKG_INDEX" 2>/dev/null
+        ;;
     *)
-        echo "Aurora-Shell Module System (shell)"
+        echo "Aurora-Shell Package Manager" | safe_lolcat
         echo ""
-        echo "Usage: shell install|uninstall|list|search|update|outdated <package>"
+        echo "Usage: shell <command> [package]"
         echo ""
-        echo "Packages are installed from pre-built jackets at:"
-        echo "  github.com/Seaus-tech/Aurora-Shell/.pack/shell/jackets"
-        echo "  Falls back to brew/npm if no jacket available."
+        echo "  install <pkg>    Install from jacket or fallback"
+        echo "  uninstall <pkg>  Remove package"
+        echo "  list             List installed packages"
+        echo "  search [query]   Search all available packages"
+        echo "  update           Update jacket index"
+        echo "  outdated         Show packages with updates"
+        echo "  info <pkg>       Show package details"
+        echo ""
+        echo "Jacket registry: github.com/Seaus-tech/Aurora-Shell/.pack/shell/jackets"
         ;;
 esac
 SHELLEOF
