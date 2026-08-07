@@ -87,6 +87,13 @@ mkdir ~/Applications && unzip ~/downloads/Aurora-Shell.zip -d ~/Applications && 
 bash <(curl -s https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/main/install.sh)
 ```
 
+**Option 3: Homebrew install**
+```bash
+brew tap Seaus-Tech/Aurora-Shell
+brew trust --formula Seaus-Tech/Aurora-Shell/Aurora-Shell
+brew install Aurora-Shell
+```
+
 ### 🪟 For Windows (PowerShell 7+)
 
 > **IMPORTANT**: This theme requires Microsoft PowerShell 7.0 or higher. It is not compatible with Windows PowerShell 5.1.
@@ -111,7 +118,7 @@ irm "https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell/dev/install.ps1" 
 The main configuration logic is stored in:
 
 - **macOS**: `~/.aurora-shell_files` (sourced in your `$PROFILE`)
-- **Windows**: `C:\Users\$USER\.aurora-shell_files` (usually sourced in your `$PROFILE`)
+- **Windows**: `C:\Users\$USER\.aurora-shell_files` (sourced in your `$PROFILE`)
 
 ## Uninstall
 
