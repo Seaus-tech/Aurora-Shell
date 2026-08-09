@@ -10,6 +10,20 @@
 		C33222022F945B0400689FAE /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C33222012F945B0400689FAE /* SwiftTerm */; };
 		C33222042F945B0400689FAE /* SwiftTermFuzz in Frameworks */ = {isa = PBXBuildFile; productRef = C33222032F945B0400689FAE /* SwiftTermFuzz */; };
 		C33222062F945B0400689FAE /* termcast in Frameworks */ = {isa = PBXBuildFile; productRef = C33222052F945B0400689FAE /* termcast */; };
+		C353734930280C270054E0D8 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = C353733730280C270054E0D8 /* AppIcon.icon */; };
+		C353734A30280C270054E0D8 /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733E30280C270054E0D8 /* LockScreenView.swift */; };
+		C353734B30280C270054E0D8 /* TerminalViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */; };
+		C353734C30280C270054E0D8 /* SandboxedShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734230280C270054E0D8 /* SandboxedShell.swift */; };
+		C353734D30280C270054E0D8 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733F30280C270054E0D8 /* MainView.swift */; };
+		C353734E30280C270054E0D8 /* FileViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733B30280C270054E0D8 /* FileViewerView.swift */; };
+		C353734F30280C270054E0D8 /* ShellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734330280C270054E0D8 /* ShellModel.swift */; };
+		C353735030280C270054E0D8 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733A30280C270054E0D8 /* EditorView.swift */; };
+		C353735130280C270054E0D8 /* TerminalEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734530280C270054E0D8 /* TerminalEngine.swift */; };
+		C353735230280C270054E0D8 /* PTYBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734130280C270054E0D8 /* PTYBridge.swift */; };
+		C353735330280C270054E0D8 /* NotMacView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734030280C270054E0D8 /* NotMacView.swift */; };
+		C353735430280C270054E0D8 /* ShellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734430280C270054E0D8 /* ShellViewModel.swift */; };
+		C353735530280C270054E0D8 /* Aurora_shellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733830280C270054E0D8 /* Aurora_shellApp.swift */; };
+		C353735630280C270054E0D8 /* LiquidBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733D30280C270054E0D8 /* LiquidBackground.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,16 +40,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C37046092F79A36500603593 /* Aurora-Shell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Aurora-Shell.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C353733730280C270054E0D8 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		C353733830280C270054E0D8 /* Aurora_shellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aurora_shellApp.swift; sourceTree = "<group>"; };
+		C353733930280C270054E0D8 /* Aurora-shell.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Aurora-shell.entitlements"; sourceTree = "<group>"; };
+		C353733A30280C270054E0D8 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		C353733B30280C270054E0D8 /* FileViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewerView.swift; sourceTree = "<group>"; };
+		C353733D30280C270054E0D8 /* LiquidBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidBackground.swift; sourceTree = "<group>"; };
+		C353733E30280C270054E0D8 /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
+		C353733F30280C270054E0D8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		C353734030280C270054E0D8 /* NotMacView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotMacView.swift; sourceTree = "<group>"; };
+		C353734130280C270054E0D8 /* PTYBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PTYBridge.swift; sourceTree = "<group>"; };
+		C353734230280C270054E0D8 /* SandboxedShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandboxedShell.swift; sourceTree = "<group>"; };
+		C353734330280C270054E0D8 /* ShellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellModel.swift; sourceTree = "<group>"; };
+		C353734430280C270054E0D8 /* ShellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellViewModel.swift; sourceTree = "<group>"; };
+		C353734530280C270054E0D8 /* TerminalEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalEngine.swift; sourceTree = "<group>"; };
+		C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewRepresentable.swift; sourceTree = "<group>"; };
+		C37046092F79A36500603593 /* Horizon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Horizon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		C370460B2F79A36500603593 /* Aurora-Shell */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Aurora-Shell";
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		C37046062F79A36500603593 /* Frameworks */ = {
@@ -51,10 +72,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C353734730280C270054E0D8 /* Horizon */ = {
+			isa = PBXGroup;
+			children = (
+				C353733730280C270054E0D8 /* AppIcon.icon */,
+				C353733830280C270054E0D8 /* Aurora_shellApp.swift */,
+				C353733930280C270054E0D8 /* Aurora-shell.entitlements */,
+				C353733A30280C270054E0D8 /* EditorView.swift */,
+				C353733B30280C270054E0D8 /* FileViewerView.swift */,
+				C353733D30280C270054E0D8 /* LiquidBackground.swift */,
+				C353733E30280C270054E0D8 /* LockScreenView.swift */,
+				C353733F30280C270054E0D8 /* MainView.swift */,
+				C353734030280C270054E0D8 /* NotMacView.swift */,
+				C353734130280C270054E0D8 /* PTYBridge.swift */,
+				C353734230280C270054E0D8 /* SandboxedShell.swift */,
+				C353734330280C270054E0D8 /* ShellModel.swift */,
+				C353734430280C270054E0D8 /* ShellViewModel.swift */,
+				C353734530280C270054E0D8 /* TerminalEngine.swift */,
+				C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */,
+			);
+			path = Horizon;
+			sourceTree = "<group>";
+		};
 		C37046002F79A36500603593 = {
 			isa = PBXGroup;
 			children = (
-				C370460B2F79A36500603593 /* Aurora-Shell */,
+				C353734730280C270054E0D8 /* Horizon */,
 				C370460A2F79A36500603593 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,7 +105,7 @@
 		C370460A2F79A36500603593 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C37046092F79A36500603593 /* Aurora-Shell.app */,
+				C37046092F79A36500603593 /* Horizon.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,9 +113,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C37046082F79A36500603593 /* Aurora-Shell */ = {
+		C37046082F79A36500603593 /* Horizon */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C37046142F79A36700603593 /* Build configuration list for PBXNativeTarget "Aurora-Shell" */;
+			buildConfigurationList = C37046142F79A36700603593 /* Build configuration list for PBXNativeTarget "Horizon" */;
 			buildPhases = (
 				C37046052F79A36500603593 /* Sources */,
 				C37046062F79A36500603593 /* Frameworks */,
@@ -83,17 +126,14 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				C370460B2F79A36500603593 /* Aurora-Shell */,
-			);
-			name = "Aurora-Shell";
+			name = Horizon;
 			packageProductDependencies = (
 				C33222012F945B0400689FAE /* SwiftTerm */,
 				C33222032F945B0400689FAE /* SwiftTermFuzz */,
 				C33222052F945B0400689FAE /* termcast */,
 			);
 			productName = "Aurora-Shell";
-			productReference = C37046092F79A36500603593 /* Aurora-Shell.app */;
+			productReference = C37046092F79A36500603593 /* Horizon.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -112,7 +152,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C37046042F79A36500603593 /* Build configuration list for PBXProject "Aurora-Shell" */;
+			buildConfigurationList = C37046042F79A36500603593 /* Build configuration list for PBXProject "Horizon" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -129,7 +169,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C37046082F79A36500603593 /* Aurora-Shell */,
+				C37046082F79A36500603593 /* Horizon */,
 			);
 		};
 /* End PBXProject section */
@@ -139,6 +179,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C353734930280C270054E0D8 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +190,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C353734A30280C270054E0D8 /* LockScreenView.swift in Sources */,
+				C353734B30280C270054E0D8 /* TerminalViewRepresentable.swift in Sources */,
+				C353734C30280C270054E0D8 /* SandboxedShell.swift in Sources */,
+				C353734D30280C270054E0D8 /* MainView.swift in Sources */,
+				C353734E30280C270054E0D8 /* FileViewerView.swift in Sources */,
+				C353734F30280C270054E0D8 /* ShellModel.swift in Sources */,
+				C353735030280C270054E0D8 /* EditorView.swift in Sources */,
+				C353735130280C270054E0D8 /* TerminalEngine.swift in Sources */,
+				C353735230280C270054E0D8 /* PTYBridge.swift in Sources */,
+				C353735330280C270054E0D8 /* NotMacView.swift in Sources */,
+				C353735430280C270054E0D8 /* ShellViewModel.swift in Sources */,
+				C353735530280C270054E0D8 /* Aurora_shellApp.swift in Sources */,
+				C353735630280C270054E0D8 /* LiquidBackground.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +267,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -271,6 +326,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 26.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -285,7 +341,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "Aurora-Shell/Aurora-Shell.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Horizon/Aurora-Shell.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -296,14 +353,15 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Aurora-Shell/Info.plist";
+				INFOPLIST_FILE = Horizon/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Horizon;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 4.4.8;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yashb.Aurora-Shell";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yashb.Horizon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -331,7 +389,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "Aurora-Shell/Aurora-Shell.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Horizon/Aurora-Shell.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -342,14 +401,15 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Aurora-Shell/Info.plist";
+				INFOPLIST_FILE = Horizon/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Horizon;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 4.4.8;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yashb.Aurora-Shell";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yashb.Horizon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -371,7 +431,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C37046042F79A36500603593 /* Build configuration list for PBXProject "Aurora-Shell" */ = {
+		C37046042F79A36500603593 /* Build configuration list for PBXProject "Horizon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C37046122F79A36700603593 /* Debug */,
@@ -380,7 +440,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C37046142F79A36700603593 /* Build configuration list for PBXNativeTarget "Aurora-Shell" */ = {
+		C37046142F79A36700603593 /* Build configuration list for PBXNativeTarget "Horizon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C37046152F79A36700603593 /* Debug */,

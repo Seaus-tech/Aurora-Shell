@@ -20,10 +20,15 @@
     {
       "layers" : [
         {
-          "fill" : "automatic",
-          "hidden" : false,
-          "image-name" : "Aurora-Shell.png",
-          "name" : "Aurora-Shell"
+          "image-name" : "Image.png",
+          "name" : "Image",
+          "position" : {
+            "scale" : 1.5,
+            "translation-in-points" : [
+              -196.3984375,
+              54.171875
+            ]
+          }
         }
       ],
       "shadow" : {
