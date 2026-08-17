@@ -1,0 +1,10 @@
+# Define the global platform and minimum deployment version for your project
+platform :ios, '15.0'
+
+target 'Horizon' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for Horizon
+
+end
