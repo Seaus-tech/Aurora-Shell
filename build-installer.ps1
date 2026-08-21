@@ -1,3 +1,4 @@
+#DEPRECATED
 # Aurora Shell 2.0 - Windows Build Installer
 $ErrorActionPreference = "Stop"
 
