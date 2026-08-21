@@ -1,0 +1,11 @@
+{
+  "name": "Heroku.CLI",
+  "bin": "heroku",
+  "version": "11.7.1",
+  "arch": "arm64",
+  "platform": "darwin",
+  "source": "brew",
+  "description": "Heroku platform CLI",
+  "file": "Heroku.CLI_arm64_darwin.tar.gz",
+  "built": "2026-07-08T01:32:11Z"
+}
