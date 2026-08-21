@@ -1,0 +1,11 @@
+{
+  "name": "GitHub.CLI",
+  "bin": "gh",
+  "version": "2.95.0",
+  "arch": "arm64",
+  "platform": "darwin",
+  "source": "brew",
+  "description": "GitHub CLI",
+  "file": "GitHub.CLI_arm64_darwin.tar.gz",
+  "built": "2026-07-08T01:30:05Z"
+}
