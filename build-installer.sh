@@ -1,3 +1,4 @@
+#DEPRECATED
 #!/bin/bash
 set -e
 
