@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F48AD86A11F05CEF46A6C53 /* Pods_Horizon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B677223E89AC0D226B5690C /* Pods_Horizon.framework */; };
+		7F4B65524926FD78A82E8B80 /* Pods_Horizon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86C3CFA665080130BBB87E6 /* Pods_Horizon.framework */; };
 		C353734930280C270054E0D8 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = C353733730280C270054E0D8 /* AppIcon.icon */; };
 		C353734A30280C270054E0D8 /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733E30280C270054E0D8 /* LockScreenView.swift */; };
 		C353734B30280C270054E0D8 /* TerminalViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */; };
@@ -43,9 +43,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		109DCDBB4F116B2F047C041A /* Pods-Horizon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Horizon.debug.xcconfig"; path = "Target Support Files/Pods-Horizon/Pods-Horizon.debug.xcconfig"; sourceTree = "<group>"; };
-		2C9327DB78F404161B2D0843 /* Pods-Horizon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Horizon.release.xcconfig"; path = "Target Support Files/Pods-Horizon/Pods-Horizon.release.xcconfig"; sourceTree = "<group>"; };
-		4B677223E89AC0D226B5690C /* Pods_Horizon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Horizon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C353733730280C270054E0D8 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		C353733830280C270054E0D8 /* Aurora_shellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aurora_shellApp.swift; sourceTree = "<group>"; };
 		C353733930280C270054E0D8 /* Aurora-shell.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Aurora-shell.entitlements"; sourceTree = "<group>"; };
@@ -63,6 +60,9 @@
 		C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewRepresentable.swift; sourceTree = "<group>"; };
 		C36B1B7B3037D21D0066C1F6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C37046092F79A36500603593 /* Horizon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Horizon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C86C3CFA665080130BBB87E6 /* Pods_Horizon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Horizon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB99CF831362C35F0605671A /* Pods-Horizon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Horizon.debug.xcconfig"; path = "Target Support Files/Pods-Horizon/Pods-Horizon.debug.xcconfig"; sourceTree = "<group>"; };
+		F8E5288525FB4B266CD4DD9C /* Pods-Horizon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Horizon.release.xcconfig"; path = "Target Support Files/Pods-Horizon/Pods-Horizon.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +74,7 @@
 				C38BCEC23037B80E00CFB6BF /* SwiftTerm in Frameworks */,
 				C38BCEC63037B80E00CFB6BF /* SwiftTermFuzz in Frameworks */,
 				C38BCEC43037B80E00CFB6BF /* SwiftTermBuildInfoGenerator in Frameworks */,
-				5F48AD86A11F05CEF46A6C53 /* Pods_Horizon.framework in Frameworks */,
+				7F4B65524926FD78A82E8B80 /* Pods_Horizon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,16 +84,16 @@
 		1A214E30B0D41365BF62FB43 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				109DCDBB4F116B2F047C041A /* Pods-Horizon.debug.xcconfig */,
-				2C9327DB78F404161B2D0843 /* Pods-Horizon.release.xcconfig */,
+				CB99CF831362C35F0605671A /* Pods-Horizon.debug.xcconfig */,
+				F8E5288525FB4B266CD4DD9C /* Pods-Horizon.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		B4545021688D3CB3BF3377EB /* Frameworks */ = {
+		21A50E1ACB4C0042FC5281AD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4B677223E89AC0D226B5690C /* Pods_Horizon.framework */,
+				C86C3CFA665080130BBB87E6 /* Pods_Horizon.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -127,7 +127,7 @@
 				C353734730280C270054E0D8 /* Horizon */,
 				C370460A2F79A36500603593 /* Products */,
 				1A214E30B0D41365BF62FB43 /* Pods */,
-				B4545021688D3CB3BF3377EB /* Frameworks */,
+				21A50E1ACB4C0042FC5281AD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -146,11 +146,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C37046142F79A36700603593 /* Build configuration list for PBXNativeTarget "Horizon" */;
 			buildPhases = (
-				0DCD620F2A77D39D7166C315 /* [CP] Check Pods Manifest.lock */,
+				5B49334B3D03DEEA00130986 /* [CP] Check Pods Manifest.lock */,
 				C37046052F79A36500603593 /* Sources */,
 				C37046062F79A36500603593 /* Frameworks */,
 				C37046072F79A36500603593 /* Resources */,
 				C39A22F82F849FAE00745502 /* Embed Frameworks */,
+				8F99F24D8B98FA42332C0244 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -218,7 +219,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0DCD620F2A77D39D7166C315 /* [CP] Check Pods Manifest.lock */ = {
+		5B49334B3D03DEEA00130986 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -238,6 +239,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8F99F24D8B98FA42332C0244 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Horizon/Pods-Horizon-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Horizon/Pods-Horizon-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Horizon/Pods-Horizon-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -392,7 +410,7 @@
 		};
 		C37046152F79A36700603593 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 109DCDBB4F116B2F047C041A /* Pods-Horizon.debug.xcconfig */;
+			baseConfigurationReference = CB99CF831362C35F0605671A /* Pods-Horizon.debug.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -416,7 +434,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 4.4.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yashb.Horizon;
@@ -441,7 +459,7 @@
 		};
 		C37046162F79A36700603593 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2C9327DB78F404161B2D0843 /* Pods-Horizon.release.xcconfig */;
+			baseConfigurationReference = F8E5288525FB4B266CD4DD9C /* Pods-Horizon.release.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -465,7 +483,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 4.4.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yashb.Horizon;
@@ -515,8 +533,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
