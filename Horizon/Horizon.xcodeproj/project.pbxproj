@@ -1,0 +1,548 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5F48AD86A11F05CEF46A6C53 /* Pods_Horizon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B677223E89AC0D226B5690C /* Pods_Horizon.framework */; };
+		C353734930280C270054E0D8 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = C353733730280C270054E0D8 /* AppIcon.icon */; };
+		C353734A30280C270054E0D8 /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733E30280C270054E0D8 /* LockScreenView.swift */; };
+		C353734B30280C270054E0D8 /* TerminalViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */; };
+		C353734C30280C270054E0D8 /* SandboxedShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734230280C270054E0D8 /* SandboxedShell.swift */; };
+		C353734D30280C270054E0D8 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733F30280C270054E0D8 /* MainView.swift */; };
+		C353734E30280C270054E0D8 /* FileViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733B30280C270054E0D8 /* FileViewerView.swift */; };
+		C353734F30280C270054E0D8 /* ShellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734330280C270054E0D8 /* ShellModel.swift */; };
+		C353735030280C270054E0D8 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733A30280C270054E0D8 /* EditorView.swift */; };
+		C353735130280C270054E0D8 /* TerminalEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734530280C270054E0D8 /* TerminalEngine.swift */; };
+		C353735230280C270054E0D8 /* PTYBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734130280C270054E0D8 /* PTYBridge.swift */; };
+		C353735330280C270054E0D8 /* NotMacView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734030280C270054E0D8 /* NotMacView.swift */; };
+		C353735430280C270054E0D8 /* ShellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734430280C270054E0D8 /* ShellViewModel.swift */; };
+		C353735530280C270054E0D8 /* Aurora_shellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733830280C270054E0D8 /* Aurora_shellApp.swift */; };
+		C353735630280C270054E0D8 /* LiquidBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733D30280C270054E0D8 /* LiquidBackground.swift */; };
+		C36B1B7C3037D2260066C1F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C36B1B7B3037D21D0066C1F6 /* README.md */; };
+		C38BCEC23037B80E00CFB6BF /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC13037B80E00CFB6BF /* SwiftTerm */; };
+		C38BCEC43037B80E00CFB6BF /* SwiftTermBuildInfoGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC33037B80E00CFB6BF /* SwiftTermBuildInfoGenerator */; };
+		C38BCEC63037B80E00CFB6BF /* SwiftTermFuzz in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC53037B80E00CFB6BF /* SwiftTermFuzz */; };
+		C38BCEC83037B80E00CFB6BF /* termcast in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC73037B80E00CFB6BF /* termcast */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C39A22F82F849FAE00745502 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		109DCDBB4F116B2F047C041A /* Pods-Horizon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Horizon.debug.xcconfig"; path = "Target Support Files/Pods-Horizon/Pods-Horizon.debug.xcconfig"; sourceTree = "<group>"; };
+		2C9327DB78F404161B2D0843 /* Pods-Horizon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Horizon.release.xcconfig"; path = "Target Support Files/Pods-Horizon/Pods-Horizon.release.xcconfig"; sourceTree = "<group>"; };
+		4B677223E89AC0D226B5690C /* Pods_Horizon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Horizon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C353733730280C270054E0D8 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		C353733830280C270054E0D8 /* Aurora_shellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aurora_shellApp.swift; sourceTree = "<group>"; };
+		C353733930280C270054E0D8 /* Aurora-shell.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Aurora-shell.entitlements"; sourceTree = "<group>"; };
+		C353733A30280C270054E0D8 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		C353733B30280C270054E0D8 /* FileViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewerView.swift; sourceTree = "<group>"; };
+		C353733D30280C270054E0D8 /* LiquidBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidBackground.swift; sourceTree = "<group>"; };
+		C353733E30280C270054E0D8 /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
+		C353733F30280C270054E0D8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		C353734030280C270054E0D8 /* NotMacView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotMacView.swift; sourceTree = "<group>"; };
+		C353734130280C270054E0D8 /* PTYBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PTYBridge.swift; sourceTree = "<group>"; };
+		C353734230280C270054E0D8 /* SandboxedShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandboxedShell.swift; sourceTree = "<group>"; };
+		C353734330280C270054E0D8 /* ShellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellModel.swift; sourceTree = "<group>"; };
+		C353734430280C270054E0D8 /* ShellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellViewModel.swift; sourceTree = "<group>"; };
+		C353734530280C270054E0D8 /* TerminalEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalEngine.swift; sourceTree = "<group>"; };
+		C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewRepresentable.swift; sourceTree = "<group>"; };
+		C36B1B7B3037D21D0066C1F6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		C37046092F79A36500603593 /* Horizon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Horizon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C37046062F79A36500603593 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C38BCEC83037B80E00CFB6BF /* termcast in Frameworks */,
+				C38BCEC23037B80E00CFB6BF /* SwiftTerm in Frameworks */,
+				C38BCEC63037B80E00CFB6BF /* SwiftTermFuzz in Frameworks */,
+				C38BCEC43037B80E00CFB6BF /* SwiftTermBuildInfoGenerator in Frameworks */,
+				5F48AD86A11F05CEF46A6C53 /* Pods_Horizon.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1A214E30B0D41365BF62FB43 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				109DCDBB4F116B2F047C041A /* Pods-Horizon.debug.xcconfig */,
+				2C9327DB78F404161B2D0843 /* Pods-Horizon.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		B4545021688D3CB3BF3377EB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4B677223E89AC0D226B5690C /* Pods_Horizon.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C353734730280C270054E0D8 /* Horizon */ = {
+			isa = PBXGroup;
+			children = (
+				C36B1B7B3037D21D0066C1F6 /* README.md */,
+				C353733730280C270054E0D8 /* AppIcon.icon */,
+				C353733830280C270054E0D8 /* Aurora_shellApp.swift */,
+				C353733930280C270054E0D8 /* Aurora-shell.entitlements */,
+				C353733A30280C270054E0D8 /* EditorView.swift */,
+				C353733B30280C270054E0D8 /* FileViewerView.swift */,
+				C353733D30280C270054E0D8 /* LiquidBackground.swift */,
+				C353733E30280C270054E0D8 /* LockScreenView.swift */,
+				C353733F30280C270054E0D8 /* MainView.swift */,
+				C353734030280C270054E0D8 /* NotMacView.swift */,
+				C353734130280C270054E0D8 /* PTYBridge.swift */,
+				C353734230280C270054E0D8 /* SandboxedShell.swift */,
+				C353734330280C270054E0D8 /* ShellModel.swift */,
+				C353734430280C270054E0D8 /* ShellViewModel.swift */,
+				C353734530280C270054E0D8 /* TerminalEngine.swift */,
+				C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */,
+			);
+			path = Horizon;
+			sourceTree = "<group>";
+		};
+		C37046002F79A36500603593 = {
+			isa = PBXGroup;
+			children = (
+				C353734730280C270054E0D8 /* Horizon */,
+				C370460A2F79A36500603593 /* Products */,
+				1A214E30B0D41365BF62FB43 /* Pods */,
+				B4545021688D3CB3BF3377EB /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		C370460A2F79A36500603593 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C37046092F79A36500603593 /* Horizon.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C37046082F79A36500603593 /* Horizon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C37046142F79A36700603593 /* Build configuration list for PBXNativeTarget "Horizon" */;
+			buildPhases = (
+				0DCD620F2A77D39D7166C315 /* [CP] Check Pods Manifest.lock */,
+				C37046052F79A36500603593 /* Sources */,
+				C37046062F79A36500603593 /* Frameworks */,
+				C37046072F79A36500603593 /* Resources */,
+				C39A22F82F849FAE00745502 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Horizon;
+			packageProductDependencies = (
+				C38BCEC13037B80E00CFB6BF /* SwiftTerm */,
+				C38BCEC33037B80E00CFB6BF /* SwiftTermBuildInfoGenerator */,
+				C38BCEC53037B80E00CFB6BF /* SwiftTermFuzz */,
+				C38BCEC73037B80E00CFB6BF /* termcast */,
+			);
+			productName = "Aurora-Shell";
+			productReference = C37046092F79A36500603593 /* Horizon.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C37046012F79A36500603593 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2640;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					C37046082F79A36500603593 = {
+						CreatedOnToolsVersion = 26.4;
+						LastSwiftMigration = 2640;
+					};
+				};
+			};
+			buildConfigurationList = C37046042F79A36500603593 /* Build configuration list for PBXProject "Horizon" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C37046002F79A36500603593;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C370460A2F79A36500603593 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C37046082F79A36500603593 /* Horizon */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C37046072F79A36500603593 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C36B1B7C3037D2260066C1F6 /* README.md in Resources */,
+				C353734930280C270054E0D8 /* AppIcon.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0DCD620F2A77D39D7166C315 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Horizon-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C37046052F79A36500603593 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C353734A30280C270054E0D8 /* LockScreenView.swift in Sources */,
+				C353734B30280C270054E0D8 /* TerminalViewRepresentable.swift in Sources */,
+				C353734C30280C270054E0D8 /* SandboxedShell.swift in Sources */,
+				C353734D30280C270054E0D8 /* MainView.swift in Sources */,
+				C353734E30280C270054E0D8 /* FileViewerView.swift in Sources */,
+				C353734F30280C270054E0D8 /* ShellModel.swift in Sources */,
+				C353735030280C270054E0D8 /* EditorView.swift in Sources */,
+				C353735130280C270054E0D8 /* TerminalEngine.swift in Sources */,
+				C353735230280C270054E0D8 /* PTYBridge.swift in Sources */,
+				C353735330280C270054E0D8 /* NotMacView.swift in Sources */,
+				C353735430280C270054E0D8 /* ShellViewModel.swift in Sources */,
+				C353735530280C270054E0D8 /* Aurora_shellApp.swift in Sources */,
+				C353735630280C270054E0D8 /* LiquidBackground.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C37046122F79A36700603593 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C37046132F79A36700603593 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		C37046152F79A36700603593 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 109DCDBB4F116B2F047C041A /* Pods-Horizon.debug.xcconfig */;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Horizon/Aurora-Shell.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Horizon/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Horizon;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 4.4.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yashb.Horizon;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
+				TVOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_TVOS_DEPLOYMENT_TARGET)";
+				XROS_DEPLOYMENT_TARGET = "$(RECOMMENDED_XROS_DEPLOYMENT_TARGET)";
+			};
+			name = Debug;
+		};
+		C37046162F79A36700603593 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2C9327DB78F404161B2D0843 /* Pods-Horizon.release.xcconfig */;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Horizon/Aurora-Shell.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Horizon/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Horizon;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MARKETING_VERSION = 4.4.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yashb.Horizon;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
+				TVOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_TVOS_DEPLOYMENT_TARGET)";
+				XROS_DEPLOYMENT_TARGET = "$(RECOMMENDED_XROS_DEPLOYMENT_TARGET)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C37046042F79A36500603593 /* Build configuration list for PBXProject "Horizon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C37046122F79A36700603593 /* Debug */,
+				C37046132F79A36700603593 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C37046142F79A36700603593 /* Build configuration list for PBXNativeTarget "Horizon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C37046152F79A36700603593 /* Debug */,
+				C37046162F79A36700603593 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C38BCEC13037B80E00CFB6BF /* SwiftTerm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			productName = SwiftTerm;
+		};
+		C38BCEC33037B80E00CFB6BF /* SwiftTermBuildInfoGenerator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			productName = SwiftTermBuildInfoGenerator;
+		};
+		C38BCEC53037B80E00CFB6BF /* SwiftTermFuzz */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			productName = SwiftTermFuzz;
+		};
+		C38BCEC73037B80E00CFB6BF /* termcast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			productName = termcast;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = C37046012F79A36500603593 /* Project object */;
+}

@@ -12,7 +12,7 @@
         "source": "aurora",
         "description": "Full-screen TUI git manager — status, diff, log, AI commit",
         "file": "Aurora.GitTUI_any.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       },
       "x86_64_darwin": {
         "name": "Aurora.GitTUI",
@@ -23,7 +23,7 @@
         "source": "aurora",
         "description": "Full-screen TUI git manager — status, diff, log, AI commit",
         "file": "Aurora.GitTUI_any.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       },
       "x86_64_linux": {
         "name": "Aurora.GitTUI",
@@ -34,7 +34,7 @@
         "source": "aurora",
         "description": "Full-screen TUI git manager — status, diff, log, AI commit",
         "file": "Aurora.GitTUI_any.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       },
       "arm64_linux": {
         "name": "Aurora.GitTUI",
@@ -45,7 +45,7 @@
         "source": "aurora",
         "description": "Full-screen TUI git manager — status, diff, log, AI commit",
         "file": "Aurora.GitTUI_any.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Amazon.AWS": {
@@ -58,7 +58,7 @@
         "source": "brew",
         "description": "Amazon Web Services CLI",
         "file": "Amazon.AWS_arm64_darwin.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Cloudflare.Wrangler": {
@@ -71,7 +71,7 @@
         "source": "npm",
         "description": "Cloudflare Workers CLI",
         "file": "Cloudflare.Wrangler_x86_64_linux.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Docker.CLI": {
@@ -84,7 +84,7 @@
         "source": "brew",
         "description": "Docker container CLI",
         "file": "Docker.CLI_arm64_darwin.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "GitHub.CLI": {
@@ -97,7 +97,7 @@
         "source": "brew",
         "description": "GitHub CLI",
         "file": "GitHub.CLI_arm64_darwin.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Google.Cloud": {
@@ -110,7 +110,7 @@
         "source": "brew",
         "description": "Google Cloud CLI",
         "file": "Google.Cloud_arm64_darwin.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Google.Firebase": {
@@ -123,7 +123,7 @@
         "source": "npm",
         "description": "Firebase CLI",
         "file": "Google.Firebase_x86_64_linux.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Helm.CLI": {
@@ -136,7 +136,7 @@
         "source": "brew",
         "description": "Kubernetes package manager",
         "file": "Helm.CLI_arm64_darwin.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Heroku.CLI": {
@@ -149,7 +149,7 @@
         "source": "brew",
         "description": "Heroku platform CLI",
         "file": "Heroku.CLI_arm64_darwin.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Kubernetes.CLI": {
@@ -162,7 +162,7 @@
         "source": "brew",
         "description": "Kubernetes CLI",
         "file": "Kubernetes.CLI_arm64_darwin.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Microsoft.Azure": {
@@ -175,7 +175,7 @@
         "source": "brew",
         "description": "Microsoft Azure CLI",
         "file": "Microsoft.Azure_arm64_darwin.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Netlify.CLI": {
@@ -188,7 +188,7 @@
         "source": "npm",
         "description": "Netlify deployment CLI",
         "file": "Netlify.CLI_x86_64_linux.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Seaus.Calc": {
@@ -201,7 +201,7 @@
         "source": "pipx",
         "description": "Seaus Calculator - natural-language, fraction-aware calculator",
         "file": "Seaus.Calc_x86_64_linux.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     },
     "Vercel.CLI": {
@@ -214,7 +214,7 @@
         "source": "npm",
         "description": "Vercel deployment CLI",
         "file": "Vercel.CLI_x86_64_linux.tar.gz",
-        "built": "2026-08-05T22:16:26Z"
+        "built": "2026-08-21T02:32:04Z"
       }
     }
   }
