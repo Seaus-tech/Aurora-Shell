@@ -68,7 +68,7 @@ sync_env() {
 install_com() {
     echo -ne "\033[1;33m📥 Downloading extensions... \033[0m"
     if command -v brew >/dev/null 2>&1; then
-        brew install figlet lolcat pygments terminal-notifier jq fzf zsh bash 2>/dev/null
+        brew install figlet lolcat pygments terminal-notifier jq fzf zsh bash fortune cowsay 2>/dev/null
     elif [ "$PLATFORM" = "linux" ]; then
         if command -v apt-get >/dev/null 2>&1; then
             sudo apt-get update && sudo apt-get install -y figlet lolcat python3-pygments jq fzf
@@ -989,7 +989,7 @@ SHELLEOF
             echo "↺  Restart terminal or run: source ~/.zshrc"
             ;;
         --motd)
-            local motd=$(curl -sf --max-time 5 "https://zenquotes.io/api/today" 2>/dev/null | jq -r '.[0] | "\(.q) — \(.a)"' 2>/dev/null)
+            local motd=$(fortune 2>/dev/null)
             [ -n "$motd" ] && echo "$motd" | safe_lolcat || echo "No MOTD available."
             ;;
         --doctor)
@@ -1043,7 +1043,7 @@ SHELLEOF
                 open -a "Aurora-Shell" 2>/dev/null && open "aurora-shell://lock" 2>/dev/null
             elif [ -z "$1" ]; then
                 # No args and no app — just show the header
-                Show-Aurora
+                echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account, --security, --motd, --doctor, --sync, --history, --run"
             else
                 echo "Flags: --display, --sys, --update [branch], --config, --lock, --uninstall, --account, --security, --motd, --doctor, --sync, --history, --run"
             fi
@@ -1241,8 +1241,7 @@ authenticate_user || { echo "🔒 Session locked." | safe_lolcat; exit; }
 Show-Aurora
 
 # --- MOTD ---
-_motd=$(curl -sf --max-time 2 "https://zenquotes.io/api/today" 2>/dev/null | jq -r '.[0] | "\(.q) — \(.a)"' 2>/dev/null)
-[ -n "$_motd" ] && echo "$_motd" | safe_lolcat
+_motd=$(fortune) && [ -n "$_motd" ] && echo "$_motd" | safe_lolcat
 
 # --- AUTO-SETUP ZSH PLUGINS ---
 _setup_zsh_plugins() {
