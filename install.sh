@@ -1241,7 +1241,7 @@ authenticate_user || { echo "🔒 Session locked." | safe_lolcat; exit; }
 Show-Aurora
 
 # --- MOTD ---
-_motd=$(fortune) && [ -n "$_motd" ] && echo "$_motd" | safe_lolcat
+_motd=$(fortune) && [ -n "$_motd" ] && echo -e "\e[90m$_motd\e[0m"
 
 # --- AUTO-SETUP ZSH PLUGINS ---
 _setup_zsh_plugins() {
