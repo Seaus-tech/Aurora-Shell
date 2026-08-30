@@ -1,6 +1,42 @@
 {
-  "originHash" : "4d9d9af82f23f3c708bdd502fed3939413b4f2a95a79ae568364cc92bca1527e",
+  "originHash" : "bdfc3996e26d1b59d78a903ca8ab07870dce7e03be3ef6b99269a8c9d49327a4",
   "pins" : [
+    {
+      "identity" : "clispinner",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kiliankoe/CLISpinner",
+      "state" : {
+        "branch" : "main",
+        "revision" : "0572232b92ddfd80cbab4ced6973d1c210022968"
+      }
+    },
+    {
+      "identity" : "h",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rarestype/h",
+      "state" : {
+        "revision" : "aa3626829160917d4378330617971977cbd78f5b",
+        "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "progress.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jkandzi/Progress.swift",
+      "state" : {
+        "branch" : "master",
+        "revision" : "fed6598735d7982058690acf8f52a0a5fdaeb3e0"
+      }
+    },
+    {
+      "identity" : "rainbow",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Rainbow",
+      "state" : {
+        "branch" : "master",
+        "revision" : "22bba3a1878813c68597811494b29f34f4cc63d5"
+      }
+    },
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
@@ -11,12 +47,30 @@
       }
     },
     {
+      "identity" : "swift-png",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tayloraswift/swift-png",
+      "state" : {
+        "revision" : "8a0bcd4df5e4b307c804937776a56dd6ecdf6396",
+        "version" : "4.5.1"
+      }
+    },
+    {
       "identity" : "swiftterm",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/migueldeicaza/SwiftTerm",
       "state" : {
-        "revision" : "5d14406844143538cd8f8851d2d8a67c1fe443e5",
-        "version" : "1.20.0"
+        "branch" : "main",
+        "revision" : "5000d09422e973fc43f5e94cd080acae7b8fa907"
+      }
+    },
+    {
+      "identity" : "yams",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/Yams",
+      "state" : {
+        "branch" : "main",
+        "revision" : "df801bc4f158f107035d2e14f6d0d8d31eb31ddb"
       }
     }
   ],

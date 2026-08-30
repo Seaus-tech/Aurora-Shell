@@ -27,6 +27,10 @@
 		C38BCEC43037B80E00CFB6BF /* SwiftTermBuildInfoGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC33037B80E00CFB6BF /* SwiftTermBuildInfoGenerator */; };
 		C38BCEC63037B80E00CFB6BF /* SwiftTermFuzz in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC53037B80E00CFB6BF /* SwiftTermFuzz */; };
 		C38BCEC83037B80E00CFB6BF /* termcast in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC73037B80E00CFB6BF /* termcast */; };
+		C3E0CAF93044CD87007384B3 /* Rainbow in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAF83044CD87007384B3 /* Rainbow */; };
+		C3E0CAFC3044CDF1007384B3 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAFB3044CDF1007384B3 /* Yams */; };
+		C3E0CAFF3044CE10007384B3 /* CLISpinner in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAFE3044CE10007384B3 /* CLISpinner */; };
+		C3E0CB023044CE44007384B3 /* Progress in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CB013044CE44007384B3 /* Progress */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -70,9 +74,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3E0CB023044CE44007384B3 /* Progress in Frameworks */,
 				C38BCEC83037B80E00CFB6BF /* termcast in Frameworks */,
+				C3E0CAFF3044CE10007384B3 /* CLISpinner in Frameworks */,
 				C38BCEC23037B80E00CFB6BF /* SwiftTerm in Frameworks */,
 				C38BCEC63037B80E00CFB6BF /* SwiftTermFuzz in Frameworks */,
+				C3E0CAF93044CD87007384B3 /* Rainbow in Frameworks */,
+				C3E0CAFC3044CDF1007384B3 /* Yams in Frameworks */,
 				C38BCEC43037B80E00CFB6BF /* SwiftTermBuildInfoGenerator in Frameworks */,
 				7F4B65524926FD78A82E8B80 /* Pods_Horizon.framework in Frameworks */,
 			);
@@ -163,6 +171,10 @@
 				C38BCEC33037B80E00CFB6BF /* SwiftTermBuildInfoGenerator */,
 				C38BCEC53037B80E00CFB6BF /* SwiftTermFuzz */,
 				C38BCEC73037B80E00CFB6BF /* termcast */,
+				C3E0CAF83044CD87007384B3 /* Rainbow */,
+				C3E0CAFB3044CDF1007384B3 /* Yams */,
+				C3E0CAFE3044CE10007384B3 /* CLISpinner */,
+				C3E0CB013044CE44007384B3 /* Progress */,
 			);
 			productName = "Aurora-Shell";
 			productReference = C37046092F79A36500603593 /* Horizon.app */;
@@ -195,6 +207,10 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */,
+				C3E0CAF73044CD87007384B3 /* XCRemoteSwiftPackageReference "Rainbow" */,
+				C3E0CAFA3044CDF1007384B3 /* XCRemoteSwiftPackageReference "Yams" */,
+				C3E0CAFD3044CE10007384B3 /* XCRemoteSwiftPackageReference "CLISpinner" */,
+				C3E0CB003044CE44007384B3 /* XCRemoteSwiftPackageReference "Progress" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C370460A2F79A36500603593 /* Products */;
@@ -249,9 +265,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Horizon/Pods-Horizon-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Horizon/Pods-Horizon-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -533,8 +553,40 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				branch = main;
+				kind = branch;
+			};
+		};
+		C3E0CAF73044CD87007384B3 /* XCRemoteSwiftPackageReference "Rainbow" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Rainbow";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		C3E0CAFA3044CDF1007384B3 /* XCRemoteSwiftPackageReference "Yams" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jpsim/Yams";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		C3E0CAFD3044CE10007384B3 /* XCRemoteSwiftPackageReference "CLISpinner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kiliankoe/CLISpinner";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		C3E0CB003044CE44007384B3 /* XCRemoteSwiftPackageReference "Progress" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jkandzi/Progress.swift";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -559,6 +611,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = termcast;
+		};
+		C3E0CAF83044CD87007384B3 /* Rainbow */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3E0CAF73044CD87007384B3 /* XCRemoteSwiftPackageReference "Rainbow" */;
+			productName = Rainbow;
+		};
+		C3E0CAFB3044CDF1007384B3 /* Yams */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3E0CAFA3044CDF1007384B3 /* XCRemoteSwiftPackageReference "Yams" */;
+			productName = Yams;
+		};
+		C3E0CAFE3044CE10007384B3 /* CLISpinner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3E0CAFD3044CE10007384B3 /* XCRemoteSwiftPackageReference "CLISpinner" */;
+			productName = CLISpinner;
+		};
+		C3E0CB013044CE44007384B3 /* Progress */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3E0CB003044CE44007384B3 /* XCRemoteSwiftPackageReference "Progress" */;
+			productName = Progress;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
