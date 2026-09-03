@@ -10,7 +10,7 @@ let package = Package(
             targets: ["Aurora-Shell"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Seaus-Tech/Aurora-Shell", from: "7.1.2"),
+        .package(url: "https://github.com/migueldeicaza/SwiftTerm", from: "7.1.2"),
     ],
     targets: [
         .target(
