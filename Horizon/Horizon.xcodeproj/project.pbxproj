@@ -211,6 +211,7 @@
 				C3E0CAFA3044CDF1007384B3 /* XCRemoteSwiftPackageReference "Yams" */,
 				C3E0CAFD3044CE10007384B3 /* XCRemoteSwiftPackageReference "CLISpinner" */,
 				C3E0CB003044CE44007384B3 /* XCRemoteSwiftPackageReference "Progress" */,
+				C36D3C6530490B0000C2423E /* XCRemoteSwiftPackageReference "Aurora-Shell" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C370460A2F79A36500603593 /* Products */;
@@ -549,6 +550,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C36D3C6530490B0000C2423E /* XCRemoteSwiftPackageReference "Aurora-Shell" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Seaus-Tech/Aurora-Shell";
+			requirement = {
+				branch = dev;
+				kind = branch;
+			};
+		};
 		C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm";
