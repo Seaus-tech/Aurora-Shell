@@ -1,23 +1,31 @@
 // swift-tools-version:6.2
-
 import PackageDescription
 
 let package = Package(
     name: "Aurora-Shell",
+    platforms: [
+        .macOS(.v10_15), .iOS(.v13)
+    ],
     products: [
         .library(
             name: "Aurora-Shell",
             targets: ["Aurora-Shell"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftTerm", from: "7.1.2"),
+        // Point directly to the main branch since version 7.1.2 does not exist
+        .package(url: "https://github.com/migueldeicaza/SwiftTerm", branch: "main"),
     ],
     targets: [
         .target(
             name: "Aurora-Shell",
-            dependencies: ["SwiftTerm"]),
+            dependencies: [
+                .product(name: "SwiftTerm", package: "SwiftTerm")
+            ]),
         .testTarget(
             name: "AuroraShellTests",
-            dependencies: ["SwiftTerm"]),
+            dependencies: [
+                "Aurora-Shell",
+                .product(name: "SwiftTerm", package: "SwiftTerm")
+            ]),
     ]
 )
