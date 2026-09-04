@@ -1,5 +1,5 @@
 {
-  "originHash" : "bdfc3996e26d1b59d78a903ca8ab07870dce7e03be3ef6b99269a8c9d49327a4",
+  "originHash" : "f101f7629cac2d28849c7c7466fee56461e22cc8e9c017046401adadc4d1bdc5",
   "pins" : [
     {
       "identity" : "clispinner",
@@ -61,7 +61,7 @@
       "location" : "https://github.com/migueldeicaza/SwiftTerm",
       "state" : {
         "branch" : "main",
-        "revision" : "5000d09422e973fc43f5e94cd080acae7b8fa907"
+        "revision" : "5d3026a641f0a8d6c0d207ad37ca5647378b91ef"
       }
     },
     {
