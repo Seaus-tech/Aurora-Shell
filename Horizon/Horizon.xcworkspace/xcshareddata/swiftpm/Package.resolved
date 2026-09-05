@@ -1,5 +1,5 @@
 {
-  "originHash" : "f101f7629cac2d28849c7c7466fee56461e22cc8e9c017046401adadc4d1bdc5",
+  "originHash" : "ae334c1150630dd1029051c60c3f7baa2b7e0f0c1e052f21dd1ef524534afd11",
   "pins" : [
     {
       "identity" : "clispinner",
@@ -11,12 +11,21 @@
       }
     },
     {
+      "identity" : "dollup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ordo-one/dollup",
+      "state" : {
+        "branch" : "master",
+        "revision" : "349c8a4e292d7ff4239c1a71e624b21dcf91876c"
+      }
+    },
+    {
       "identity" : "h",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/rarestype/h",
       "state" : {
-        "revision" : "aa3626829160917d4378330617971977cbd78f5b",
-        "version" : "1.0.1"
+        "branch" : "master",
+        "revision" : "ab7ca5988ee41479935a340095bbf7525b0ca3cc"
       }
     },
     {
@@ -42,8 +51,26 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382",
-        "version" : "1.8.2"
+        "branch" : "main",
+        "revision" : "b53c2f0138a387f3c21d543d7bbfc9d008d6fb1d"
+      }
+    },
+    {
+      "identity" : "swift-docc-plugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-docc-plugin",
+      "state" : {
+        "branch" : "main",
+        "revision" : "647c708be89f834fa6a6d4945442793a77ddf5b6"
+      }
+    },
+    {
+      "identity" : "swift-docc-symbolkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-docc-symbolkit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "c1f9484553d29afb981b95458b37c1c3d3e1bcd7"
       }
     },
     {
@@ -51,8 +78,26 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tayloraswift/swift-png",
       "state" : {
-        "revision" : "8a0bcd4df5e4b307c804937776a56dd6ecdf6396",
-        "version" : "4.5.1"
+        "branch" : "master",
+        "revision" : "b6abadff7bc4cdc152c83e4be19304d2e6d88d66"
+      }
+    },
+    {
+      "identity" : "swift-subprocess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-subprocess",
+      "state" : {
+        "branch" : "main",
+        "revision" : "47d0c80f8a0c4e837c8d9d24dd73d11c792461c2"
+      }
+    },
+    {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system",
+      "state" : {
+        "branch" : "main",
+        "revision" : "1b452c2996c677d8e435bf0b766fc927176d8c77"
       }
     },
     {
@@ -61,7 +106,7 @@
       "location" : "https://github.com/migueldeicaza/SwiftTerm",
       "state" : {
         "branch" : "main",
-        "revision" : "5cb37e865de9a86dd7344f772c40633339fd2880"
+        "revision" : "b5338ba35400d7da9e1b50b1f83e18c0d0dba2e0"
       }
     },
     {
