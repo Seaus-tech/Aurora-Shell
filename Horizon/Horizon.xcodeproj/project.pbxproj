@@ -8,6 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		7F4B65524926FD78A82E8B80 /* Pods_Horizon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86C3CFA665080130BBB87E6 /* Pods_Horizon.framework */; };
+		C330D64D304B9786005DF1C4 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C330D64C304B9786005DF1C4 /* SwiftTerm */; };
+		C330D64F304B9786005DF1C4 /* SwiftTermBuildInfoGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = C330D64E304B9786005DF1C4 /* SwiftTermBuildInfoGenerator */; };
+		C330D651304B9786005DF1C4 /* SwiftTermFuzz in Frameworks */ = {isa = PBXBuildFile; productRef = C330D650304B9786005DF1C4 /* SwiftTermFuzz */; };
+		C330D653304B9786005DF1C4 /* termcast in Frameworks */ = {isa = PBXBuildFile; productRef = C330D652304B9786005DF1C4 /* termcast */; };
+		C330D656304B9898005DF1C4 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = C330D655304B9898005DF1C4 /* ArgumentParser */; };
+		C330D658304B9898005DF1C4 /* generate-docc-reference in Frameworks */ = {isa = PBXBuildFile; productRef = C330D657304B9898005DF1C4 /* generate-docc-reference */; };
+		C330D65A304B9898005DF1C4 /* generate-manual in Frameworks */ = {isa = PBXBuildFile; productRef = C330D659304B9898005DF1C4 /* generate-manual */; };
+		C330D65D304B98BF005DF1C4 /* snippet-extract in Frameworks */ = {isa = PBXBuildFile; productRef = C330D65C304B98BF005DF1C4 /* snippet-extract */; };
+		C330D660304B9903005DF1C4 /* LZ77 in Frameworks */ = {isa = PBXBuildFile; productRef = C330D65F304B9903005DF1C4 /* LZ77 */; };
+		C330D662304B9903005DF1C4 /* PNG in Frameworks */ = {isa = PBXBuildFile; productRef = C330D661304B9903005DF1C4 /* PNG */; };
+		C330D664304B9903005DF1C4 /* compression-benchmark in Frameworks */ = {isa = PBXBuildFile; productRef = C330D663304B9903005DF1C4 /* compression-benchmark */; };
+		C330D666304B9903005DF1C4 /* decompression-benchmark in Frameworks */ = {isa = PBXBuildFile; productRef = C330D665304B9903005DF1C4 /* decompression-benchmark */; };
+		C330D66A304B997E005DF1C4 /* Subprocess in Frameworks */ = {isa = PBXBuildFile; productRef = C330D669304B997E005DF1C4 /* Subprocess */; };
+		C330D66D304B9A60005DF1C4 /* Base16 in Frameworks */ = {isa = PBXBuildFile; productRef = C330D66C304B9A60005DF1C4 /* Base16 */; };
+		C330D66F304B9A60005DF1C4 /* Base64 in Frameworks */ = {isa = PBXBuildFile; productRef = C330D66E304B9A60005DF1C4 /* Base64 */; };
+		C330D671304B9A60005DF1C4 /* CRC in Frameworks */ = {isa = PBXBuildFile; productRef = C330D670304B9A60005DF1C4 /* CRC */; };
+		C330D673304B9A60005DF1C4 /* InlineBuffer in Frameworks */ = {isa = PBXBuildFile; productRef = C330D672304B9A60005DF1C4 /* InlineBuffer */; };
+		C330D675304B9A60005DF1C4 /* MD5 in Frameworks */ = {isa = PBXBuildFile; productRef = C330D674304B9A60005DF1C4 /* MD5 */; };
+		C330D677304B9A60005DF1C4 /* MessageAuthentication in Frameworks */ = {isa = PBXBuildFile; productRef = C330D676304B9A60005DF1C4 /* MessageAuthentication */; };
+		C330D679304B9A60005DF1C4 /* SHA1 in Frameworks */ = {isa = PBXBuildFile; productRef = C330D678304B9A60005DF1C4 /* SHA1 */; };
+		C330D67B304B9A60005DF1C4 /* SHA2 in Frameworks */ = {isa = PBXBuildFile; productRef = C330D67A304B9A60005DF1C4 /* SHA2 */; };
+		C330D67D304B9A60005DF1C4 /* UUID in Frameworks */ = {isa = PBXBuildFile; productRef = C330D67C304B9A60005DF1C4 /* UUID */; };
+		C330D680304BBB8D005DF1C4 /* SymbolKit in Frameworks */ = {isa = PBXBuildFile; productRef = C330D67F304BBB8D005DF1C4 /* SymbolKit */; };
+		C330D683304BBBCB005DF1C4 /* SystemPackage in Frameworks */ = {isa = PBXBuildFile; productRef = C330D682304BBBCB005DF1C4 /* SystemPackage */; };
 		C353734930280C270054E0D8 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = C353733730280C270054E0D8 /* AppIcon.icon */; };
 		C353734A30280C270054E0D8 /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733E30280C270054E0D8 /* LockScreenView.swift */; };
 		C353734B30280C270054E0D8 /* TerminalViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */; };
@@ -23,10 +47,6 @@
 		C353735530280C270054E0D8 /* Aurora_shellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733830280C270054E0D8 /* Aurora_shellApp.swift */; };
 		C353735630280C270054E0D8 /* LiquidBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733D30280C270054E0D8 /* LiquidBackground.swift */; };
 		C36B1B7C3037D2260066C1F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C36B1B7B3037D21D0066C1F6 /* README.md */; };
-		C38BCEC23037B80E00CFB6BF /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC13037B80E00CFB6BF /* SwiftTerm */; };
-		C38BCEC43037B80E00CFB6BF /* SwiftTermBuildInfoGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC33037B80E00CFB6BF /* SwiftTermBuildInfoGenerator */; };
-		C38BCEC63037B80E00CFB6BF /* SwiftTermFuzz in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC53037B80E00CFB6BF /* SwiftTermFuzz */; };
-		C38BCEC83037B80E00CFB6BF /* termcast in Frameworks */ = {isa = PBXBuildFile; productRef = C38BCEC73037B80E00CFB6BF /* termcast */; };
 		C3E0CAF93044CD87007384B3 /* Rainbow in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAF83044CD87007384B3 /* Rainbow */; };
 		C3E0CAFC3044CDF1007384B3 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAFB3044CDF1007384B3 /* Yams */; };
 		C3E0CAFF3044CE10007384B3 /* CLISpinner in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAFE3044CE10007384B3 /* CLISpinner */; };
@@ -74,15 +94,35 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C330D671304B9A60005DF1C4 /* CRC in Frameworks */,
+				C330D65D304B98BF005DF1C4 /* snippet-extract in Frameworks */,
 				C3E0CB023044CE44007384B3 /* Progress in Frameworks */,
-				C38BCEC83037B80E00CFB6BF /* termcast in Frameworks */,
+				C330D651304B9786005DF1C4 /* SwiftTermFuzz in Frameworks */,
+				C330D66D304B9A60005DF1C4 /* Base16 in Frameworks */,
 				C3E0CAFF3044CE10007384B3 /* CLISpinner in Frameworks */,
-				C38BCEC23037B80E00CFB6BF /* SwiftTerm in Frameworks */,
-				C38BCEC63037B80E00CFB6BF /* SwiftTermFuzz in Frameworks */,
+				C330D64D304B9786005DF1C4 /* SwiftTerm in Frameworks */,
+				C330D679304B9A60005DF1C4 /* SHA1 in Frameworks */,
 				C3E0CAF93044CD87007384B3 /* Rainbow in Frameworks */,
+				C330D65A304B9898005DF1C4 /* generate-manual in Frameworks */,
+				C330D675304B9A60005DF1C4 /* MD5 in Frameworks */,
+				C330D658304B9898005DF1C4 /* generate-docc-reference in Frameworks */,
+				C330D653304B9786005DF1C4 /* termcast in Frameworks */,
+				C330D662304B9903005DF1C4 /* PNG in Frameworks */,
 				C3E0CAFC3044CDF1007384B3 /* Yams in Frameworks */,
-				C38BCEC43037B80E00CFB6BF /* SwiftTermBuildInfoGenerator in Frameworks */,
+				C330D680304BBB8D005DF1C4 /* SymbolKit in Frameworks */,
+				C330D673304B9A60005DF1C4 /* InlineBuffer in Frameworks */,
+				C330D683304BBBCB005DF1C4 /* SystemPackage in Frameworks */,
+				C330D66A304B997E005DF1C4 /* Subprocess in Frameworks */,
 				7F4B65524926FD78A82E8B80 /* Pods_Horizon.framework in Frameworks */,
+				C330D666304B9903005DF1C4 /* decompression-benchmark in Frameworks */,
+				C330D677304B9A60005DF1C4 /* MessageAuthentication in Frameworks */,
+				C330D67D304B9A60005DF1C4 /* UUID in Frameworks */,
+				C330D66F304B9A60005DF1C4 /* Base64 in Frameworks */,
+				C330D656304B9898005DF1C4 /* ArgumentParser in Frameworks */,
+				C330D660304B9903005DF1C4 /* LZ77 in Frameworks */,
+				C330D64F304B9786005DF1C4 /* SwiftTermBuildInfoGenerator in Frameworks */,
+				C330D67B304B9A60005DF1C4 /* SHA2 in Frameworks */,
+				C330D664304B9903005DF1C4 /* compression-benchmark in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,14 +207,34 @@
 			);
 			name = Horizon;
 			packageProductDependencies = (
-				C38BCEC13037B80E00CFB6BF /* SwiftTerm */,
-				C38BCEC33037B80E00CFB6BF /* SwiftTermBuildInfoGenerator */,
-				C38BCEC53037B80E00CFB6BF /* SwiftTermFuzz */,
-				C38BCEC73037B80E00CFB6BF /* termcast */,
 				C3E0CAF83044CD87007384B3 /* Rainbow */,
 				C3E0CAFB3044CDF1007384B3 /* Yams */,
 				C3E0CAFE3044CE10007384B3 /* CLISpinner */,
 				C3E0CB013044CE44007384B3 /* Progress */,
+				C330D64C304B9786005DF1C4 /* SwiftTerm */,
+				C330D64E304B9786005DF1C4 /* SwiftTermBuildInfoGenerator */,
+				C330D650304B9786005DF1C4 /* SwiftTermFuzz */,
+				C330D652304B9786005DF1C4 /* termcast */,
+				C330D655304B9898005DF1C4 /* ArgumentParser */,
+				C330D657304B9898005DF1C4 /* generate-docc-reference */,
+				C330D659304B9898005DF1C4 /* generate-manual */,
+				C330D65C304B98BF005DF1C4 /* snippet-extract */,
+				C330D65F304B9903005DF1C4 /* LZ77 */,
+				C330D661304B9903005DF1C4 /* PNG */,
+				C330D663304B9903005DF1C4 /* compression-benchmark */,
+				C330D665304B9903005DF1C4 /* decompression-benchmark */,
+				C330D669304B997E005DF1C4 /* Subprocess */,
+				C330D66C304B9A60005DF1C4 /* Base16 */,
+				C330D66E304B9A60005DF1C4 /* Base64 */,
+				C330D670304B9A60005DF1C4 /* CRC */,
+				C330D672304B9A60005DF1C4 /* InlineBuffer */,
+				C330D674304B9A60005DF1C4 /* MD5 */,
+				C330D676304B9A60005DF1C4 /* MessageAuthentication */,
+				C330D678304B9A60005DF1C4 /* SHA1 */,
+				C330D67A304B9A60005DF1C4 /* SHA2 */,
+				C330D67C304B9A60005DF1C4 /* UUID */,
+				C330D67F304BBB8D005DF1C4 /* SymbolKit */,
+				C330D682304BBBCB005DF1C4 /* SystemPackage */,
 			);
 			productName = "Aurora-Shell";
 			productReference = C37046092F79A36500603593 /* Horizon.app */;
@@ -206,11 +266,19 @@
 			mainGroup = C37046002F79A36500603593;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */,
 				C3E0CAF73044CD87007384B3 /* XCRemoteSwiftPackageReference "Rainbow" */,
 				C3E0CAFA3044CDF1007384B3 /* XCRemoteSwiftPackageReference "Yams" */,
 				C3E0CAFD3044CE10007384B3 /* XCRemoteSwiftPackageReference "CLISpinner" */,
 				C3E0CB003044CE44007384B3 /* XCRemoteSwiftPackageReference "Progress" */,
+				C330D64B304B9786005DF1C4 /* XCRemoteSwiftPackageReference "SwiftTerm" */,
+				C330D654304B9898005DF1C4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+				C330D65B304B98BF005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-plugin" */,
+				C330D65E304B9903005DF1C4 /* XCRemoteSwiftPackageReference "swift-png" */,
+				C330D667304B9947005DF1C4 /* XCRemoteSwiftPackageReference "dollup" */,
+				C330D668304B997E005DF1C4 /* XCRemoteSwiftPackageReference "swift-subprocess" */,
+				C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */,
+				C330D67E304BBB8D005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-symbolkit" */,
+				C330D681304BBBCB005DF1C4 /* XCRemoteSwiftPackageReference "swift-system" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C370460A2F79A36500603593 /* Products */;
@@ -549,9 +617,73 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
+		C330D64B304B9786005DF1C4 /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		C330D654304B9898005DF1C4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		C330D65B304B98BF005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-plugin" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-docc-plugin";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		C330D65E304B9903005DF1C4 /* XCRemoteSwiftPackageReference "swift-png" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tayloraswift/swift-png";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		C330D667304B9947005DF1C4 /* XCRemoteSwiftPackageReference "dollup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ordo-one/dollup";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		C330D668304B997E005DF1C4 /* XCRemoteSwiftPackageReference "swift-subprocess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swiftlang/swift-subprocess";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rarestype/h";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		C330D67E304BBB8D005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-symbolkit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-docc-symbolkit";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		C330D681304BBBCB005DF1C4 /* XCRemoteSwiftPackageReference "swift-system" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-system";
 			requirement = {
 				branch = main;
 				kind = branch;
@@ -592,25 +724,125 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C38BCEC13037B80E00CFB6BF /* SwiftTerm */ = {
+		C330D64C304B9786005DF1C4 /* SwiftTerm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			package = C330D64B304B9786005DF1C4 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = SwiftTerm;
 		};
-		C38BCEC33037B80E00CFB6BF /* SwiftTermBuildInfoGenerator */ = {
+		C330D64E304B9786005DF1C4 /* SwiftTermBuildInfoGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			package = C330D64B304B9786005DF1C4 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = SwiftTermBuildInfoGenerator;
 		};
-		C38BCEC53037B80E00CFB6BF /* SwiftTermFuzz */ = {
+		C330D650304B9786005DF1C4 /* SwiftTermFuzz */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			package = C330D64B304B9786005DF1C4 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = SwiftTermFuzz;
 		};
-		C38BCEC73037B80E00CFB6BF /* termcast */ = {
+		C330D652304B9786005DF1C4 /* termcast */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C38BCEC03037B80E00CFB6BF /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			package = C330D64B304B9786005DF1C4 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = termcast;
+		};
+		C330D655304B9898005DF1C4 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D654304B9898005DF1C4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+		C330D657304B9898005DF1C4 /* generate-docc-reference */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D654304B9898005DF1C4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = "generate-docc-reference";
+		};
+		C330D659304B9898005DF1C4 /* generate-manual */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D654304B9898005DF1C4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = "generate-manual";
+		};
+		C330D65C304B98BF005DF1C4 /* snippet-extract */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D65B304B98BF005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-plugin" */;
+			productName = "snippet-extract";
+		};
+		C330D65F304B9903005DF1C4 /* LZ77 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D65E304B9903005DF1C4 /* XCRemoteSwiftPackageReference "swift-png" */;
+			productName = LZ77;
+		};
+		C330D661304B9903005DF1C4 /* PNG */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D65E304B9903005DF1C4 /* XCRemoteSwiftPackageReference "swift-png" */;
+			productName = PNG;
+		};
+		C330D663304B9903005DF1C4 /* compression-benchmark */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D65E304B9903005DF1C4 /* XCRemoteSwiftPackageReference "swift-png" */;
+			productName = "compression-benchmark";
+		};
+		C330D665304B9903005DF1C4 /* decompression-benchmark */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D65E304B9903005DF1C4 /* XCRemoteSwiftPackageReference "swift-png" */;
+			productName = "decompression-benchmark";
+		};
+		C330D669304B997E005DF1C4 /* Subprocess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D668304B997E005DF1C4 /* XCRemoteSwiftPackageReference "swift-subprocess" */;
+			productName = Subprocess;
+		};
+		C330D66C304B9A60005DF1C4 /* Base16 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = Base16;
+		};
+		C330D66E304B9A60005DF1C4 /* Base64 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = Base64;
+		};
+		C330D670304B9A60005DF1C4 /* CRC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = CRC;
+		};
+		C330D672304B9A60005DF1C4 /* InlineBuffer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = InlineBuffer;
+		};
+		C330D674304B9A60005DF1C4 /* MD5 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = MD5;
+		};
+		C330D676304B9A60005DF1C4 /* MessageAuthentication */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = MessageAuthentication;
+		};
+		C330D678304B9A60005DF1C4 /* SHA1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = SHA1;
+		};
+		C330D67A304B9A60005DF1C4 /* SHA2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = SHA2;
+		};
+		C330D67C304B9A60005DF1C4 /* UUID */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */;
+			productName = UUID;
+		};
+		C330D67F304BBB8D005DF1C4 /* SymbolKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D67E304BBB8D005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-symbolkit" */;
+			productName = SymbolKit;
+		};
+		C330D682304BBBCB005DF1C4 /* SystemPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C330D681304BBBCB005DF1C4 /* XCRemoteSwiftPackageReference "swift-system" */;
+			productName = SystemPackage;
 		};
 		C3E0CAF83044CD87007384B3 /* Rainbow */ = {
 			isa = XCSwiftPackageProductDependency;
