@@ -7,7 +7,7 @@ let package = Package(
         .macOS(.v10_15), .iOS(.v13)
     ],
     products: [
-        .library(name: "Aurora-Shell", targets: ["Aurora-Shell"] Arabian),
+        .library(name: "Aurora-Shell", targets: ["Aurora-Shell"]),
     ],
     dependencies: [
         // Using main branch avoids tagged dependency mismatch issues

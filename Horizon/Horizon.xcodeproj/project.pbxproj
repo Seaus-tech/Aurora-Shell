@@ -32,6 +32,26 @@
 		C330D67D304B9A60005DF1C4 /* UUID in Frameworks */ = {isa = PBXBuildFile; productRef = C330D67C304B9A60005DF1C4 /* UUID */; };
 		C330D680304BBB8D005DF1C4 /* SymbolKit in Frameworks */ = {isa = PBXBuildFile; productRef = C330D67F304BBB8D005DF1C4 /* SymbolKit */; };
 		C330D683304BBBCB005DF1C4 /* SystemPackage in Frameworks */ = {isa = PBXBuildFile; productRef = C330D682304BBBCB005DF1C4 /* SystemPackage */; };
+		C3494593304C76E400906B16 /* SwifterSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C3494592304C76E400906B16 /* SwifterSwift */; };
+		C3494595304C76E400906B16 /* SwifterSwiftAppKit in Frameworks */ = {isa = PBXBuildFile; productRef = C3494594304C76E400906B16 /* SwifterSwiftAppKit */; };
+		C3494597304C76E400906B16 /* SwifterSwiftAppKitNoIBInspectable in Frameworks */ = {isa = PBXBuildFile; productRef = C3494596304C76E400906B16 /* SwifterSwiftAppKitNoIBInspectable */; };
+		C3494599304C76E400906B16 /* SwifterSwiftCoreAnimation in Frameworks */ = {isa = PBXBuildFile; productRef = C3494598304C76E400906B16 /* SwifterSwiftCoreAnimation */; };
+		C349459B304C76E400906B16 /* SwifterSwiftCoreGraphics in Frameworks */ = {isa = PBXBuildFile; productRef = C349459A304C76E400906B16 /* SwifterSwiftCoreGraphics */; };
+		C349459D304C76E400906B16 /* SwifterSwiftCoreLocation in Frameworks */ = {isa = PBXBuildFile; productRef = C349459C304C76E400906B16 /* SwifterSwiftCoreLocation */; };
+		C349459F304C76E400906B16 /* SwifterSwiftCryptoKit in Frameworks */ = {isa = PBXBuildFile; productRef = C349459E304C76E400906B16 /* SwifterSwiftCryptoKit */; };
+		C34945A1304C76E400906B16 /* SwifterSwiftDispatch in Frameworks */ = {isa = PBXBuildFile; productRef = C34945A0304C76E400906B16 /* SwifterSwiftDispatch */; };
+		C34945A3304C76E400906B16 /* SwifterSwiftFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C34945A2304C76E400906B16 /* SwifterSwiftFoundation */; };
+		C34945A5304C76E400906B16 /* SwifterSwiftHealthKit in Frameworks */ = {isa = PBXBuildFile; productRef = C34945A4304C76E400906B16 /* SwifterSwiftHealthKit */; };
+		C34945A7304C76E400906B16 /* SwifterSwiftMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = C34945A6304C76E400906B16 /* SwifterSwiftMapKit */; };
+		C34945A9304C76E400906B16 /* SwifterSwiftNoIBInspectable in Frameworks */ = {isa = PBXBuildFile; productRef = C34945A8304C76E400906B16 /* SwifterSwiftNoIBInspectable */; };
+		C34945AB304C76E400906B16 /* SwifterSwiftSceneKit in Frameworks */ = {isa = PBXBuildFile; productRef = C34945AA304C76E400906B16 /* SwifterSwiftSceneKit */; };
+		C34945AD304C76E400906B16 /* SwifterSwiftShared in Frameworks */ = {isa = PBXBuildFile; productRef = C34945AC304C76E400906B16 /* SwifterSwiftShared */; };
+		C34945AF304C76E400906B16 /* SwifterSwiftSpriteKit in Frameworks */ = {isa = PBXBuildFile; productRef = C34945AE304C76E400906B16 /* SwifterSwiftSpriteKit */; };
+		C34945B1304C76E400906B16 /* SwifterSwiftStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = C34945B0304C76E400906B16 /* SwifterSwiftStoreKit */; };
+		C34945B3304C76E400906B16 /* SwifterSwiftSwiftStdlib in Frameworks */ = {isa = PBXBuildFile; productRef = C34945B2304C76E400906B16 /* SwifterSwiftSwiftStdlib */; };
+		C34945B5304C76E400906B16 /* SwifterSwiftUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = C34945B4304C76E400906B16 /* SwifterSwiftUIKit */; };
+		C34945B7304C76E400906B16 /* SwifterSwiftUIKitNoIBInspectable in Frameworks */ = {isa = PBXBuildFile; productRef = C34945B6304C76E400906B16 /* SwifterSwiftUIKitNoIBInspectable */; };
+		C34945B9304C76E400906B16 /* SwifterSwiftWebKit in Frameworks */ = {isa = PBXBuildFile; productRef = C34945B8304C76E400906B16 /* SwifterSwiftWebKit */; };
 		C353734930280C270054E0D8 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = C353733730280C270054E0D8 /* AppIcon.icon */; };
 		C353734A30280C270054E0D8 /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733E30280C270054E0D8 /* LockScreenView.swift */; };
 		C353734B30280C270054E0D8 /* TerminalViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */; };
@@ -96,32 +116,52 @@
 			files = (
 				C330D671304B9A60005DF1C4 /* CRC in Frameworks */,
 				C330D65D304B98BF005DF1C4 /* snippet-extract in Frameworks */,
+				C34945B7304C76E400906B16 /* SwifterSwiftUIKitNoIBInspectable in Frameworks */,
+				C34945A1304C76E400906B16 /* SwifterSwiftDispatch in Frameworks */,
 				C3E0CB023044CE44007384B3 /* Progress in Frameworks */,
+				C3494593304C76E400906B16 /* SwifterSwift in Frameworks */,
 				C330D651304B9786005DF1C4 /* SwiftTermFuzz in Frameworks */,
+				C34945A3304C76E400906B16 /* SwifterSwiftFoundation in Frameworks */,
+				C34945AB304C76E400906B16 /* SwifterSwiftSceneKit in Frameworks */,
 				C330D66D304B9A60005DF1C4 /* Base16 in Frameworks */,
 				C3E0CAFF3044CE10007384B3 /* CLISpinner in Frameworks */,
+				C3494599304C76E400906B16 /* SwifterSwiftCoreAnimation in Frameworks */,
+				C3494597304C76E400906B16 /* SwifterSwiftAppKitNoIBInspectable in Frameworks */,
 				C330D64D304B9786005DF1C4 /* SwiftTerm in Frameworks */,
 				C330D679304B9A60005DF1C4 /* SHA1 in Frameworks */,
+				C349459B304C76E400906B16 /* SwifterSwiftCoreGraphics in Frameworks */,
 				C3E0CAF93044CD87007384B3 /* Rainbow in Frameworks */,
 				C330D65A304B9898005DF1C4 /* generate-manual in Frameworks */,
 				C330D675304B9A60005DF1C4 /* MD5 in Frameworks */,
+				C349459F304C76E400906B16 /* SwifterSwiftCryptoKit in Frameworks */,
+				C34945A5304C76E400906B16 /* SwifterSwiftHealthKit in Frameworks */,
 				C330D658304B9898005DF1C4 /* generate-docc-reference in Frameworks */,
+				C3494595304C76E400906B16 /* SwifterSwiftAppKit in Frameworks */,
+				C34945B9304C76E400906B16 /* SwifterSwiftWebKit in Frameworks */,
 				C330D653304B9786005DF1C4 /* termcast in Frameworks */,
+				C34945AD304C76E400906B16 /* SwifterSwiftShared in Frameworks */,
 				C330D662304B9903005DF1C4 /* PNG in Frameworks */,
 				C3E0CAFC3044CDF1007384B3 /* Yams in Frameworks */,
 				C330D680304BBB8D005DF1C4 /* SymbolKit in Frameworks */,
+				C34945B3304C76E400906B16 /* SwifterSwiftSwiftStdlib in Frameworks */,
+				C34945A7304C76E400906B16 /* SwifterSwiftMapKit in Frameworks */,
 				C330D673304B9A60005DF1C4 /* InlineBuffer in Frameworks */,
 				C330D683304BBBCB005DF1C4 /* SystemPackage in Frameworks */,
 				C330D66A304B997E005DF1C4 /* Subprocess in Frameworks */,
 				7F4B65524926FD78A82E8B80 /* Pods_Horizon.framework in Frameworks */,
 				C330D666304B9903005DF1C4 /* decompression-benchmark in Frameworks */,
+				C34945B1304C76E400906B16 /* SwifterSwiftStoreKit in Frameworks */,
+				C349459D304C76E400906B16 /* SwifterSwiftCoreLocation in Frameworks */,
 				C330D677304B9A60005DF1C4 /* MessageAuthentication in Frameworks */,
 				C330D67D304B9A60005DF1C4 /* UUID in Frameworks */,
 				C330D66F304B9A60005DF1C4 /* Base64 in Frameworks */,
+				C34945B5304C76E400906B16 /* SwifterSwiftUIKit in Frameworks */,
 				C330D656304B9898005DF1C4 /* ArgumentParser in Frameworks */,
 				C330D660304B9903005DF1C4 /* LZ77 in Frameworks */,
 				C330D64F304B9786005DF1C4 /* SwiftTermBuildInfoGenerator in Frameworks */,
 				C330D67B304B9A60005DF1C4 /* SHA2 in Frameworks */,
+				C34945AF304C76E400906B16 /* SwifterSwiftSpriteKit in Frameworks */,
+				C34945A9304C76E400906B16 /* SwifterSwiftNoIBInspectable in Frameworks */,
 				C330D664304B9903005DF1C4 /* compression-benchmark in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -235,6 +275,26 @@
 				C330D67C304B9A60005DF1C4 /* UUID */,
 				C330D67F304BBB8D005DF1C4 /* SymbolKit */,
 				C330D682304BBBCB005DF1C4 /* SystemPackage */,
+				C3494592304C76E400906B16 /* SwifterSwift */,
+				C3494594304C76E400906B16 /* SwifterSwiftAppKit */,
+				C3494596304C76E400906B16 /* SwifterSwiftAppKitNoIBInspectable */,
+				C3494598304C76E400906B16 /* SwifterSwiftCoreAnimation */,
+				C349459A304C76E400906B16 /* SwifterSwiftCoreGraphics */,
+				C349459C304C76E400906B16 /* SwifterSwiftCoreLocation */,
+				C349459E304C76E400906B16 /* SwifterSwiftCryptoKit */,
+				C34945A0304C76E400906B16 /* SwifterSwiftDispatch */,
+				C34945A2304C76E400906B16 /* SwifterSwiftFoundation */,
+				C34945A4304C76E400906B16 /* SwifterSwiftHealthKit */,
+				C34945A6304C76E400906B16 /* SwifterSwiftMapKit */,
+				C34945A8304C76E400906B16 /* SwifterSwiftNoIBInspectable */,
+				C34945AA304C76E400906B16 /* SwifterSwiftSceneKit */,
+				C34945AC304C76E400906B16 /* SwifterSwiftShared */,
+				C34945AE304C76E400906B16 /* SwifterSwiftSpriteKit */,
+				C34945B0304C76E400906B16 /* SwifterSwiftStoreKit */,
+				C34945B2304C76E400906B16 /* SwifterSwiftSwiftStdlib */,
+				C34945B4304C76E400906B16 /* SwifterSwiftUIKit */,
+				C34945B6304C76E400906B16 /* SwifterSwiftUIKitNoIBInspectable */,
+				C34945B8304C76E400906B16 /* SwifterSwiftWebKit */,
 			);
 			productName = "Aurora-Shell";
 			productReference = C37046092F79A36500603593 /* Horizon.app */;
@@ -279,6 +339,7 @@
 				C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */,
 				C330D67E304BBB8D005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-symbolkit" */,
 				C330D681304BBBCB005DF1C4 /* XCRemoteSwiftPackageReference "swift-system" */,
+				C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C370460A2F79A36500603593 /* Products */;
@@ -506,11 +567,12 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Horizon/Aurora-Shell.entitlements";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 25X4VXN3L2;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
@@ -527,6 +589,7 @@
 				MARKETING_VERSION = 4.4.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yashb.Horizon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
@@ -555,11 +618,12 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Horizon/Aurora-Shell.entitlements";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 25X4VXN3L2;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
@@ -576,6 +640,7 @@
 				MARKETING_VERSION = 4.4.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yashb.Horizon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "xrsimulator xros watchsimulator watchos macosx iphonesimulator iphoneos driverkit appletvsimulator appletvos";
@@ -624,6 +689,8 @@
 				branch = main;
 				kind = branch;
 			};
+			traits = (
+			);
 		};
 		C330D654304B9898005DF1C4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -686,6 +753,14 @@
 			repositoryURL = "https://github.com/apple/swift-system";
 			requirement = {
 				branch = main;
+				kind = branch;
+			};
+		};
+		C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwifterSwift/SwifterSwift";
+			requirement = {
+				branch = master;
 				kind = branch;
 			};
 		};
@@ -843,6 +918,106 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C330D681304BBBCB005DF1C4 /* XCRemoteSwiftPackageReference "swift-system" */;
 			productName = SystemPackage;
+		};
+		C3494592304C76E400906B16 /* SwifterSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwift;
+		};
+		C3494594304C76E400906B16 /* SwifterSwiftAppKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftAppKit;
+		};
+		C3494596304C76E400906B16 /* SwifterSwiftAppKitNoIBInspectable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftAppKitNoIBInspectable;
+		};
+		C3494598304C76E400906B16 /* SwifterSwiftCoreAnimation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftCoreAnimation;
+		};
+		C349459A304C76E400906B16 /* SwifterSwiftCoreGraphics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftCoreGraphics;
+		};
+		C349459C304C76E400906B16 /* SwifterSwiftCoreLocation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftCoreLocation;
+		};
+		C349459E304C76E400906B16 /* SwifterSwiftCryptoKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftCryptoKit;
+		};
+		C34945A0304C76E400906B16 /* SwifterSwiftDispatch */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftDispatch;
+		};
+		C34945A2304C76E400906B16 /* SwifterSwiftFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftFoundation;
+		};
+		C34945A4304C76E400906B16 /* SwifterSwiftHealthKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftHealthKit;
+		};
+		C34945A6304C76E400906B16 /* SwifterSwiftMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftMapKit;
+		};
+		C34945A8304C76E400906B16 /* SwifterSwiftNoIBInspectable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftNoIBInspectable;
+		};
+		C34945AA304C76E400906B16 /* SwifterSwiftSceneKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftSceneKit;
+		};
+		C34945AC304C76E400906B16 /* SwifterSwiftShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftShared;
+		};
+		C34945AE304C76E400906B16 /* SwifterSwiftSpriteKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftSpriteKit;
+		};
+		C34945B0304C76E400906B16 /* SwifterSwiftStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftStoreKit;
+		};
+		C34945B2304C76E400906B16 /* SwifterSwiftSwiftStdlib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftSwiftStdlib;
+		};
+		C34945B4304C76E400906B16 /* SwifterSwiftUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftUIKit;
+		};
+		C34945B6304C76E400906B16 /* SwifterSwiftUIKitNoIBInspectable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftUIKitNoIBInspectable;
+		};
+		C34945B8304C76E400906B16 /* SwifterSwiftWebKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
+			productName = SwifterSwiftWebKit;
 		};
 		C3E0CAF83044CD87007384B3 /* Rainbow */ = {
 			isa = XCSwiftPackageProductDependency;
