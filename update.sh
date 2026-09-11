@@ -1,5 +1,5 @@
 #!/bin/bash
-# Aurora-Shell updater — backs up prefs, runs fresh install, restores account+PIN
+# Aurora-Shell updater — backs up prefs, runs fresh install, restores account + PIN
 BRANCH="${1:-dev}"
 REPO_BASE="https://raw.githubusercontent.com/Seaus-tech/Aurora-Shell"
 
