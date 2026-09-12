@@ -31,7 +31,7 @@ safe_lolcat() {
 
 # -- HELPER: SED --
 safe_sed() {
-    if [ "$PLATFORM" = "MacOS" ]; then
+    if [ "$PLATFORM" = "macos" ]; then
         /usr/bin/sed -i '' "$@"
     else
         sed -i "$@"
