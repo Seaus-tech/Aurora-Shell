@@ -14,8 +14,8 @@ struct TerminalViewRepresentable: NSViewRepresentable {
         term.nativeBackgroundColor = .clear
         term.wantsLayer = true
         term.layer?.backgroundColor = .clear
-        let cols = term.terminal.cols > 0 ? term.terminal.cols : 80
-        let rows = term.terminal.rows > 0 ? term.terminal.rows : 24
+        let cols = Int(term.bounds.width / 8.0) > 0 ? Int(term.bounds.width / 8.0) : 80
+        let rows = Int(term.bounds.height / 14.0) > 0 ? Int(term.bounds.height / 14.0) : 24
         engine.start(cols: cols, rows: rows)
         engine.output
             .receive(on: DispatchQueue.main)

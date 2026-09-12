@@ -295,11 +295,11 @@ cat << 'EOF' > "$THEME_FILE"
 source "$HOME/.aurora-shell_files/aurora-shell_settings"
 
 # -- AUTO-REGENERATE ON BREW UPGRADE --
-# If brew-managed and the installed formula version is newer than this theme, regenerate
-if command -v brew &>/dev/null && brew list aurora-shell &>/dev/null 2>/dev/null; then
+# Only runs when the brew formula itself triggered the install (AURORA_BREW_INSTALL=1).
+# curl/script installs never set this flag, so this block is skipped for them.
+if [[ "${AURORA_BREW_INSTALL:-0}" == "1" ]] && command -v brew &>/dev/null && brew list aurora-shell &>/dev/null 2>/dev/null; then
     _brew_ver=$(brew info --json aurora-shell 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0]['installed'][0]['version'])" 2>/dev/null)
     if [[ -n "$_brew_ver" && "$_brew_ver" != "$AURORA_VER" ]]; then
-        export AURORA_BREW_INSTALL=1
         bash "$(brew --prefix)/share/aurora-shell/install.sh" &>/dev/null
         source "$HOME/.aurora-shell_files/aurora-shell_settings"
         exec "$SHELL" -l
@@ -720,7 +720,7 @@ shell.aurora() {
             ;;
         --update)
             # Block update if managed by brew
-            if command -v brew >/dev/null 2>&1 && brew list aurora-shell &>/dev/null 2>/dev/null; then
+            if [[ "$(cat "$HOME/.aurora-shell_files/.install_method" 2>/dev/null)" == "brew" ]]; then
                 echo "🍺 Aurora-Shell is managed by Homebrew." | safe_lolcat
                 echo "   Run: brew upgrade aurora-shell" | safe_lolcat
                 return 0
@@ -1616,7 +1616,7 @@ _ver_gt() {
 
 if [ -n "$REMOTE_VER" ] && _ver_gt "$REMOTE_VER" "$AURORA_VER"; then
     echo ""
-    if command -v brew >/dev/null 2>&1 && brew list aurora-shell &>/dev/null 2>/dev/null; then
+    if [[ "$(cat "$HOME/.aurora-shell_files/.install_method" 2>/dev/null)" == "brew" ]]; then
         echo "🔔 Aurora-Shell update available (v$AURORA_VER → v$REMOTE_VER) — run: brew upgrade aurora-shell" | safe_lolcat
         notify "Aurora-Shell" "Update available: v$AURORA_VER → v$REMOTE_VER — run: brew upgrade aurora-shell" "Ping"
     else
@@ -1642,6 +1642,7 @@ AURORA_USER_BDAY=""
 AURORA_ID="$USER"
 CFGEOF
     touch "$HOME/.aurora-shell_files/.brew_first_launch"
+    echo "brew" > "$HOME/.aurora-shell_files/.install_method"
     generate_theme
     grep -v "aurora-shell_theme\|aurora-shell_files/bin" "$HOME/.zshrc" > /tmp/.zshrc_clean 2>/dev/null && mv /tmp/.zshrc_clean "$HOME/.zshrc"
     echo "source $THEME_FILE" >> "$HOME/.zshrc"
@@ -1651,6 +1652,7 @@ CFGEOF
     exit 0
 fi
 
+echo "curl" > "$HOME/.aurora-shell_files/.install_method"
 run_wizard
 generate_theme
 
