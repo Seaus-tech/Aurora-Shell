@@ -57,3 +57,9 @@ jobs:
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+- name: Setup GitHub Copilot CLI
+  uses: mvkaran/setup-copilot-cli@v1
+
+- name: SSH Remote Commands
+  uses: appleboy/ssh-action@v1.2.5

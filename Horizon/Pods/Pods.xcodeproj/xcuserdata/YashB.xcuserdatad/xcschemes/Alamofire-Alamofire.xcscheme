@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2700"
+   LastUpgradeVersion = "1600"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9828BBC09E9FB1238624113D7456E59E"
-               BuildableName = "Kingfisher.bundle"
-               BlueprintName = "Kingfisher-Kingfisher"
+               BlueprintIdentifier = "976126A1CE06DC6E162563800E1BDF14"
+               BuildableName = "Alamofire.bundle"
+               BlueprintName = "Alamofire-Alamofire"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
