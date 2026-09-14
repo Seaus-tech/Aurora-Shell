@@ -20,6 +20,7 @@
     {
       "layers" : [
         {
+          "hidden" : true,
           "image-name" : "Image.png",
           "name" : "Image",
           "position" : {
@@ -38,6 +39,29 @@
       "translucency" : {
         "enabled" : true,
         "value" : 0.5
+      }
+    },
+    {
+      "layers" : [
+        {
+          "image-name" : "image_d90d4fb5.jpg",
+          "name" : "image_d90d4fb5",
+          "position" : {
+            "scale" : 1.3,
+            "translation-in-points" : [
+              -35,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
       }
     }
   ],

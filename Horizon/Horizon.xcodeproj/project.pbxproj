@@ -71,6 +71,8 @@
 		C353735530280C270054E0D8 /* Aurora_shellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733830280C270054E0D8 /* Aurora_shellApp.swift */; };
 		C353735630280C270054E0D8 /* LiquidBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733D30280C270054E0D8 /* LiquidBackground.swift */; };
 		C36B1B7C3037D2260066C1F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C36B1B7B3037D21D0066C1F6 /* README.md */; };
+		C3C602CF305736F800DB7C9A /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C3C602CE305736F800DB7C9A /* SwiftTerm */; };
+		C3C602E43058BE3600DB7C9A /* SwiftTermBuildInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C602E33058BE3600DB7C9A /* SwiftTermBuildInfo.swift */; };
 		C3E0CAF93044CD87007384B3 /* Rainbow in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAF83044CD87007384B3 /* Rainbow */; };
 		C3E0CAFC3044CDF1007384B3 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAFB3044CDF1007384B3 /* Yams */; };
 		C3E0CAFF3044CE10007384B3 /* CLISpinner in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAFE3044CE10007384B3 /* CLISpinner */; };
@@ -110,6 +112,7 @@
 		C353734630280C270054E0D8 /* TerminalViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewRepresentable.swift; sourceTree = "<group>"; };
 		C36B1B7B3037D21D0066C1F6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C37046092F79A36500603593 /* Horizon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Horizon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3C602E33058BE3600DB7C9A /* SwiftTermBuildInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftTermBuildInfo.swift; sourceTree = "<group>"; };
 		E4D5A04C6FFB434A72FBEF05 /* Pods-Horizon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Horizon.debug.xcconfig"; path = "Target Support Files/Pods-Horizon/Pods-Horizon.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -126,6 +129,7 @@
 				C3E0CB023044CE44007384B3 /* Progress in Frameworks */,
 				C3494593304C76E400906B16 /* SwifterSwift in Frameworks */,
 				C34945A3304C76E400906B16 /* SwifterSwiftFoundation in Frameworks */,
+				C3C602CF305736F800DB7C9A /* SwiftTerm in Frameworks */,
 				C34945AB304C76E400906B16 /* SwifterSwiftSceneKit in Frameworks */,
 				C330D66D304B9A60005DF1C4 /* Base16 in Frameworks */,
 				C3E0CAFF3044CE10007384B3 /* CLISpinner in Frameworks */,
@@ -189,6 +193,7 @@
 		C353734730280C270054E0D8 /* Horizon */ = {
 			isa = PBXGroup;
 			children = (
+				C3C602E33058BE3600DB7C9A /* SwiftTermBuildInfo.swift */,
 				C36B1B7B3037D21D0066C1F6 /* README.md */,
 				C353733730280C270054E0D8 /* AppIcon.icon */,
 				C353733830280C270054E0D8 /* Aurora_shellApp.swift */,
@@ -248,7 +253,6 @@
 				C37046072F79A36500603593 /* Resources */,
 				C39A22F82F849FAE00745502 /* Embed Frameworks */,
 				CBF263C7F2F80C024DEDC47D /* [CP] Embed Pods Frameworks */,
-				C31FAECE3054FD4A00EE91EC /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -308,6 +312,7 @@
 				C31FAEDB3054FF7E00EE91EC /* SwiftTermBuildInfoGenerator */,
 				C31FAEDD3054FF7E00EE91EC /* SwiftTermFuzz */,
 				C31FAEDF3054FF7E00EE91EC /* termcast */,
+				C3C602CE305736F800DB7C9A /* SwiftTerm */,
 			);
 			productName = "Aurora-Shell";
 			productReference = C37046092F79A36500603593 /* Horizon.app */;
@@ -352,7 +357,7 @@
 				C330D67E304BBB8D005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-symbolkit" */,
 				C330D681304BBBCB005DF1C4 /* XCRemoteSwiftPackageReference "swift-system" */,
 				C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */,
-				C31FAED83054FF7E00EE91EC /* XCLocalSwiftPackageReference "SwiftTerm" */,
+				C3C602CD305736F800DB7C9A /* XCRemoteSwiftPackageReference "SwiftTerm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C370460A2F79A36500603593 /* Products */;
@@ -399,27 +404,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C31FAECE3054FD4A00EE91EC /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"/Users/YashB/Library/Developer/Xcode/DerivedData/Horizon-fgvybijxafrbcserbenzrpasbzvz/Build/Intermediates.noindex/BuildToolPluginIntermediates/swiftterm.output/SwiftTerm/SwiftTermBuildToolInfoPlugin/generated/SwiftTermBuildToolInfoPlugin.swift",
-				"/Users/YashB/Library/Developer/Xcode/DerivedData/Horizon-fgvybijxafrbcserbenzrpasbzvz/Build/Intermediates.noindex/BuildToolPluginIntermediates/swiftterm.output/SwiftTerm/SwiftTermBuildToolInfoPlugin/generated/SwiftTermTerminfo.swift",
-				"/Users/YashB/Library/Developer/Xcode/DerivedData/Horizon-fgvybijxafrbcserbenzrpasbzvz/Build/Intermediates.noindex/BuildToolPluginIntermediates/swiftterm.output/SwiftTerm/SwiftTermBuildToolInfoPlugin/Generated/SwiftTermBuildInfo.swift",
-				"/Users/YashB/Library/Developer/Xcode/DerivedData/Horizon-fgvybijxafrbcserbenzrpasbzvz/Build/Intermediates.noindex/BuildToolPluginIntermediates/swiftterm.output/SwiftTerm/SwiftTermBuildToolInfoPlugin/Generated/SwiftTermTerminfo.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nTARGET_DIR=\"/Users/YashB/Library/Developer/Xcode/DerivedData/Horizon-fgvybijxafrbcserbenzrpasbzvz/Build/Intermediates.noindex/BuildToolPluginIntermediates/swiftterm.output/SwiftTerm/SwiftTermBuildToolInfoPlugin\"\nmkdir -p \"$TARGET_DIR/generated\" \"$TARGET_DIR/Generated\"\necho \"public enum SwiftTermBuildToolInfoPlugin { public static let version = \\\"1.2.0\\\"; public static let buildDate = \\\"2026-09-11\\\" }\" > \"$TARGET_DIR/generated/SwiftTermBuildToolInfoPlugin.swift\"\necho \"public enum SwiftTermTerminfo { public static let compiledTerminfo = \\\"\\\" }\" > \"$TARGET_DIR/generated/SwiftTermTerminfo.swift\"\necho \"public enum SwiftTermBuildInfo { public static let version = \\\"1.2.0\\\"; public static let buildDate = \\\"2026-09-11\\\" }\" > \"$TARGET_DIR/Generated/SwiftTermBuildInfo.swift\"\necho \"public enum SwiftTermTerminfo { public static let compiledTerminfo = \\\"\\\" }\" > \"$TARGET_DIR/Generated/SwiftTermTerminfo.swift\"\n";
-		};
 		CBF263C7F2F80C024DEDC47D /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -460,6 +444,7 @@
 				C353735330280C270054E0D8 /* NotMacView.swift in Sources */,
 				C353735430280C270054E0D8 /* ShellViewModel.swift in Sources */,
 				C353735530280C270054E0D8 /* Aurora_shellApp.swift in Sources */,
+				C3C602E43058BE3600DB7C9A /* SwiftTermBuildInfo.swift in Sources */,
 				C353735630280C270054E0D8 /* LiquidBackground.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -743,15 +728,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		C31FAED83054FF7E00EE91EC /* XCLocalSwiftPackageReference "SwiftTerm" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = SwiftTerm;
-			traits = (
-			);
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		C330D654304B9898005DF1C4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -822,6 +798,14 @@
 			repositoryURL = "https://github.com/SwifterSwift/SwifterSwift";
 			requirement = {
 				branch = master;
+				kind = branch;
+			};
+		};
+		C3C602CD305736F800DB7C9A /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm";
+			requirement = {
+				branch = main;
 				kind = branch;
 			};
 		};
@@ -1091,6 +1075,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
 			productName = SwifterSwiftWebKit;
+		};
+		C3C602CE305736F800DB7C9A /* SwiftTerm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3C602CD305736F800DB7C9A /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			productName = SwiftTerm;
 		};
 		C3E0CAF83044CD87007384B3 /* Rainbow */ = {
 			isa = XCSwiftPackageProductDependency;
