@@ -1,6 +1,6 @@
-# Aurora-Shell v7.1.7 installer — PowerShell port
+# Aurora-Shell v7.1.8 installer — PowerShell port
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$VER         = "7.1.7"
+$VER         = "7.1.8"
 $DATA_DIR    = "$HOME\.aurora-shell_files"
 $THEME_FILE  = "$DATA_DIR\aurora-shell_theme.ps1"
 $CONFIG_FILE = "$DATA_DIR\aurora-shell_settings.ps1"
