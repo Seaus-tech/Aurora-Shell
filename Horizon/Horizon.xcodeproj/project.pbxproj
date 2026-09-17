@@ -70,10 +70,10 @@
 		C353735430280C270054E0D8 /* ShellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353734430280C270054E0D8 /* ShellViewModel.swift */; };
 		C353735530280C270054E0D8 /* Aurora_shellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733830280C270054E0D8 /* Aurora_shellApp.swift */; };
 		C353735630280C270054E0D8 /* LiquidBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C353733D30280C270054E0D8 /* LiquidBackground.swift */; };
-		C363BB563058C28D0004C043 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C363BB553058C28D0004C043 /* SwiftTerm */; };
-		C363BB583058C28D0004C043 /* SwiftTermBuildInfoGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = C363BB573058C28D0004C043 /* SwiftTermBuildInfoGenerator */; };
-		C363BB5A3058C28D0004C043 /* SwiftTermFuzz in Frameworks */ = {isa = PBXBuildFile; productRef = C363BB593058C28D0004C043 /* SwiftTermFuzz */; };
-		C363BB5C3058C28D0004C043 /* termcast in Frameworks */ = {isa = PBXBuildFile; productRef = C363BB5B3058C28D0004C043 /* termcast */; };
+		C363BB68305A0B750004C043 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C363BB67305A0B750004C043 /* SwiftTerm */; };
+		C363BB6A305A0B750004C043 /* SwiftTermBuildInfoGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = C363BB69305A0B750004C043 /* SwiftTermBuildInfoGenerator */; };
+		C363BB6C305A0B750004C043 /* SwiftTermFuzz in Frameworks */ = {isa = PBXBuildFile; productRef = C363BB6B305A0B750004C043 /* SwiftTermFuzz */; };
+		C363BB6E305A0B750004C043 /* termcast in Frameworks */ = {isa = PBXBuildFile; productRef = C363BB6D305A0B750004C043 /* termcast */; };
 		C36B1B7C3037D2260066C1F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C36B1B7B3037D21D0066C1F6 /* README.md */; };
 		C3E0CAF93044CD87007384B3 /* Rainbow in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAF83044CD87007384B3 /* Rainbow */; };
 		C3E0CAFC3044CDF1007384B3 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = C3E0CAFB3044CDF1007384B3 /* Yams */; };
@@ -130,7 +130,7 @@
 				C3E0CB023044CE44007384B3 /* Progress in Frameworks */,
 				C3494593304C76E400906B16 /* SwifterSwift in Frameworks */,
 				C34945A3304C76E400906B16 /* SwifterSwiftFoundation in Frameworks */,
-				C363BB563058C28D0004C043 /* SwiftTerm in Frameworks */,
+				C363BB68305A0B750004C043 /* SwiftTerm in Frameworks */,
 				C34945AB304C76E400906B16 /* SwifterSwiftSceneKit in Frameworks */,
 				C330D66D304B9A60005DF1C4 /* Base16 in Frameworks */,
 				C3E0CAFF3044CE10007384B3 /* CLISpinner in Frameworks */,
@@ -142,7 +142,7 @@
 				C31FAED33054FF3800EE91EC /* SwiftTermBuildInfoGenerator in Frameworks */,
 				C31FAEDC3054FF7E00EE91EC /* SwiftTermBuildInfoGenerator in Frameworks */,
 				C3E0CAF93044CD87007384B3 /* Rainbow in Frameworks */,
-				C363BB5C3058C28D0004C043 /* termcast in Frameworks */,
+				C363BB6E305A0B750004C043 /* termcast in Frameworks */,
 				C330D65A304B9898005DF1C4 /* generate-manual in Frameworks */,
 				C330D675304B9A60005DF1C4 /* MD5 in Frameworks */,
 				C349459F304C76E400906B16 /* SwifterSwiftCryptoKit in Frameworks */,
@@ -155,8 +155,8 @@
 				C3E0CAFC3044CDF1007384B3 /* Yams in Frameworks */,
 				C330D680304BBB8D005DF1C4 /* SymbolKit in Frameworks */,
 				C34945B3304C76E400906B16 /* SwifterSwiftSwiftStdlib in Frameworks */,
-				C363BB583058C28D0004C043 /* SwiftTermBuildInfoGenerator in Frameworks */,
-				C363BB5A3058C28D0004C043 /* SwiftTermFuzz in Frameworks */,
+				C363BB6A305A0B750004C043 /* SwiftTermBuildInfoGenerator in Frameworks */,
+				C363BB6C305A0B750004C043 /* SwiftTermFuzz in Frameworks */,
 				C34945A7304C76E400906B16 /* SwifterSwiftMapKit in Frameworks */,
 				C330D673304B9A60005DF1C4 /* InlineBuffer in Frameworks */,
 				C330D683304BBBCB005DF1C4 /* SystemPackage in Frameworks */,
@@ -315,10 +315,10 @@
 				C31FAEDB3054FF7E00EE91EC /* SwiftTermBuildInfoGenerator */,
 				C31FAEDD3054FF7E00EE91EC /* SwiftTermFuzz */,
 				C31FAEDF3054FF7E00EE91EC /* termcast */,
-				C363BB553058C28D0004C043 /* SwiftTerm */,
-				C363BB573058C28D0004C043 /* SwiftTermBuildInfoGenerator */,
-				C363BB593058C28D0004C043 /* SwiftTermFuzz */,
-				C363BB5B3058C28D0004C043 /* termcast */,
+				C363BB67305A0B750004C043 /* SwiftTerm */,
+				C363BB69305A0B750004C043 /* SwiftTermBuildInfoGenerator */,
+				C363BB6B305A0B750004C043 /* SwiftTermFuzz */,
+				C363BB6D305A0B750004C043 /* termcast */,
 			);
 			productName = "Aurora-Shell";
 			productReference = C37046092F79A36500603593 /* Horizon.app */;
@@ -363,7 +363,7 @@
 				C330D67E304BBB8D005DF1C4 /* XCRemoteSwiftPackageReference "swift-docc-symbolkit" */,
 				C330D681304BBBCB005DF1C4 /* XCRemoteSwiftPackageReference "swift-system" */,
 				C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */,
-				C363BB543058C28D0004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */,
+				C363BB66305A0B750004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C370460A2F79A36500603593 /* Products */;
@@ -774,8 +774,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/swiftlang/swift-subprocess";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 		C330D66B304B9A60005DF1C4 /* XCRemoteSwiftPackageReference "h" */ = {
@@ -810,7 +810,7 @@
 				kind = branch;
 			};
 		};
-		C363BB543058C28D0004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
+		C363BB66305A0B750004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm";
 			requirement = {
@@ -1085,24 +1085,24 @@
 			package = C3494591304C76E400906B16 /* XCRemoteSwiftPackageReference "SwifterSwift" */;
 			productName = SwifterSwiftWebKit;
 		};
-		C363BB553058C28D0004C043 /* SwiftTerm */ = {
+		C363BB67305A0B750004C043 /* SwiftTerm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C363BB543058C28D0004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			package = C363BB66305A0B750004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = SwiftTerm;
 		};
-		C363BB573058C28D0004C043 /* SwiftTermBuildInfoGenerator */ = {
+		C363BB69305A0B750004C043 /* SwiftTermBuildInfoGenerator */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C363BB543058C28D0004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			package = C363BB66305A0B750004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = SwiftTermBuildInfoGenerator;
 		};
-		C363BB593058C28D0004C043 /* SwiftTermFuzz */ = {
+		C363BB6B305A0B750004C043 /* SwiftTermFuzz */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C363BB543058C28D0004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			package = C363BB66305A0B750004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = SwiftTermFuzz;
 		};
-		C363BB5B3058C28D0004C043 /* termcast */ = {
+		C363BB6D305A0B750004C043 /* termcast */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C363BB543058C28D0004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			package = C363BB66305A0B750004C043 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
 			productName = termcast;
 		};
 		C3E0CAF83044CD87007384B3 /* Rainbow */ = {
