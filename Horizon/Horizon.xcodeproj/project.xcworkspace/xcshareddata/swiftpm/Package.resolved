@@ -1,22 +1,121 @@
 {
-  "originHash" : "4d9d9af82f23f3c708bdd502fed3939413b4f2a95a79ae568364cc92bca1527e",
+  "originHash" : "bf48fd1ca08d7f0083fd635d4eb57d012477f3d70be54c79aa38d3ee657bb0d6",
   "pins" : [
+    {
+      "identity" : "clispinner",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kiliankoe/CLISpinner",
+      "state" : {
+        "branch" : "main",
+        "revision" : "0572232b92ddfd80cbab4ced6973d1c210022968"
+      }
+    },
+    {
+      "identity" : "dollup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ordo-one/dollup",
+      "state" : {
+        "branch" : "master",
+        "revision" : "349c8a4e292d7ff4239c1a71e624b21dcf91876c"
+      }
+    },
+    {
+      "identity" : "h",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rarestype/h",
+      "state" : {
+        "branch" : "master",
+        "revision" : "421e220fcc8fbe287efe07ed9faea32446f1ebc1"
+      }
+    },
+    {
+      "identity" : "progress.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jkandzi/Progress.swift",
+      "state" : {
+        "branch" : "master",
+        "revision" : "fed6598735d7982058690acf8f52a0a5fdaeb3e0"
+      }
+    },
+    {
+      "identity" : "rainbow",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Rainbow",
+      "state" : {
+        "branch" : "master",
+        "revision" : "b6d790f5487f4673fae2222d04d57ff6d6c621ea"
+      }
+    },
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "626b5b7b2f45e1b0b1c6f4a309296d1d21d7311b",
-        "version" : "1.7.1"
+        "branch" : "main",
+        "revision" : "efd239f0055b3d6b6cc122a786c46a0ea8d0235b"
       }
     },
     {
-      "identity" : "swiftterm",
+      "identity" : "swift-docc-plugin",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/migueldeicaza/SwiftTerm",
+      "location" : "https://github.com/apple/swift-docc-plugin",
       "state" : {
         "branch" : "main",
-        "revision" : "f37922e49067c26f0b0cbabc7131b3f02862a7b5"
+        "revision" : "647c708be89f834fa6a6d4945442793a77ddf5b6"
+      }
+    },
+    {
+      "identity" : "swift-docc-symbolkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-docc-symbolkit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "e9a4c0f2ddad22ec3e7d1dc8d49061b5bd8a42ea"
+      }
+    },
+    {
+      "identity" : "swift-png",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tayloraswift/swift-png",
+      "state" : {
+        "branch" : "master",
+        "revision" : "f2803fd182a03d795546492dff26f8ef949dc45a"
+      }
+    },
+    {
+      "identity" : "swift-subprocess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-subprocess",
+      "state" : {
+        "branch" : "main",
+        "revision" : "1337d5034c44405fc69aed6cf819a26b4b62d7a5"
+      }
+    },
+    {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system",
+      "state" : {
+        "branch" : "main",
+        "revision" : "c3b7f2a48e9109ca937da868c3ea959159103f05"
+      }
+    },
+    {
+      "identity" : "swifterswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwifterSwift/SwifterSwift",
+      "state" : {
+        "branch" : "master",
+        "revision" : "b14aacbe80c834f9db3f1d62925916469598735d"
+      }
+    },
+    {
+      "identity" : "yams",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/Yams",
+      "state" : {
+        "branch" : "main",
+        "revision" : "df801bc4f158f107035d2e14f6d0d8d31eb31ddb"
       }
     }
   ],

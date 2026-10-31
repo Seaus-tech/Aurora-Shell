@@ -1,0 +1,27 @@
+<svg xmlns="http://w3.org" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Luminous Neon Cyan Glow for the Cursor -->
+    <linearGradient id="cursorGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FFCC" />
+      <stop offset="100%" stop-color="#00E5FF" />
+    </linearGradient>
+  </defs>
+
+  <!-- Aligned Glyphs Positioned Exactly Over the Layer 2 Core Plate -->
+  <g transform="translate(16, 8)">
+    <!-- Crisp White Chevron (>) -->
+    <path d="M 185,200 L 250,248 L 185,296" 
+          fill="none" 
+          stroke="#FFFFFF" 
+          stroke-width="26" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+          
+    <!-- Aurora Cursor Line (_ ) -->
+    <line x1="275" y1="296" x2="335" y2="296" 
+          stroke="url(#cursorGrad)" 
+          stroke-width="26" 
+          stroke-linecap="round" />
+  </g>
+</svg>
+

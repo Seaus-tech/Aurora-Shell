@@ -44,6 +44,44 @@
     {
       "layers" : [
         {
+          "glass" : true,
+          "image-name" : "Foreground_Glyphs.svg",
+          "name" : "Foreground_Glyphs",
+          "position" : {
+            "scale" : 2,
+            "translation-in-points" : [
+              -40,
+              -12
+            ]
+          }
+        },
+        {
+          "image-name" : "Terminal_Tile.svg",
+          "name" : "Terminal_Tile",
+          "position" : {
+            "scale" : 2,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "fill" : "automatic",
+          "hidden" : true,
+          "image-name" : "Horizon.svg",
+          "name" : "Horizon",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "hidden" : true,
           "image-name" : "image_d90d4fb5.jpg",
           "name" : "image_d90d4fb5",
           "position" : {

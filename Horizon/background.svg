@@ -1,0 +1,13 @@
+<svg xmlns="http://w3.org" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Vibrant Blue-to-Green Horizon Gradient -->
+    <linearGradient id="skyGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#1483FF" />
+      <stop offset="50%" stop-color="#22C55E" />
+      <stop offset="100%" stop-color="#4ADE80" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main Outer Squircle Base -->
+  <rect width="512" height="512" rx="115" fill="url(#skyGrad)" />
+</svg>

@@ -1,0 +1,473 @@
+{
+  "default-configuration": "Release",
+  "configurations": [
+    "Debug",
+    "Release",
+  ],
+  "localizations": {
+    "development": "en",
+    "supported": [
+      "Base",
+    ],
+  },
+  "packages": [
+    {
+      "kind": "remote",
+      "repository": "https://github.com/onevcat/Rainbow",
+      "version": {
+        "branch": "master",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/jpsim/Yams",
+      "version": {
+        "branch": "main",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/kiliankoe/CLISpinner",
+      "version": {
+        "branch": "main",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/jkandzi/Progress.swift",
+      "version": {
+        "branch": "master",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/apple/swift-argument-parser",
+      "version": {
+        "branch": "main",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/apple/swift-docc-plugin",
+      "version": {
+        "branch": "main",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/tayloraswift/swift-png",
+      "version": {
+        "branch": "master",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/ordo-one/dollup",
+      "version": {
+        "branch": "master",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/swiftlang/swift-subprocess",
+      "version": {
+        "branch": "main",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/rarestype/h",
+      "version": {
+        "branch": "master",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/apple/swift-docc-symbolkit",
+      "version": {
+        "branch": "main",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/apple/swift-system",
+      "version": {
+        "branch": "main",
+      },
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/SwifterSwift/SwifterSwift",
+      "version": {
+        "branch": "main",
+      },
+    }, {
+      "kind": "local",
+      "path": "SwiftTerm",
+    },
+  ],
+  "files": [
+    {
+      "kind": "group",
+      "path": "Horizon",
+      "children": [
+        { "path": "README.md", "target-membership": [ "Horizon/resources" ] },
+        { "path": "AppIcon.icon", "target-membership": [ "Horizon/resources" ] },
+        { "path": "Aurora_shellApp.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "Aurora-shell.entitlements" },
+        { "path": "EditorView.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "FileViewerView.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "LiquidBackground.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "LockScreenView.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "MainView.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "NotMacView.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "PTYBridge.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "SandboxedShell.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "ShellModel.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "ShellViewModel.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "TerminalEngine.swift", "target-membership": [ "Horizon/compile-sources" ] },
+        { "path": "TerminalViewRepresentable.swift", "target-membership": [ "Horizon/compile-sources" ] },
+      ],
+    }, {
+      "kind": "group",
+      "name": "Products",
+      "children": [
+        { "path": "<PRODUCTS>/Horizon.app", "id": "C37046092F79A36500603593", "type": "wrapper.application", "index": false },
+      ],
+    }, {
+      "kind": "group",
+      "name": "Frameworks",
+      "children": [
+        { "path": "<PRODUCTS>/Pods_Horizon.framework", "type": "wrapper.framework", "index": false },
+      ],
+    },
+  ],
+  "targets": [
+    {
+      "name": "Horizon",
+      "id": "C37046082F79A36500603593",
+      "product": "Products/Horizon.app",
+      "product-type": "application",
+      "last-swift-migration": "26.4",
+      "build-phases": [
+        "compile-sources",
+        "frameworks",
+        "resources",
+        {
+          "kind": "copy",
+          "name": "Embed Frameworks",
+          "bundle-base-path": "frameworks-directory",
+        },
+      ],
+      "package-product-members": [
+        {
+          "product-name": "SwiftTerm",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "product-name": "SwiftTerm",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "product-name": "SwiftTerm",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "CLISpinner",
+          "product-name": "CLISpinner",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "Progress",
+          "product-name": "Progress",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "Rainbow",
+          "product-name": "Rainbow",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwift",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftAppKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftAppKitNoIBInspectable",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftCoreAnimation",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftCoreGraphics",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftCoreLocation",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftCryptoKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftDispatch",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftFoundation",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftHealthKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftMapKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftNoIBInspectable",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftSceneKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftShared",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftSpriteKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftStoreKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftSwiftStdlib",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftUIKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftUIKitNoIBInspectable",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "SwifterSwift",
+          "product-name": "SwifterSwiftWebKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "Yams",
+          "product-name": "Yams",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "Base16",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "Base64",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "CRC",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "InlineBuffer",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "MD5",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "MessageAuthentication",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "SHA1",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "SHA2",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "h",
+          "product-name": "UUID",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-argument-parser",
+          "product-name": "ArgumentParser",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-argument-parser",
+          "product-name": "generate-docc-reference",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-argument-parser",
+          "product-name": "generate-manual",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-docc-plugin",
+          "product-name": "snippet-extract",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-docc-symbolkit",
+          "product-name": "SymbolKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-png",
+          "product-name": "LZ77",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-png",
+          "product-name": "PNG",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-png",
+          "product-name": "compression-benchmark",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-png",
+          "product-name": "decompression-benchmark",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-subprocess",
+          "product-name": "Subprocess",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swift-system",
+          "product-name": "SystemPackage",
+          "build-phase": { "build-phase": "frameworks" },
+        },
+      ],
+      "build-settings": {
+        "ALLOW_TARGET_PLATFORM_SPECIALIZATION": "YES",
+        "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
+        "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "AccentColor",
+        "ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS": "YES",
+        "AUTOMATION_APPLE_EVENTS": "YES",
+        "CLANG_ENABLE_MODULES": "YES",
+        "CODE_SIGN_ENTITLEMENTS": "Horizon/Aurora-Shell.entitlements",
+        "CODE_SIGN_IDENTITY": "Apple Development",
+        "CODE_SIGN_STYLE": "Automatic",
+        "COMBINE_HIDPI_IMAGES": "YES",
+        "CURRENT_PROJECT_VERSION": "1",
+        "DEAD_CODE_STRIPPING": "YES",
+        "DRIVERKIT_DEPLOYMENT_TARGET": "$(RECOMMENDED_DRIVERKIT_DEPLOYMENT_TARGET)",
+        "ENABLE_APP_SANDBOX": "NO",
+        "ENABLE_ENHANCED_SECURITY": "YES",
+        "ENABLE_HARDENED_RUNTIME": "YES",
+        "ENABLE_HARDWARE_CHECKED_POINTER_ARITHMETIC_SLICE": "YES",
+        "ENABLE_OUTGOING_NETWORK_CONNECTIONS": "YES",
+        "ENABLE_PREVIEWS": "YES",
+        "ENABLE_RESOURCE_ACCESS_AUDIO_INPUT": "YES",
+        "ENABLE_RESOURCE_ACCESS_CALENDARS": "YES",
+        "ENABLE_RESOURCE_ACCESS_CAMERA": "YES",
+        "ENABLE_RESOURCE_ACCESS_CONTACTS": "YES",
+        "ENABLE_RESOURCE_ACCESS_LOCATION": "YES",
+        "ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY": "YES",
+        "ENABLE_USER_SELECTED_FILES": "readonly",
+        "GENERATE_INFOPLIST_FILE": "YES",
+        "INFOPLIST_FILE": "Horizon/Info.plist",
+        "INFOPLIST_KEY_CFBundleDisplayName": "Horizon",
+        "INFOPLIST_KEY_LSApplicationCategoryType": "public.app-category.utilities",
+        "INFOPLIST_KEY_NSAppDataUsageDescription": "to edit like a real terminal",
+        "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+        "IPHONEOS_DEPLOYMENT_TARGET": "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)",
+        "LD_RUNPATH_SEARCH_PATHS": "$(inherited)",
+        "MACOSX_DEPLOYMENT_TARGET": "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)",
+        "MARKETING_VERSION": "4.4.8",
+        "PRODUCT_BUNDLE_IDENTIFIER": "com.yashb.Horizon",
+        "PRODUCT_NAME": "$(TARGET_NAME)",
+        "PROVISIONING_PROFILE_SPECIFIER": "",
+        "REGISTER_APP_GROUPS": "YES",
+        "RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES": "YES",
+        "RUNTIME_EXCEPTION_ALLOW_JIT": "YES",
+        "RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY": "YES",
+        "RUNTIME_EXCEPTION_DEBUGGING_TOOL": "YES",
+        "RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION": "YES",
+        "RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION": "YES",
+        "STRING_CATALOG_GENERATE_SYMBOLS": "YES",
+        "SUPPORTED_PLATFORMS": "appletvos appletvsimulator driverkit iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator",
+        "SUPPORTS_MACCATALYST": "YES",
+        "SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD": "YES",
+        "SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD": "YES",
+        "SWIFT_APPROACHABLE_CONCURRENCY": "YES",
+        "SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor",
+        "SWIFT_EMIT_LOC_STRINGS": "YES",
+        "SWIFT_OPTIMIZATION_LEVEL[config=Debug]": "-Onone",
+        "SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY": "YES",
+        "SWIFT_VERSION": "5.0",
+        "TARGETED_DEVICE_FAMILY": "1,2,3,4,6,7",
+        "TVOS_DEPLOYMENT_TARGET": "$(RECOMMENDED_TVOS_DEPLOYMENT_TARGET)",
+        "WATCHOS_DEPLOYMENT_TARGET": "$(RECOMMENDED_WATCHOS_DEPLOYMENT_TARGET)",
+        "XROS_DEPLOYMENT_TARGET": "$(RECOMMENDED_XROS_DEPLOYMENT_TARGET)",
+      },
+    },
+  ],
+  "build-settings": {
+    "ALWAYS_SEARCH_USER_PATHS": "NO",
+    "ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES",
+    "CLANG_ANALYZER_NONNULL": "YES",
+    "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+    "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+    "CLANG_ENABLE_MODULES": "YES",
+    "CLANG_ENABLE_OBJC_ARC": "YES",
+    "CLANG_ENABLE_OBJC_WEAK": "YES",
+    "CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING": "YES",
+    "CLANG_WARN_BOOL_CONVERSION": "YES",
+    "CLANG_WARN_COMMA": "YES",
+    "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+    "CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS": "YES",
+    "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+    "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+    "CLANG_WARN_EMPTY_BODY": "YES",
+    "CLANG_WARN_ENUM_CONVERSION": "YES",
+    "CLANG_WARN_INFINITE_RECURSION": "YES",
+    "CLANG_WARN_INT_CONVERSION": "YES",
+    "CLANG_WARN_NON_LITERAL_NULL_CONVERSION": "YES",
+    "CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF": "YES",
+    "CLANG_WARN_OBJC_LITERAL_CONVERSION": "YES",
+    "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+    "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+    "CLANG_WARN_RANGE_LOOP_ANALYSIS": "YES",
+    "CLANG_WARN_STRICT_PROTOTYPES": "YES",
+    "CLANG_WARN_SUSPICIOUS_MOVE": "YES",
+    "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+    "CLANG_WARN_UNREACHABLE_CODE": "YES",
+    "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+    "COPY_PHASE_STRIP": "NO",
+    "DEAD_CODE_STRIPPING": "YES",
+    "DEBUG_INFORMATION_FORMAT[config=Debug]": "dwarf",
+    "DEBUG_INFORMATION_FORMAT[config=Release]": "dwarf-with-dsym",
+    "DEVELOPMENT_TEAM": "25X4VXN3L2",
+    "ENABLE_ENHANCED_SECURITY": "YES",
+    "ENABLE_NS_ASSERTIONS[config=Release]": "NO",
+    "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+    "ENABLE_TESTABILITY[config=Debug]": "YES",
+    "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
+    "GCC_C_LANGUAGE_STANDARD": "gnu17",
+    "GCC_DYNAMIC_NO_PIC[config=Debug]": "NO",
+    "GCC_NO_COMMON_BLOCKS": "YES",
+    "GCC_OPTIMIZATION_LEVEL[config=Debug]": "0",
+    "GCC_PREPROCESSOR_DEFINITIONS[config=Debug]": [
+      "DEBUG=1",
+      "$(inherited)",
+    ],
+    "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+    "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+    "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+    "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+    "GCC_WARN_UNUSED_FUNCTION": "YES",
+    "GCC_WARN_UNUSED_VARIABLE": "YES",
+    "LOCALIZATION_PREFERS_STRING_CATALOGS": "YES",
+    "MACOSX_DEPLOYMENT_TARGET": "26.3",
+    "MTL_ENABLE_DEBUG_INFO[config=Debug]": "INCLUDE_SOURCE",
+    "MTL_ENABLE_DEBUG_INFO[config=Release]": "NO",
+    "MTL_FAST_MATH": "YES",
+    "ONLY_ACTIVE_ARCH[config=Debug]": "YES",
+    "PRODUCT_NAME": "$(TARGET_NAME)",
+    "SDKROOT": "macosx",
+    "STRING_CATALOG_GENERATE_SYMBOLS": "YES",
+    "SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug]": "DEBUG $(inherited)",
+    "SWIFT_COMPILATION_MODE[config=Release]": "wholemodule",
+    "SWIFT_OPTIMIZATION_LEVEL[config=Debug]": "-Onone",
+  },
+  "last-upgrade": "27.2",
+  "last-swift-update": "26.4",
+}

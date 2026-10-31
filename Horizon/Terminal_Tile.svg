@@ -1,0 +1,17 @@
+<svg xmlns="http://w3.org" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Deep Matte Charcoal Core Plate -->
+    <linearGradient id="tileGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#242426" />
+      <stop offset="100%" stop-color="#141415" />
+    </linearGradient>
+
+    <!-- Edge-softening shadow for the floating plate -->
+    <filter id="plateShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Centered Inner Floating Squircle Tile -->
+  <rect x="116" y="116" width="280" height="280" rx="64" fill="url(#tileGrad)" filter="url(#plateShadow)" />
+</svg>
