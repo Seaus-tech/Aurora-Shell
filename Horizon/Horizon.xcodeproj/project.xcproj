@@ -129,6 +129,7 @@
         { "path": "<PRODUCTS>/Pods_Horizon.framework", "type": "wrapper.framework", "index": false },
       ],
     },
+    { "path": "SwiftTerm" },
   ],
   "targets": [
     {

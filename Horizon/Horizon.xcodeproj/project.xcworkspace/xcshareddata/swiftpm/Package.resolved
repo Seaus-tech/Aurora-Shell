@@ -1,5 +1,5 @@
 {
-  "originHash" : "bf48fd1ca08d7f0083fd635d4eb57d012477f3d70be54c79aa38d3ee657bb0d6",
+  "originHash" : "5014cb04601d98363f0c4367df4fd5761028ad7e9f21c4b4dbfe8d157160e75b",
   "pins" : [
     {
       "identity" : "clispinner",
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SwifterSwift/SwifterSwift",
       "state" : {
-        "branch" : "master",
-        "revision" : "b14aacbe80c834f9db3f1d62925916469598735d"
+        "branch" : "main",
+        "revision" : "548d06a78281c8f3f65bd1c2b10d583fb8c34e4b"
       }
     },
     {
