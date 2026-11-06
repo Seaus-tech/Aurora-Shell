@@ -1,0 +1,385 @@
+Command line invocation:
+    /Applications/Developer/Xcode-beta.app/Contents/Developer/usr/bin/xcodebuild -scheme Horizon -configuration Debug -destination platform=macOS,arch=arm64 -project ./Horizon.xcodeproj build
+
+Resolve Package Graph
+
+Fetching from https://github.com/rarestype/h (cached)
+
+Fetching from https://github.com/apple/swift-argument-parser (cached)
+
+Fetching from https://github.com/ordo-one/dollup (cached)
+
+Fetching from https://github.com/jpsim/Yams (cached)
+
+Fetching from https://github.com/swiftlang/swift-subprocess (cached)
+
+Fetching from https://github.com/apple/swift-system (cached)
+
+Fetching from https://github.com/apple/swift-docc-plugin (cached)
+
+Fetching from https://github.com/jkandzi/Progress.swift (cached)
+
+Fetching from https://github.com/SwifterSwift/SwifterSwift (cached)
+
+Fetching from https://github.com/onevcat/Rainbow (cached)
+
+Fetching from https://github.com/kiliankoe/CLISpinner (cached)
+
+Fetching from https://github.com/migueldeicaza/SwiftTerm (cached)
+
+Fetching from https://github.com/tayloraswift/swift-png (cached)
+
+Fetching from https://github.com/apple/swift-docc-symbolkit (cached)
+
+Creating working copy of package ‘swift-system’
+
+Creating working copy of package ‘h’
+
+Creating working copy of package ‘Progress.swift’
+
+Creating working copy of package ‘Rainbow’
+
+Creating working copy of package ‘CLISpinner’
+
+Creating working copy of package ‘swift-argument-parser’
+
+Creating working copy of package ‘swift-subprocess’
+
+Creating working copy of package ‘dollup’
+
+Creating working copy of package ‘SwiftTerm’
+
+Checking out main (0572232) of package ‘CLISpinner’
+
+Checking out master (fed6598) of package ‘Progress.swift’
+
+Checking out 1.0.2 of package ‘swift-subprocess’
+
+Checking out master (b6d790f) of package ‘Rainbow’
+
+Checking out master (4a89f6a) of package ‘h’
+
+Checking out main (38ca4ec) of package ‘swift-argument-parser’
+
+Checking out main (8f2745d) of package ‘swift-system’
+
+Checking out master (349c8a4) of package ‘dollup’
+
+Checking out main (f37922e) of package ‘SwiftTerm’
+
+Creating working copy of package ‘swift-docc-plugin’
+
+Creating working copy of package ‘SwifterSwift’
+
+Creating working copy of package ‘Yams’
+
+Checking out main (647c708) of package ‘swift-docc-plugin’
+
+Creating working copy of package ‘swift-png’
+
+Checking out main (f89d2f7) of package ‘SwifterSwift’
+
+Checking out main (df801bc) of package ‘Yams’
+
+Creating working copy of package ‘swift-docc-symbolkit’
+
+Checking out master (2ba72ab) of package ‘swift-png’
+
+Checking out main (a3f3648) of package ‘swift-docc-symbolkit’
+
+Conflicting identity for swift-docc-symbolkit: dependency 'github.com/swiftlang/swift-docc-symbolkit' and dependency 'github.com/apple/swift-docc-symbolkit' both point to the same package identity 'swift-docc-symbolkit'. This will be escalated to an error in future versions of SwiftPM.
+Resolved source packages:
+  Progress: https://github.com/jkandzi/Progress.swift @ master (fed6598)
+  SwiftTerm: https://github.com/migueldeicaza/SwiftTerm @ main (f37922e)
+  CLISpinner: https://github.com/kiliankoe/CLISpinner @ main (0572232)
+  swift-system: https://github.com/apple/swift-system @ main (8f2745d)
+  SymbolKit: https://github.com/apple/swift-docc-symbolkit @ main (a3f3648)
+  swift-subprocess: https://github.com/swiftlang/swift-subprocess @ 1.0.2
+  swift-argument-parser: https://github.com/apple/swift-argument-parser @ main (38ca4ec)
+  dollup: https://github.com/ordo-one/dollup @ master (349c8a4)
+  h: https://github.com/rarestype/h @ master (4a89f6a)
+  SwiftDocCPlugin: https://github.com/apple/swift-docc-plugin @ main (647c708)
+  swift-png: https://github.com/tayloraswift/swift-png @ master (2ba72ab)
+  Rainbow: https://github.com/onevcat/Rainbow @ master (b6d790f)
+  Yams: https://github.com/jpsim/Yams @ main (df801bc)
+  SwifterSwift: https://github.com/SwifterSwift/SwifterSwift @ main (f89d2f7)
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (77 targets)
+    Target 'Horizon' in project 'Horizon'
+        ➜ Explicit dependency on target 'snippet-extract-product' in project 'SwiftDocCPlugin'
+        ➜ Explicit dependency on target 'termcast-product' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'generate-manual-product' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'generate-docc-reference-product' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'SwiftTermFuzz-product' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'decompression-benchmark-product' in project 'swift-png'
+        ➜ Explicit dependency on target 'compression-benchmark-product' in project 'swift-png'
+        ➜ Explicit dependency on target 'CRC-product' in project 'h'
+        ➜ Explicit dependency on target 'SwiftTerm-product' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'Progress-product' in project 'Progress'
+        ➜ Explicit dependency on target 'SwifterSwift-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftFoundation-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'Base16-product' in project 'h'
+        ➜ Explicit dependency on target 'CLISpinner-product' in project 'CLISpinner'
+        ➜ Explicit dependency on target 'SHA1-product' in project 'h'
+        ➜ Explicit dependency on target 'SwifterSwiftCoreGraphics-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'Rainbow-product' in project 'Rainbow'
+        ➜ Explicit dependency on target 'MD5-product' in project 'h'
+        ➜ Explicit dependency on target 'SwifterSwiftCryptoKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftHealthKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftAppKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'PNG-product' in project 'swift-png'
+        ➜ Explicit dependency on target 'Yams-product' in project 'Yams'
+        ➜ Explicit dependency on target 'SymbolKit-product' in project 'SymbolKit'
+        ➜ Explicit dependency on target 'SwifterSwiftMapKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'InlineBuffer-product' in project 'h'
+        ➜ Explicit dependency on target 'SystemPackage-product' in project 'swift-system'
+        ➜ Explicit dependency on target 'Subprocess-product' in project 'swift-subprocess'
+        ➜ Explicit dependency on target 'SwifterSwiftCoreLocation-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'MessageAuthentication-product' in project 'h'
+        ➜ Explicit dependency on target 'UUID-product' in project 'h'
+        ➜ Explicit dependency on target 'Base64-product' in project 'h'
+        ➜ Explicit dependency on target 'SwifterSwiftUIKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'ArgumentParser-product' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'LZ77-product' in project 'swift-png'
+        ➜ Explicit dependency on target 'SHA2-product' in project 'h'
+        ➜ Explicit dependency on target 'SwifterSwiftSpriteKit-product' in project 'SwifterSwift'
+    Target 'SwifterSwiftSpriteKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftSpriteKit' in project 'SwifterSwift'
+    Target 'SHA2-product' in project 'h'
+        ➜ Explicit dependency on target 'SHA2' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+        ➜ Explicit dependency on target 'Base16' in project 'h'
+        ➜ Explicit dependency on target 'MessageAuthentication' in project 'h'
+    Target 'SHA2' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+        ➜ Explicit dependency on target 'Base16' in project 'h'
+        ➜ Explicit dependency on target 'MessageAuthentication' in project 'h'
+    Target 'LZ77-product' in project 'swift-png'
+        ➜ Explicit dependency on target 'LZ77' in project 'swift-png'
+        ➜ Explicit dependency on target 'CRC-product' in project 'h'
+    Target 'SwifterSwiftUIKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftUIKit' in project 'SwifterSwift'
+    Target 'Base64-product' in project 'h'
+        ➜ Explicit dependency on target 'Base64' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+    Target 'Base64' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+    Target 'UUID-product' in project 'h'
+        ➜ Explicit dependency on target 'UUID' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+        ➜ Explicit dependency on target 'Base16' in project 'h'
+    Target 'UUID' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+        ➜ Explicit dependency on target 'Base16' in project 'h'
+    Target 'MessageAuthentication-product' in project 'h'
+        ➜ Explicit dependency on target 'MessageAuthentication' in project 'h'
+    Target 'MessageAuthentication' in project 'h' (no dependencies)
+    Target 'SwifterSwiftCoreLocation-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCoreLocation' in project 'SwifterSwift'
+    Target 'Subprocess-product' in project 'swift-subprocess'
+        ➜ Explicit dependency on target 'Subprocess' in project 'swift-subprocess'
+        ➜ Explicit dependency on target '_SubprocessCShims' in project 'swift-subprocess'
+    Target 'Subprocess' in project 'swift-subprocess'
+        ➜ Explicit dependency on target '_SubprocessCShims' in project 'swift-subprocess'
+    Target '_SubprocessCShims' in project 'swift-subprocess' (no dependencies)
+    Target 'SystemPackage-product' in project 'swift-system'
+        ➜ Explicit dependency on target 'SystemPackage' in project 'swift-system'
+        ➜ Explicit dependency on target 'CSystem' in project 'swift-system'
+    Target 'SystemPackage' in project 'swift-system'
+        ➜ Explicit dependency on target 'CSystem' in project 'swift-system'
+    Target 'CSystem' in project 'swift-system' (no dependencies)
+    Target 'InlineBuffer-product' in project 'h'
+        ➜ Explicit dependency on target 'InlineBuffer' in project 'h'
+    Target 'SwifterSwiftMapKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftMapKit' in project 'SwifterSwift'
+    Target 'Yams-product' in project 'Yams'
+        ➜ Explicit dependency on target 'Yams' in project 'Yams'
+        ➜ Explicit dependency on target 'CYaml' in project 'Yams'
+    Target 'Yams' in project 'Yams'
+        ➜ Explicit dependency on target 'CYaml' in project 'Yams'
+    Target 'CYaml' in project 'Yams' (no dependencies)
+    Target 'PNG-product' in project 'swift-png'
+        ➜ Explicit dependency on target 'PNG' in project 'swift-png'
+        ➜ Explicit dependency on target 'LZ77' in project 'swift-png'
+        ➜ Explicit dependency on target 'CRC-product' in project 'h'
+    Target 'SwifterSwiftAppKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftAppKit' in project 'SwifterSwift'
+    Target 'SwifterSwiftHealthKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftHealthKit' in project 'SwifterSwift'
+    Target 'SwifterSwiftCryptoKit-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCryptoKit' in project 'SwifterSwift'
+    Target 'MD5-product' in project 'h'
+        ➜ Explicit dependency on target 'MD5' in project 'h'
+        ➜ Explicit dependency on target 'InlineBuffer' in project 'h'
+    Target 'MD5' in project 'h'
+        ➜ Explicit dependency on target 'InlineBuffer' in project 'h'
+    Target 'SwifterSwiftCoreGraphics-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCoreGraphics' in project 'SwifterSwift'
+    Target 'SHA1-product' in project 'h'
+        ➜ Explicit dependency on target 'SHA1' in project 'h'
+        ➜ Explicit dependency on target 'InlineBuffer' in project 'h'
+    Target 'SHA1' in project 'h'
+        ➜ Explicit dependency on target 'InlineBuffer' in project 'h'
+    Target 'InlineBuffer' in project 'h' (no dependencies)
+    Target 'CLISpinner-product' in project 'CLISpinner'
+        ➜ Explicit dependency on target 'CLISpinner' in project 'CLISpinner'
+        ➜ Explicit dependency on target 'Rainbow-product' in project 'Rainbow'
+    Target 'CLISpinner' in project 'CLISpinner'
+        ➜ Explicit dependency on target 'Rainbow-product' in project 'Rainbow'
+    Target 'Rainbow-product' in project 'Rainbow'
+        ➜ Explicit dependency on target 'Rainbow' in project 'Rainbow'
+    Target 'Rainbow' in project 'Rainbow' (no dependencies)
+    Target 'Base16-product' in project 'h'
+        ➜ Explicit dependency on target 'Base16' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+    Target 'SwifterSwiftFoundation-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftFoundation' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwift_SwifterSwiftFoundation' in project 'SwifterSwift'
+    Target 'SwifterSwift-product' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwift' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftStdlib' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftFoundation' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCoreGraphics' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftUIKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftAppKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCoreLocation' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftMapKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftSpriteKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCryptoKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftHealthKit' in project 'SwifterSwift'
+    Target 'SwifterSwift' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftStdlib' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftFoundation' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCoreGraphics' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftUIKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftAppKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCoreLocation' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftMapKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftSpriteKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftCryptoKit' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwiftHealthKit' in project 'SwifterSwift'
+    Target 'SwifterSwiftHealthKit' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftCryptoKit' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftSpriteKit' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftMapKit' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftCoreLocation' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftAppKit' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftUIKit' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftCoreGraphics' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftFoundation' in project 'SwifterSwift'
+        ➜ Explicit dependency on target 'SwifterSwift_SwifterSwiftFoundation' in project 'SwifterSwift'
+    Target 'SwifterSwift_SwifterSwiftFoundation' in project 'SwifterSwift' (no dependencies)
+    Target 'SwifterSwiftStdlib' in project 'SwifterSwift' (no dependencies)
+    Target 'Progress-product' in project 'Progress'
+        ➜ Explicit dependency on target 'Progress' in project 'Progress'
+    Target 'Progress' in project 'Progress' (no dependencies)
+    Target 'SwiftTerm-product' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'compression-benchmark-product' in project 'swift-png'
+        ➜ Explicit dependency on target 'LZ77' in project 'swift-png'
+        ➜ Explicit dependency on target 'PNG' in project 'swift-png'
+        ➜ Explicit dependency on target 'CRC-product' in project 'h'
+    Target 'decompression-benchmark-product' in project 'swift-png'
+        ➜ Explicit dependency on target 'LZ77' in project 'swift-png'
+        ➜ Explicit dependency on target 'PNG' in project 'swift-png'
+        ➜ Explicit dependency on target 'CRC-product' in project 'h'
+    Target 'PNG' in project 'swift-png'
+        ➜ Explicit dependency on target 'LZ77' in project 'swift-png'
+        ➜ Explicit dependency on target 'CRC-product' in project 'h'
+    Target 'LZ77' in project 'swift-png'
+        ➜ Explicit dependency on target 'CRC-product' in project 'h'
+    Target 'CRC-product' in project 'h'
+        ➜ Explicit dependency on target 'CRC' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+        ➜ Explicit dependency on target 'Base16' in project 'h'
+    Target 'CRC' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+        ➜ Explicit dependency on target 'Base16' in project 'h'
+    Target 'Base16' in project 'h'
+        ➜ Explicit dependency on target 'BaseDigits' in project 'h'
+    Target 'BaseDigits' in project 'h' (no dependencies)
+    Target 'SwiftTermFuzz-product' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+    Target 'generate-docc-reference-product' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'ArgumentParserToolInfo' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'ArgumentParser' in project 'swift-argument-parser'
+    Target 'generate-manual-product' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'ArgumentParserToolInfo' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'ArgumentParser' in project 'swift-argument-parser'
+    Target 'termcast-product' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'ArgumentParser-product' in project 'swift-argument-parser'
+    Target 'ArgumentParser-product' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'ArgumentParser' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'ArgumentParserToolInfo' in project 'swift-argument-parser'
+    Target 'ArgumentParser' in project 'swift-argument-parser'
+        ➜ Explicit dependency on target 'ArgumentParserToolInfo' in project 'swift-argument-parser'
+    Target 'ArgumentParserToolInfo' in project 'swift-argument-parser' (no dependencies)
+    Target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm' (no dependencies)
+    Target 'snippet-extract-product' in project 'SwiftDocCPlugin'
+        ➜ Explicit dependency on target 'Snippets' in project 'SwiftDocCPlugin'
+        ➜ Explicit dependency on target 'SymbolKit-product' in project 'SymbolKit'
+    Target 'SymbolKit-product' in project 'SymbolKit'
+        ➜ Explicit dependency on target 'SymbolKit' in project 'SymbolKit'
+    Target 'SymbolKit' in project 'SymbolKit' (no dependencies)
+    Target 'Snippets' in project 'SwiftDocCPlugin' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Developer/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Developer/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Developer/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.3.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Developer/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Developer/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.3.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Developer/Xcode-beta.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Developer/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ReadFileContents /Applications/Developer/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/docc/features.json
+
+Build description signature: 4764d85aa156f2ba95fb6e4443e313c1
+Build description path: /Users/YashB/Library/Developer/Xcode/DerivedData/Horizon-giyjhbmfmowkqtcwzzhazhekbkdv/Build/Intermediates.noindex/XCBuildData/4764d85aa156f2ba95fb6e4443e313c1.xcbuilddata
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftUIKitNoIBInspectable' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftDispatch' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftSceneKit' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftCoreAnimation' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftAppKitNoIBInspectable' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwiftTermBuildInfoGenerator' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwiftTermBuildInfoGenerator' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftWebKit' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftShared' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftSwiftStdlib' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwiftTermBuildInfoGenerator' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftStoreKit' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
+/Users/YashB/Seaus/Aurora-Shell/Horizon/Horizon.xcodeproj: error: Missing package product 'SwifterSwiftNoIBInspectable' (in target 'Horizon' from project 'Horizon')
+    x-xcode-log://72444C17-9932-46AB-A4A2-CD4CBDE96105: note: Package resolution errors must be fixed before building
